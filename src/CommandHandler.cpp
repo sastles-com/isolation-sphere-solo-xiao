@@ -173,7 +173,7 @@ bool CommandHandler::_handleLed(const char* payload) {
 }
 
 bool CommandHandler::_handleSystem(const char* payload) {
-    StaticJsonDocument<128> doc;
+    StaticJsonDocument<192> doc;
     if (!parseJsonPayload(payload, doc)) return false;
     if (!doc.containsKey("action")) return false;
 
@@ -184,6 +184,15 @@ bool CommandHandler::_handleSystem(const char* payload) {
         // 予約制: 設定を flush し、応答ログが MQTT に出てから再起動する
         _ctl->stop();
         _ctl->scheduleReboot(1000);
+    } else if (strcmp(action, "ap") == 0) {
+        // {"action":"ap","on":bool}: server モードなら MQTT で AP を戻せる
+        _ctl->requestAp(doc["on"] | true);
+    } else if (strcmp(action, "ap_idle") == 0) {
+        // {"action":"ap_idle","minutes":0..1440}
+        int m = doc["minutes"] | 0;
+        _ctl->setApIdleMinutes((uint16_t)(m < 0 ? 0 : (m > 1440 ? 1440 : m)));
+    } else if (strcmp(action, "modem_sleep") == 0) {
+        _ctl->setModemSleep(doc["on"] | false);
     } else if (strcmp(action, "sound_pin_test") == 0) {
         // ブザー配線ピンの実機診断: 底面露出6ピンを順に鳴らす。N 番目のピンは (N+1) 回。
         static const uint8_t kCandidatePins[] = {5, 6, 7, 8, 38, 39};

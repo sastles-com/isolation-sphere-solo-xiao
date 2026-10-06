@@ -58,9 +58,6 @@ public:
      */
     void loop();
 
-    /// Web UI (`/`) を一度でも返したか。LCD の案内表示の切り替えに使う。
-    bool uiServed() const { return _uiServed; }
-
 private:
     // esp_http_server ハンドラ (user_ctx = this)
     static esp_err_t onRoot(httpd_req_t* req);
@@ -74,6 +71,7 @@ private:
     static esp_err_t onImuGet(httpd_req_t* req);
     static esp_err_t onImuPost(httpd_req_t* req);
     static esp_err_t onServer(httpd_req_t* req);
+    static esp_err_t onPower(httpd_req_t* req);
     static esp_err_t onSource(httpd_req_t* req);
 
     static esp_err_t onBrightness(httpd_req_t* req);
@@ -95,7 +93,6 @@ private:
     // キャプティブポータル: 全ドメインを AP 自身の IP に解決し、未知パスは "/" へ 302。
     // iPhone は AP 接続直後に captive.apple.com を叩くので、そのまま UI が自動で開く。
     DNSServer _dns;
-    bool _uiServed = false;  ///< Web UI を一度でも返したか (LCD の案内 QR 切り替え用)
     bool _dnsStarted = false;
     DeviceController* _ctl;
     ConfigManager* _config;

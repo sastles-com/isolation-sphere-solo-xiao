@@ -73,7 +73,7 @@ bool NetworkManager::begin(ConfigManager& config) {
     WiFi.mode(_plan.valid() ? WIFI_AP_STA : WIFI_AP);
     // モデム省電力を無効化。省電力中はビーコン間でスリープし、AP としての応答が遅れて
     // Web UI の操作感が落ちる。STA 側では再送のない UDP 映像を取りこぼす。
-    WiFi.setSleep(false);
+    applyPowerSave();
 
     uint8_t channel = 0;
     if (_plan.valid()) {
@@ -112,7 +112,7 @@ bool NetworkManager::beginSoftAP(const String& ssid, const String& password, con
     if (WiFi.getMode() == WIFI_MODE_NULL) {
         // begin(config) を経由しない呼び出し (互換) のため
         WiFi.mode(storedStaSsid().length() > 0 ? WIFI_AP_STA : WIFI_AP);
-        WiFi.setSleep(false);
+        applyPowerSave();
     }
 
     const IPAddress subnet(255, 255, 255, 0);
@@ -136,6 +136,11 @@ bool NetworkManager::beginSoftAP(const String& ssid, const String& password, con
     }
 
     _started = true;
+    _apSsid = ssid;
+    _apPassword = password;
+    _apIp = ip;
+    _apChannel = channel;
+    _apIdleSinceMs = millis();
     Serial.printf("SoftAP started: SSID=%s (%s) ch=%u\n", ssid.c_str(), open ? "open" : "WPA2",
                   (unsigned)channel);
     Serial.printf("  AP IP:  %s\n", WiFi.softAPIP().toString().c_str());
@@ -201,6 +206,7 @@ void NetworkManager::startStaAttempt() {
 }
 
 void NetworkManager::poll() {
+    pollApIdle();
     if (!_staEnabled) {
         return;
     }
@@ -210,11 +216,12 @@ void NetworkManager::poll() {
         _staWasConnected = connected;
         if (connected) {
             _backoffMs = kBackoffMinMs;
-            // WiFi.begin() が省電力設定を既定 (MIN_MODEM) に戻すため、接続後にもう一度切る。
-            // 省電力中はビーコン間でスリープし、再送のない UDP 映像を取りこぼす (派生元の知見)。
-            WiFi.setSleep(false);
+            // WiFi.begin() が省電力設定を既定 (MIN_MODEM) に戻すため、接続後に設定値を入れ直す。
+            // 既定は省電力 OFF: 省電力中はビーコン間でスリープし、再送のない UDP 映像を取りこぼす
+            // (派生元の知見)。
+            applyPowerSave();
             Serial.printf("STA: connected to \"%s\" [%s] IP=%s ch=%d RSSI=%d "
-                          "(OTA: pio run -e atoms3r_lan_ota -t upload --upload-port <IP>)\n",
+                          "(OTA: pio run -e xiao_esp32s3_lan_ota -t upload --upload-port <IP>)\n",
                           _plan.ssid.c_str(), _plan.originName(), WiFi.localIP().toString().c_str(),
                           WiFi.channel(), WiFi.RSSI());
             if (_onUp) _onUp();
@@ -238,6 +245,54 @@ void NetworkManager::stop() {
         WiFi.softAPdisconnect(true);
         _started = false;
         Serial.println("SoftAP stopped");
+    }
+}
+
+bool NetworkManager::startAp() {
+    if (_started) {
+        return true;
+    }
+    if (_apSsid.length() == 0) {
+        Serial.println("SoftAP restart: no previous AP settings");
+        return false;
+    }
+    // beginSoftAP は引数を覚え直すので、メンバのコピーを渡す
+    const String ssid = _apSsid, pass = _apPassword;
+    const IPAddress ip = _apIp;
+    return beginSoftAP(ssid, pass, ip, _apChannel);
+}
+
+void NetworkManager::setApIdleTimeoutMin(uint16_t minutes) {
+    _apIdleTimeoutMin = minutes;
+    _apIdleSinceMs = millis();   // 設定を変えた時点から数え直す
+}
+
+void NetworkManager::setModemSleep(bool on) {
+    _modemSleep = on;
+    applyPowerSave();
+}
+
+void NetworkManager::applyPowerSave() {
+    // 無線が止まっている間 (mode NULL) は呼ばない。次の mode 設定後に再度適用される
+    if (WiFi.getMode() == WIFI_MODE_NULL) {
+        return;
+    }
+    WiFi.setSleep(_modemSleep ? WIFI_PS_MIN_MODEM : WIFI_PS_NONE);
+}
+
+void NetworkManager::pollApIdle() {
+    if (!_started || _apIdleTimeoutMin == 0) {
+        return;
+    }
+    const uint32_t now = millis();
+    if (WiFi.softAPgetStationNum() > 0) {
+        _apIdleSinceMs = now;   // 端末が居る間は数えない
+        return;
+    }
+    if (now - _apIdleSinceMs >= (uint32_t)_apIdleTimeoutMin * 60000UL) {
+        Serial.printf("SoftAP: no client for %u min -> auto stop (press the button to restart)\n",
+                      (unsigned)_apIdleTimeoutMin);
+        stop();
     }
 }
 

@@ -1,3 +1,7 @@
+> **XIAO ESP32S3 版の注記**: 本書は M5AtomS3R 版から引き継いだ。LCD・QR 表示・本体ボタン・M5 IMU に関する
+> 記述と実機検証の記録 (§6 QR、§9 の AtomS3R 実測) は AtomS3R 版の経緯であり、本リポジトリでは該当機能を
+> 削除している。XIAO 版の方針と計画は `docs/xiao_bringup.md`。
+
 # solo 設計ノート
 
 `isolation-sphere-solo` の設計判断、仕様、運用手順、実機チェック項目をまとめる。
@@ -323,6 +327,7 @@ STA が 5GHz 専用 AP にしか繋がらない環境では使えない (ESP32-S
 | POST | `/api/brightness` | `{"value":0-100}` | 明るさ % (γ=2.2 で LED 値に変換。NVS に保存) |
 | POST | `/api/video` | 動画本体 (`application/octet-stream`) | アップロード。成功 200 / 検証失敗 400 / 容量不足 507 / 競合 409 |
 | POST | `/api/video/delete` | — | 動画削除 → `no_video` |
+| POST | `/api/power` | `{ap, ap_idle_min, modem_sleep}` | 省電力 (指定したキーだけ反映)。`ap` bool (`false` は応答後に AP を止める。この接続も切れる)、`ap_idle_min` 0-1440 (NVS 保存、0=常時 ON)、`modem_sleep` bool (NVS 保存)。状態は `/api/status` の `power{ap_running,ap_idle_min,modem_sleep}` |
 | POST | `/api/reboot` | — | 再起動 |
 | * | `/api/` 以外の未知パス | — | `302 → http://<AP IP>/?cna=1` (キャプティブポータル検出用) |
 
@@ -671,6 +676,10 @@ ConfigManager のコンパイル時既定値で続行する。`ota.begin()` を 
     アップロード検証を通るか。`<input type=file>` から camera roll の動画を選べるか
 11. **統合ファーム (§10)**: 2026-09-23 の Phase 0〜5 はビルドと native テストのみで、**実機は未確認**。
     §10 の検証手順を順に実施する (solo 退行 → UDP 配信 → MQTT → OTA)
+
+12. **省電力 (未確認)**: 2026-10-05 にビルドと native テストのみ。実機で、AP 自動停止後の再開 (シェイク /
+    シリアル / MQTT) と OTA (`192.168.4.1`) が使えること、トリプルシェイクの感度 (誤検出・取りこぼし)、
+    AP 停止/稼働別の消費電流を実測する
 
 ### 既知の制約
 

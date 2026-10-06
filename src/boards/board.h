@@ -4,17 +4,14 @@
 // ============================================================
 //  ボード選択ディスパッチャ
 //  platformio.ini の build_flags で、対象デバイスに応じて
-//    -D BOARD_M5ATOMS3R       (M5AtomS3R)
 //    -D BOARD_XIAO_ESP32S3    (XIAO ESP32S3)
-//  のいずれか1つを定義すること。
+//  を定義すること。
 // ============================================================
 
-#if defined(BOARD_M5ATOMS3R)
-  #include "board_atoms3r.h"
-#elif defined(BOARD_XIAO_ESP32S3)
+#if defined(BOARD_XIAO_ESP32S3)
   #include "board_xiao_esp32s3.h"
 #else
-  #error "ボード未定義: build_flags に -D BOARD_M5ATOMS3R か -D BOARD_XIAO_ESP32S3 を追加してください"
+  #error "ボード未定義: build_flags に -D BOARD_XIAO_ESP32S3 を追加してください"
 #endif
 
 #include <stdint.h>

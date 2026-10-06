@@ -103,6 +103,13 @@ public:
     void setOnSelection(std::function<void(Axis, Direction)> callback);
     
     /**
+     * @brief トリプルシェイクの直接ハンドラを登録する
+     * @param callback 登録するとトリプルシェイクは UI モードに入らず、これだけを呼ぶ
+     *                 (solo では AP の ON/OFF 切替。UI モードの回転アクションは未実装のため)
+     */
+    void setOnTripleShake(std::function<void()> callback) { _onTripleShake = callback; }
+
+    /**
      * @brief 現在のモードを取得
      * @return 現在のMode
      */
@@ -138,6 +145,7 @@ private:
     bool _isHolding;            ///< 角度維持中フラグ
     
     // コールバック
+    std::function<void()> _onTripleShake;  ///< 登録時はトリプルシェイクで UI モードに入らず呼ぶ
     std::function<void(Mode)> _onModeChange;  ///< モード変更コールバック
     std::function<void(Axis, Direction)> _onSelection;  ///< 選択コールバック
     std::function<void(const char*, const char*)> _sink;  ///< 外部通知 (MQTT)。未登録ならログのみ

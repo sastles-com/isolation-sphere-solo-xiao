@@ -39,6 +39,12 @@ public:
     static uint8_t imuSmoothFrames(uint8_t fallback);
     static void setImuSmoothFrames(uint8_t n);
 
+    /// 省電力設定。AP 無操作自動停止 (分、0=常時ON) / モデム省電力
+    static uint16_t apIdleMinutes(uint16_t fallback);
+    static void setApIdleMinutes(uint16_t minutes);
+    static bool modemSleep(bool fallback);
+    static void setModemSleep(bool on);
+
     /// 保留中の変更があれば書き込む (loop から呼ぶ)
     static void tick();
 

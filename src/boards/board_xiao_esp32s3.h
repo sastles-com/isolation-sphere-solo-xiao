@@ -35,7 +35,7 @@ constexpr uint16_t kMaxLeds = 800;
 constexpr uint8_t  kTargetFps = 30;
 constexpr uint32_t kFrameDelayMs = 1000 / kTargetFps;
 constexpr uint8_t  kLedDefaultBrightness = 128;  // デフォルト輝度 50%
-// FastLED の電流リミッタ設定値。AtomS3R と同じ 5V/2A 給電を前提にする。
+// FastLED の電流リミッタ設定値。5V/2A 給電を前提にする。
 constexpr uint32_t kLedMaxPowerMa = 2000;
 
 // --- IMU (BNO055) I2C ---

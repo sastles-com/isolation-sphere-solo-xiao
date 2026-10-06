@@ -4,8 +4,8 @@
  * @author sastle-com
  *
  * ボール封止後など USB が届かない状態でも、AP (192.168.4.1) または STA (LAN / P2P 網) から
- *   pio run -e atoms3r_ota -t upload           (AP 経由)
- *   pio run -e atoms3r_lan_ota -t upload --upload-port <STA IP>
+ *   pio run -e xiao_esp32s3_ota -t upload           (AP 経由)
+ *   pio run -e xiao_esp32s3_lan_ota -t upload --upload-port <STA IP>
  * でファーム/LittleFS を無線更新できるようにする。
  * OTA セッション開始時にフレーム供給 (FramePump: ローカル再生 + UDP 受信) と LED
  * レンダリングタスクを協調停止し、転送完了まで handle() がブロックする。

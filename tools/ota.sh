@@ -22,7 +22,7 @@ echo "== 球体: $IP  target=$TARGET"
 # 再生中はデコードとフラッシュ読みで OTA の受信が間に合わないことがあるので先に止める
 # (ファーム側の onStart でも止めるが、古いファームには無い)
 curl -s -m 5 -X POST -H 'Content-Type: application/json' -d '{}' "http://$IP/api/stop" >/dev/null || true
-pio run -e atoms3r_lan_ota -t "$TARGET" --upload-port "$IP"
+pio run -e xiao_esp32s3_lan_ota -t "$TARGET" --upload-port "$IP"
 echo "== 再起動待ち"
 for i in $(seq 1 20); do sleep 3; curl -s -m 3 "http://$IP/api/status" >/dev/null 2>&1 && break; done
 curl -s -m 5 "http://$IP/api/status" | python3 -c 'import json,sys; d=json.load(sys.stdin); print("== state=%s uptime=%ss sta=%s" % (d["state"], d["uptime_s"], d["sta"]["ip"]))' || echo "!! 起動確認できず"

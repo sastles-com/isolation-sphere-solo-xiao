@@ -1,10 +1,15 @@
-# isolation-sphere solo
+# isolation-sphere solo (XIAO ESP32S3 版)
+
+> M5AtomS3R 版 ([isolation-sphere-solo](https://github.com/sastles-com/isolation-sphere-solo)) から分岐した、
+> **XIAO ESP32S3 向けのリポジトリ**。LCD・本体ボタン・M5 ライブラリを持たない。本体の操作は iPhone の
+> Web UI と IMU のトリプルシェイクで行い、今後は北極のホール素子をボタンにする (計画)。
+> 共通部品の修正は AtomS3R 版から手動で取り込む。
 
 球体 LED ディスプレイのファームウェア。**server なし (solo) と server あり (配信) の両方を 1 つの
 バイナリで動かす**。
 
 - **solo**: ESP32-S3 が SoftAP を立て、LittleFS に保存した 1 本の動画 (320×160 / 10fps) を電源投入だけで
-  自動ループ再生する。動画の差し替えと再生操作は、本体 LCD の QR から iPhone を接続して
+  自動ループ再生する。動画の差し替えと再生操作は、個体シールの QR から iPhone を接続して
   Web UI (`http://192.168.4.1/`) で行う。MQTT ブローカー・配信 server・ルーター・インターネットは不要。
 - **server モード** (`config.json` の `wifi{}` を有効にする、または Web UI の「サーバ接続 ON」): 同じ
   ファームが配信 server の P2P 網にも STA で入り、UDP で届く JPEG を優先して表示し、MQTT で操作を
@@ -23,13 +28,13 @@ IMU による姿勢補正は描画側で動作し、球体を回しても映像�
 
 ```bash
 # 1. ファームウェアと LittleFS を書き込む (初回は USB 必須: パーティション表を更新する)
-pio run -e atoms3r -t upload
-pio run -e atoms3r -t uploadfs
+pio run -e xiao_esp32s3 -t upload
+pio run -e xiao_esp32s3 -t uploadfs
 
 # 2. 動画を変換する (ffmpeg / ffprobe が必要)
 tools/make_solo_video.sh input.mp4 video.mjpg -q 6
 
-# 3. 電源投入 -> 本体 LCD の QR を iPhone のカメラで読む -> AP に接続
+# 3. 電源投入 -> 個体シールの QR (tools/make_wifi_qr.py) を iPhone のカメラで読む -> AP に接続
 #    -> 自動で開く画面、または Safari で http://192.168.4.1/ を開く
 #    -> video.mjpg をアップロード
 ```
@@ -39,12 +44,12 @@ tools/make_solo_video.sh input.mp4 video.mjpg -q 6
 ## 動作の流れ
 
 ```
-                  ┌──────────────── ESP32-S3 (M5AtomS3R) ────────────────┐
+                  ┌──────────────── ESP32-S3 (XIAO) ────────────────────┐
                   │                                                      │
  iPhone ──Wi-Fi──▶│ SoftAP  ─▶ httpd (Web UI / アップロード)  [Core 0]    │
    │              │              │                                       │
-   │ QR を読む     │              ▼                                       │
-   └──LCD の QR───│         LittleFS  /video.mjpg                        │
+   │ シールの QR   │              ▼                                       │
+   └──個体シール───│         LittleFS  /video.mjpg                        │
                   │              │                                       │
  server ──STA────▶│ UDP (JPEG チャンク) ─▶ キュー   MQTT (操作/telemetry)  │
  (任意)           │              │                                       │
@@ -66,10 +71,10 @@ tools/make_solo_video.sh input.mp4 video.mjpg -q 6
 ## リポジトリ構成
 
 ```
-platformio.ini            ビルド設定 (atoms3r / atoms3r_m5imu / xiao_esp32s3 / *_ota / native)
+platformio.ini            ビルド設定 (xiao_esp32s3 / *_ota / native)
 partitions.csv            フラッシュ配分 (OTA 2MB×2 + LittleFS 3.94MB)
 src/                      ファームウェア
-  main.cpp                起動順・タスク構成・loop (OTA / ネットワーク / MQTT / ログ / LCD)
+  main.cpp                起動順・タスク構成・loop (OTA / ネットワーク / MQTT / ログ)
   FramePump.{h,cpp}       フレーム供給の単一タスク (UDP 再構成 or ローカル再生 → デコード)
   SourceArbiter.h         配信 / ローカルの調停ポリシー (純粋、PC でテスト)
   SoloPlayer.{h,cpp}      ローカル MJPEG 再生の状態管理と 1 フレーム供給
@@ -83,7 +88,6 @@ src/                      ファームウェア
   LEDManager.{h,cpp}      球面 UV マッピング (SphereMap.h) / IMU 再投影 / FastLED 出力
   IMUManager.{h,cpp}      BNO055 (imu/*.h: 化け値検出・平滑・診断) 100Hz
   NetworkManager.{h,cpp}  SoftAP + STA (NVS の LAN > config の P2P 網)、Wi-Fi QR 文字列
-  LCDManager.{h,cpp}      本体 LCD (QR / 映像 / STANDBY)
   ...                     ConfigManager, Settings (NVS), FileManager, GestureManager, SoundManager, OtaManager
 data/                     LittleFS に書き込む内容 (config.json, LED レイアウト CSV)
 test/                     PC 上の単体テスト (JPEG 境界 / MJPEG 組み立て / IMU / 球面写像 / 調停 / 再構成)
@@ -96,9 +100,7 @@ docs/handoff.md           実装依頼時の仕様書
 
 | env | ボード | 構成 |
 | --- | --- | --- |
-| `atoms3r` (既定) | M5AtomS3R | 5ストリップ×160 LED、内蔵LCD (QR表示)、ブザー、外部 BNO055 |
-| `atoms3r_m5imu` | M5AtomS3R | 同上、IMU は M5 内蔵 6 軸 + Madgwick |
-| `xiao_esp32s3` | Seeed XIAO ESP32S3 | 4ストリップ、LCD/ブザーなし (QR は表示できない) |
+| `xiao_esp32s3` (既定) | Seeed XIAO ESP32S3 | 4ストリップ (5 本化は基板に合わせて対応予定)、LCD なし、外部 BNO055。接続案内の QR は個体シール |
 
 ## 動画の要件
 
@@ -115,9 +117,9 @@ docs/handoff.md           実装依頼時の仕様書
 | 手段 | できること |
 | --- | --- |
 | Web UI (`http://192.168.4.1/`) | 状態確認、再生/一時停止/停止、明るさ、動画の変換とアップロード/削除、表示パターン、IMU 平滑、映像ソース、サーバ接続 ON/OFF、LAN 接続、再起動 |
-| HTTP API | `GET /api/status`、`POST /api/play|pause|stop`、`/api/brightness`、`/api/led`、`/api/imu`、`/api/source`、`/api/server`、`/api/wifi`、`/api/video`、`/api/video/delete`、`/api/reboot` |
+| HTTP API | `GET /api/status`、`POST /api/play|pause|stop`、`/api/brightness`、`/api/led`、`/api/imu`、`/api/source`、`/api/server`、`/api/power`、`/api/wifi`、`/api/video`、`/api/video/delete`、`/api/reboot` |
 | MQTT (server モード) | `sphere/all|<id>/command/{params,playback,led,system}` を受信、`sphere/<id>/{status,state,imu,log,gesture}` を送信 (派生元と同じ) |
-| シリアルコンソール (115200) | `help` / `status` / `play` / `pause` / `stop` / `led sphere|test|off` / `bri N` / `server on|off` / `reboot` |
+| シリアルコンソール (115200) | `help` / `status` / `play` / `pause` / `stop` / `led sphere|test|off` / `bri N` / `server on|off` / `ap on|off` / `ap idle N` / `msleep on|off` / `power` (AP 切替) / `reboot` |
 
 設定は `data/config.json` (`solo.ap.*`、`wifi{}` = server の P2P 網と broker、`source{}` = 調停、
 `spheres[]` = MAC → 自機 ID / 固定 IP)。書き込みは `pio run -t uploadfs` (USB)。**サーバ接続の ON/OFF
@@ -126,24 +128,38 @@ docs/handoff.md           実装依頼時の仕様書
 
 `solo.ap.ssid` は SSID の接頭辞です。実際の SSID は基板の MAC を付けた
 `isolation-sphere-F09E9E3267D0` のような名前になり、複数台でも区別できます。
-最大 32 bytes に収まるよう接頭辞を短縮し、LCD の接続 QR と Web 画面にも同じ名前を使います。
+最大 32 bytes に収まるよう接頭辞を短縮し、Web 画面にも同じ名前を使います。
 更新後は新しい SSID に接続し直してください。server モードの機器 ID・固定 IP は
 `spheres[]` の MAC 登録で割り当てるため、追加基板には重複しない ID と IP を登録してください。
+
+## 省電力 (AP / モデム)
+
+球体の消費電力は WS2812 800 個が支配的ですが、デモ中は AP が不要なので止められるようにしてあります。
+**電源投入時は常に AP 起動** で始まります。
+
+| 機能 | 内容 |
+| --- | --- |
+| AP 自動停止 | 接続端末が 0 台のまま設定時間 (既定 10 分。しない/5/10/30/60) が経つと AP を止める。LAN (STA) が無ければ無線ごと止まる。設定は NVS に保存 |
+| AP の ON/OFF | Web UI の「今すぐ停止」、`ap on|off`、MQTT `system` の `ap` |
+| モデム省電力 | STA 接続中のビーコン間スリープ (WIFI_PS_MIN_MODEM)。既定 OFF。**AP だけの構成ではほぼ効かない** (AP は眠れない)。ON だと応答が鈍り UDP 映像を取りこぼしうる |
+| トリプルシェイク | AP の ON/OFF を切り替える。従来の UI モード (回転アクション) は未実装だったため置き換え |
+
+AP が止まっても再生は続きます。復帰は、シェイク / シリアル / MQTT / 電源の入れ直しのいずれかです。
 
 ## 開発
 
 ```bash
-pio run -e atoms3r            # ビルド
+pio run -e xiao_esp32s3      # ビルド
 pio test -e native            # 単体テスト 67 件 (実機不要)
 pio device monitor            # シリアルログ (115200)
-pio run -e atoms3r_ota -t upload   # OTA 書き込み (先に PC を AP へ接続)
+pio run -e xiao_esp32s3_ota -t upload   # OTA 書き込み (先に PC を AP へ接続)
 tools/ota.sh                  # LAN / P2P 網経由の OTA (STA の IP を解決して直指定)
 python3 tools/stream_to_sphere.py --target <STA の IP> --fps 15   # UDP 配信テスト (Pillow が必要)
 ```
 
 詳細・設計判断・実機チェック手順は [docs/solo_mode.md](docs/solo_mode.md) を参照。
 
-Mac で AP 経由の OTA を行う場合は、インターネット接続中に `atoms3r` をビルドし、
+Mac で AP 経由の OTA を行う場合は、インターネット接続中に `xiao_esp32s3` をビルドし、
 `tools/ota-ap.command` をダブルクリックしてください。ターミナルの案内に従って対象 core の
 AP に接続し、Enter を押すとビルド済みファームを転送します。転送中のインターネット接続は不要です。
 再起動後は新しい SSID に接続して Enter を押すと起動状態を確認できます。

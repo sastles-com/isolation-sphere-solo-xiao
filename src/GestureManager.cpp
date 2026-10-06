@@ -48,7 +48,13 @@ void GestureManager::update() {
         case Mode::NORMAL:
             // シェイク検出
             if (detectShake()) {
-                enterUIMode();
+                if (_onTripleShake) {
+                    logEvent("triple_shake -> direct action");
+                    publishGestureEvent("triple_shake");
+                    _onTripleShake();
+                } else {
+                    enterUIMode();
+                }
             }
             break;
             

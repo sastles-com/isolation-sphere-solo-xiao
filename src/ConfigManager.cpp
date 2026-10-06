@@ -195,16 +195,6 @@ void ConfigManager::_parseSphereEntry(JsonVariantConst src, SphereConfig& out) {
     out.LED_enabled = src["features"]["LED"] | false;
     out.IMU_type = src["features"]["IMU"] | "";
     out.ui_enabled = src["features"]["ui"] | false;
-
-    JsonVariantConst lcd = src["features"]["LCD"];
-    out.lcd.width = lcd["width"] | 128;
-    out.lcd.height = lcd["height"] | 128;
-    out.lcd.rotation = lcd["rotation"] | 0;
-    out.lcd.offset[0] = lcd["offset"][0] | 0;
-    out.lcd.offset[1] = lcd["offset"][1] | 0;
-    out.lcd.color_depth = lcd["color_depth"] | 16;
-    out.lcd.switch_enabled = lcd["switch"] | true;
-    out.lcd.debug = lcd["debug"] | true;
 }
 
 void ConfigManager::_resolveSphere() {
@@ -328,10 +318,6 @@ void ConfigManager::printConfig() {
     Serial.printf("  LED: %s, IMU: %s\n",
                   sphere.LED_enabled ? "enabled" : "disabled",
                   sphere.IMU_type.c_str());
-    Serial.printf("  LCD: %dx%d, Depth: %d, Debug: %s\n",
-                  sphere.lcd.width, sphere.lcd.height,
-                  sphere.lcd.color_depth,
-                  sphere.lcd.debug ? "enabled" : "disabled");
 
     PathsConfig paths = getPathsConfig();
     Serial.printf("\nPaths:\n");

@@ -5,8 +5,7 @@
 namespace sastle {
 
 // バックエンド共通部: 公開 getter、ポーリングタスク、診断スナップショットの受け渡し、
-// imu_dump、平滑窓の設定。BNO055 固有は IMUManager_bno055.cpp、M5 内蔵 IMU は
-// IMUManager_m5imu.cpp (隔離中)。
+// imu_dump、平滑窓の設定。BNO055 固有は IMUManager_bno055.cpp。
 
 IMUManager::~IMUManager() {
 }

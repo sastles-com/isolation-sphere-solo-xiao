@@ -34,12 +34,15 @@ void SerialConsole::execute(char* cmd) {
     NetworkManager* net = _ctl->net();
 
     if (strcmp(cmd, "help") == 0) {
-        Serial.println("[CONSOLE] commands: status | play | pause | stop | led sphere|test|off | bri N | server on|off | reboot");
+        Serial.println("[CONSOLE] commands: status | play | pause | stop | led sphere|test|off | bri N | ap on|off | ap idle N(分,0=常時) | msleep on|off | power(AP 切替) | server on|off | reboot");
     } else if (strcmp(cmd, "status") == 0) {
         Serial.printf("[CONSOLE] ap=%s ip=%s clients=%u heap=%u psram=%u\n",
                       _apSsid.c_str(), net ? net->apIP().toString().c_str() : "-",
                       (unsigned)(net ? net->clientCount() : 0),
                       (unsigned)ESP.getFreeHeap(), (unsigned)ESP.getFreePsram());
+        Serial.printf("[CONSOLE] power: ap=%s idle=%umin msleep=%s\n",
+                      _ctl->apRunning() ? "on" : "off", (unsigned)_ctl->apIdleMinutes(),
+                      _ctl->modemSleep() ? "on" : "off");
         if (net) {
             Serial.printf("[CONSOLE] sta=%s [%s] %s ip=%s server=%s\n",
                           net->staEnabled() ? net->staSsid().c_str() : "-", net->staOriginName(),
@@ -80,6 +83,22 @@ void SerialConsole::execute(char* cmd) {
         const bool ok = _ctl->setServerEnabled(on);
         Serial.printf("[CONSOLE] server connection %s -> %s (reboot to apply)\n",
                       on ? "on" : "off", ok ? "saved" : "SAVE FAILED");
+    } else if (strcmp(cmd, "ap on") == 0 || strcmp(cmd, "ap off") == 0) {
+        const bool on = (cmd[4] == 'n');
+        _ctl->requestAp(on);
+        Serial.printf("[CONSOLE] softap -> %s\n", on ? "start" : "stop");
+    } else if (strncmp(cmd, "ap idle ", 8) == 0) {
+        int m = atoi(cmd + 8);
+        if (m < 0) m = 0;
+        if (m > 1440) m = 1440;
+        _ctl->setApIdleMinutes((uint16_t)m);
+        Serial.printf("[CONSOLE] ap auto-stop = %d min (0 = always on)\n", m);
+    } else if (strcmp(cmd, "msleep on") == 0 || strcmp(cmd, "msleep off") == 0) {
+        const bool on = (cmd[7] == 'n');
+        _ctl->setModemSleep(on);
+        Serial.printf("[CONSOLE] modem sleep = %s\n", on ? "on" : "off");
+    } else if (strcmp(cmd, "power") == 0) {
+        _ctl->togglePowerSave();
     } else if (strcmp(cmd, "reboot") == 0) {
         Serial.println("[CONSOLE] rebooting...");
         _ctl->stop();

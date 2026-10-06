@@ -95,10 +95,24 @@ public:
 
     /**
      * @brief SoftAP を停止する
+     * @note 先に立てた AP の設定は覚えているので startAp() で再開できる。STA が無ければ
+     *       無線ごと止まる (Wi-Fi 消費電力の主因が消える)。loopTask から呼ぶこと。
      */
     void stop();
 
+    /// 停止中の SoftAP を、直前と同じ設定で再開する。起動済みなら何もしない。loopTask から呼ぶ
+    bool startAp();
+
+    /// SoftAP が現在立っているか (stop() 中は false)
     bool isSoftAP() const { return _started; }
+
+    /// 無操作 (接続端末 0 台) がこの分数続いたら SoftAP を自動停止する。0 = 常時 ON
+    void setApIdleTimeoutMin(uint16_t minutes);
+    uint16_t apIdleTimeoutMin() const { return _apIdleTimeoutMin; }
+
+    /// モデム省電力 (WIFI_PS_MIN_MODEM)。STA 接続中のビーコン間スリープ。既定 OFF (応答性優先)
+    void setModemSleep(bool on);
+    bool modemSleep() const { return _modemSleep; }
 
     /// AP 自身の IP アドレス
     IPAddress apIP() const { return WiFi.softAPIP(); }
@@ -118,8 +132,18 @@ public:
 
 private:
     void startStaAttempt();
+    void applyPowerSave();      ///< _modemSleep を WiFi.setSleep() に反映する
+    void pollApIdle();          ///< 無操作タイムアウトで SoftAP を止める
 
     bool _started;
+    bool _modemSleep = false;
+    // stop() 後の startAp() 用に、立てたときの SoftAP 設定を覚えておく
+    String _apSsid;
+    String _apPassword;
+    IPAddress _apIp;
+    uint8_t _apChannel = 1;
+    uint16_t _apIdleTimeoutMin = 0;
+    uint32_t _apIdleSinceMs = 0;   ///< 端末 0 台になった (または AP 起動した) 時刻
     bool _staEnabled = false;
     bool _staWasConnected = false;
     StaPlan _plan;

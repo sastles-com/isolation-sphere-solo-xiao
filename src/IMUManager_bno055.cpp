@@ -4,7 +4,6 @@
 
 // BNO055 (外部 9 軸、IMUPLUS モード) バックエンド。sphere001/002 の実装。
 // 共通部 (getter / タスク / ダンプ / 平滑) は IMUManager.cpp。
-#if !defined(IMU_SENSOR_M5IMU)
 
 namespace sastle {
 
@@ -369,4 +368,3 @@ uint8_t IMUManager::getOperationMode() {
 
 } // namespace sastle
 
-#endif // !IMU_SENSOR_M5IMU

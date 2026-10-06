@@ -17,13 +17,13 @@ trap finish EXIT
 core_dir="${PLATFORMIO_CORE_DIR:-$HOME/.platformio}"
 python="$core_dir/penv/bin/python"
 espota="$core_dir/packages/framework-arduinoespressif32/tools/espota.py"
-firmware=".pio/build/atoms3r/firmware.bin"
+firmware=".pio/build/xiao_esp32s3/firmware.bin"
 target="${1:-192.168.4.1}"
 
 for required in "$python" "$espota" "$firmware"; do
     if [ ! -f "$required" ]; then
         echo "必要なファイルがありません: $required"
-        echo "インターネット接続中に atoms3r をビルドしてください。"
+        echo "インターネット接続中に xiao_esp32s3 をビルドしてください。"
         exit 1
     fi
 done

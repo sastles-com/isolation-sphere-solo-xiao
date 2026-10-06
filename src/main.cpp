@@ -3,7 +3,7 @@
  * @brief isolation-sphere solo: 外部 server 無しで球体単独再生するファームウェア
  *
  * 起動すると SoftAP を立て、LittleFS 上の raw MJPEG (320x160, 10fps) を自動ループ再生する。
- * 操作は本体 LCD の QR から iPhone を接続し、Web UI (http://192.168.4.1/) で行う。
+ * 操作は iPhone を AP に接続 (個体シールの QR) し、Web UI (http://192.168.4.1/) で行う。
  *
  * server モード (config.json wifi{} 有効時) では同じファームが P2P 網にも STA で入り、
  * UDP で届く JPEG を優先表示し、MQTT で操作を受ける (配信が途切れるとローカル再生に戻る)。
@@ -12,7 +12,7 @@
  *   Core0: WiFi/lwIP, async_udp (受信→キュー), frame_pump (UDP 再構成 or ローカル MJPEG 読み
  *          → JPEG デコード。デコードは必ずこのタスク), httpd (Web UI/アップロード)
  *   Core1: LED_Render (IMU姿勢で毎パス再マッピング + RMT出力), imu (100Hz),
- *          loopTask (本ファイルの loop: OTA/ネットワーク/MQTT/ログ/LCD)
+ *          loopTask (本ファイルの loop: OTA/ネットワーク/MQTT/ログ)
  */
 
 #include <Arduino.h>
@@ -26,7 +26,6 @@
 #include "SoundManager.h"
 #include "ImageManager.h"
 #include "LEDManager.h"
-#include "LCDManager.h"
 #include "OtaManager.h"
 #include "Settings.h"
 
@@ -54,7 +53,6 @@ GestureManager gesture;
 SoundManager sound;
 ImageManager imageManager;
 LEDManager ledManager;
-LCDManager lcdManager;
 OtaManager ota;
 SoloPlayer soloPlayer;
 SoloWebServer soloWeb;
@@ -93,7 +91,7 @@ static void mqttCallback(char* topic, uint8_t* payload, unsigned int length) {
     }
 }
 
-// LCD に出す Wi-Fi 接続 QR ("WIFI:T:WPA;S:..;P:..;;") と表示用文字列
+// 接続案内の文字列 (LCD が無いので起動ログにだけ出す。QR は個体シールで渡す: tools/make_wifi_qr.py)
 static String g_wifiQrText;
 static String g_apSsid;
 static String g_uiUrl;
@@ -144,7 +142,7 @@ void setup() {
     sastle::Log.begin();
 
     // Sound初期化を最優先で行い、起動音を即再生する。
-    // 理由: WiFi/LCD初期化が終わるまでLED表示は数秒かかるため、
+    // 理由: WiFi/IMU初期化が終わるまでLED表示は数秒かかるため、
     // 電源スイッチが正しくONになったかをすぐ確認できるよう、
     // 他の初期化より前に音でフィードバックする。
     bool soundReady = sound.begin(config);
@@ -222,10 +220,13 @@ void setup() {
     if (!apIp.fromString(soloCfg.ap_ip)) {
         apIp = IPAddress(192, 168, 4, 1);
     }
+    // 省電力設定 (モデム省電力 / AP 無操作自動停止) は無線を立てる前に入れる。
+    network.setModemSleep(sastle::Settings::modemSleep(false));
+    network.setApIdleTimeoutMin(sastle::Settings::apIdleMinutes(DeviceController::kDefaultApIdleMin));
     if (!network.begin(config)) {
         sastle::Log.println("SoftAP start FAILED (playback continues without Web UI)");
     }
-    // LCD に出す接続 QR。カメラで読むと iPhone が AP 接続を提案する。
+    // 起動ログに出す接続情報 (シール用 QR の元になる文字列)。
     g_apSsid = soloCfg.ap_ssid;
     g_wifiQrText = NetworkManager::wifiQrText(soloCfg.ap_ssid, soloCfg.ap_password);
     g_uiUrl = "http://" + apIp.toString() + "/";
@@ -292,11 +293,6 @@ void setup() {
         }
     }
 
-    // LCDManager初期化 (デバッグモード)
-    if (!lcdManager.begin(&config)) {
-        DEBUG_PRINTLN("[Setup] LCDManager initialization failed");
-    }
-
     // LEDManager初期化 (IMUManager連携)
     if (imageManager.isInitialized()) {
         IMUManager* imuPtr = imuSensor.isInitialized() ? &imuSensor : nullptr;
@@ -337,6 +333,8 @@ void setup() {
         deps.mqtt = &mqtt;
         deps.image = &imageManager;
         controller.begin(deps);
+        // トリプルシェイク = デモ向けの AP の ON/OFF 切替 (UI モードの代わり)
+        gesture.setOnTripleShake([]() { controller.togglePowerSave(); });
         console.begin(controller, g_apSsid);
     }
 
@@ -372,7 +370,7 @@ void setup() {
     // IMU ポーリングを専用タスク (core1, 優先度3) で回す。IMU 初期化の後・setup の最後に置く
     // (以前は ota.begin() の直前 = IMU 初期化より前に置いてしまい、isInitialized() が false で
     //  一度も起動していなかった。loop のフォールバックで 40/s しか出ていなかった原因)。loopTask (優先度1) から呼ぶと
-    // LCD 再描画やログで周期が乱れ (実測 中央値 22ms、最大 240ms)、描画が古い姿勢のまま
+    // ログ出力などで周期が乱れ (実測 中央値 22ms、最大 240ms)、描画が古い姿勢のまま
     // 止まって「ジャンプ」に見える。描画 (優先度2) より先に走るので定刻を守れる。
     if (imuSensor.isInitialized()) {
         if (!imuSensor.startTask(1, 3, 4096)) {
@@ -477,46 +475,6 @@ void loop() {
 
     // シリアルコンソール
     console.poll();
-
-    // LCD (デバッグ表示が有効な場合のみ)
-    if (lcdManager.isDebugEnabled()) {
-        if (network.clientCount() == 0) {
-            // 端末が1台も繋がっていない間は接続用 QR を優先表示する
-            lcdManager.drawWifiQr(g_wifiQrText.c_str(), g_apSsid.c_str(), g_uiUrl.c_str());
-        } else if (!soloWeb.uiServed()) {
-            // 接続済みだが UI をまだ開いていない: カメラで読むと Safari が開く URL QR を出す。
-            // (キャプティブポータルを抑止しているため、UI は利用者が自分で開く)
-            lcdManager.drawQr(g_uiUrl.c_str(), "Camera で読む", g_uiUrl.c_str());
-        } else {
-            // 再生中は映像、停止中/動画なしは STANDBY 画面
-            static uint32_t s_lastFrames = 0;
-            static unsigned long s_lastFrameMs = 0;
-            unsigned long n = millis();
-            uint32_t fr = imageManager.getStats().frames_decoded;
-            if (fr != s_lastFrames) {
-                s_lastFrames = fr;
-                s_lastFrameMs = n;
-            }
-            // 映像未再生なら起動3秒後にSTANDBY、再生後は途切れ1.5秒でSTANDBY
-            bool idle = (s_lastFrames == 0) ? (n > 3000) : ((n - s_lastFrameMs) > 1500);
-            if (idle) {
-                LcdStatus st;
-                st.uptime_s = n / 1000;
-                static String ipStr;
-                ipStr = network.apIP().toString();
-                st.ip = ipStr.c_str();
-                st.clients = network.clientCount();
-                st.free_heap = ESP.getFreeHeap();
-                st.fps = ledManager.getStats().fps;
-                float qw, qx, qy, qz;
-                st.imu_ok = imuSensor.getQuaternion(qw, qx, qy, qz);
-                st.qw = qw; st.qx = qx; st.qy = qy; st.qz = qz;
-                lcdManager.drawStatus(st);
-            } else {
-                lcdManager.update(&imageManager);
-            }
-        }
-    }
 
     // IMU更新
     unsigned long now = millis();

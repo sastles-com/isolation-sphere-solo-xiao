@@ -3,15 +3,12 @@
  *       対策の経緯は同リポジトリ docs/HANDOFF_2026-09-09_imu_jump.md。solo 側では MQTT 結合を
  *       外し、診断は /api/imu と [RATE]/[IMU] ログで見る。
  * @file IMUManager.h
- * @brief IMUセンサー管理クラス (BNO055 / M5Atom 内蔵 BMI270 をビルド時に切替)
+ * @brief IMUセンサー管理クラス (外部 BNO055)
  * @author sastle-com
  * @date 2025-12-01
  *
- * バックエンドは build_flags の -D で選択する:
- *   -D IMU_SENSOR_BNO055  : 外部 BNO055 (9軸オンチップ融合, NDOF) ※既定
- *   -D IMU_SENSOR_M5IMU   : M5Atom 内蔵 BMI270 (6軸) + ソフト Madgwick 融合
- * いずれの場合も公開 API (getQuaternion/getEuler/getAccel/getGyro) は同一で、
- * 戻り値型 imu::Quaternion / imu::Vector<3> も共通 (imumaths.h はヘッダオンリ)。
+ * 公開 API (getQuaternion/getEuler/getAccel/getGyro) の戻り値型 imu::Quaternion / imu::Vector<3> は
+ * imumaths.h (ヘッダオンリ)。
  */
 
 #pragma once
@@ -30,20 +27,7 @@
 #include "imu/Bno055QuatReader.h"
 #include "PeriodicTimer.h"
 
-// --- バックエンド選択 ---
-//   既定は BNO055。build_flags に -D IMU_SENSOR_M5IMU を足すと、(BNO055 が同時に
-//   定義されていても) M5内蔵IMU を優先する。これにより M5IMU 用 env は通常 env を
-//   extends したうえで -D IMU_SENSOR_M5IMU を1行足すだけで切替できる。
-#if !defined(IMU_SENSOR_BNO055) && !defined(IMU_SENSOR_M5IMU)
-#define IMU_SENSOR_BNO055
-#endif
-
-#if defined(IMU_SENSOR_M5IMU)
-#include <M5Unified.h>
-#include "MadgwickAHRS.h"
-#else
 #include <Adafruit_BNO055.h>
-#endif
 
 namespace sastle {
 
@@ -53,7 +37,7 @@ namespace sastle {
  *
  * クォータニオン、オイラー角、加速度、ジャイロデータの取得機能を提供します。
  * 100Hzでの高速データ更新に対応しています。
- * BNO055 はオンチップ9軸融合、M5IMU は BMI270(6軸)+ソフト融合で姿勢を推定します。
+ * BNO055 のオンチップ融合 (IMUPLUS: 加速度+ジャイロ、磁気不使用) で姿勢を推定します。
  */
 class IMUManager {
 public:
@@ -116,7 +100,7 @@ public:
      * @param y Y軸角速度 [deg/s] (出力)
      * @param z Z軸角速度 [deg/s] (出力)
      * @return true 取得成功, false 取得失敗
-     * @note BNO055 / M5IMU いずれの実装も deg/s で格納している。
+     * @note deg/s で格納している。
      */
     bool getGyro(float& x, float& y, float& z);
     
@@ -136,7 +120,7 @@ public:
     void getCalibration(uint8_t& sys, uint8_t& gyro, uint8_t& accel, uint8_t& mag);
 
     /**
-     * @brief 現在の動作モードレジスタ値 (BNO055: 8=IMUPLUS, 12=NDOF / M5IMU: 255)
+     * @brief 現在の動作モードレジスタ値 (BNO055: 8=IMUPLUS, 12=NDOF)
      */
     uint8_t getOperationMode();
     
@@ -352,17 +336,7 @@ private:
     I2cLock _i2c;
     Bno055QuatReader _reader;      ///< BNO055 のレジスタ読み (分割読み・MSB 欠落・straddle 検出)
 
-#if defined(IMU_SENSOR_M5IMU)
-    MadgwickAHRS _ahrs;            ///< ソフト姿勢推定フィルタ (6軸)
-    unsigned long _lastMicros;     ///< 前回更新のマイクロ秒 (dt算出用)
-    bool _biasReady;               ///< ジャイロバイアス校正済みフラグ
-    float _gyroBias[3];            ///< ジャイロゼロ点バイアス [deg/s] (x,y,z)
-
-    /// @brief 起動時に静止状態のジャイロを平均してバイアスを推定
-    void calibrateGyroBias();
-#else
     Adafruit_BNO055 _bno;          ///< BNO055センサーオブジェクト
-#endif
 };
 
 } // namespace sastle

@@ -25,6 +25,18 @@ void DeviceController::begin(const Deps& deps) {
 
 void DeviceController::tick() {
     Settings::tick();  // 保留中の設定変更を書き出す
+    if (_apPending >= 0 && (int32_t)(millis() - _apPendingAtMs) >= 0) {
+        const bool on = (_apPending == 1);
+        _apPending = -1;
+        if (_d.net) {
+            if (on) {
+                _d.net->startAp();
+            } else {
+                _d.net->stop();
+            }
+            Log.printf("[Control] SoftAP %s\n", _d.net->isSoftAP() ? "running" : "stopped");
+        }
+    }
     if (_rebootAtMs != 0 && (int32_t)(millis() - _rebootAtMs) >= 0) {
         Log.println("[Control] Restarting as requested");
         Serial.flush();
@@ -263,6 +275,31 @@ bool DeviceController::setServerEnabled(bool enabled) {
     Log.printf("[Control] server connection %s in config.json: %s\n",
                enabled ? "ENABLED" : "DISABLED", ok ? "saved" : "SAVE FAILED");
     return ok;
+}
+
+// ---------------------------------------------------------------------------
+// 省電力
+// ---------------------------------------------------------------------------
+
+void DeviceController::requestAp(bool on, uint32_t delayMs) {
+    _apPendingAtMs = millis() + delayMs;
+    _apPending = on ? 1 : 0;
+}
+
+void DeviceController::togglePowerSave() {
+    const bool apOn = apRunning() || _apPending == 1;
+    requestAp(!apOn, 0);
+    Log.printf("[Control] power save toggle -> AP %s\n", apOn ? "off" : "on");
+}
+
+void DeviceController::setApIdleMinutes(uint16_t minutes) {
+    if (_d.net) _d.net->setApIdleTimeoutMin(minutes);
+    Settings::setApIdleMinutes(minutes);
+}
+
+void DeviceController::setModemSleep(bool on) {
+    if (_d.net) _d.net->setModemSleep(on);
+    Settings::setModemSleep(on);
 }
 
 bool DeviceController::serverConfigured() {

@@ -50,6 +50,7 @@ input[type=file]{width:100%;font-size:16px;padding:10px;border:1px dashed #555;b
 input[type=file]::file-selector-button{font-size:17px;font-weight:bold;padding:14px 18px;margin-right:12px;border:0;border-radius:10px;background:#2c7be5;color:#fff}
 input[type=file]::-webkit-file-upload-button{font-size:17px;font-weight:bold;padding:14px 18px;margin-right:12px;border:0;border-radius:10px;background:#2c7be5;color:#fff}
 input[type=text],input[type=password]{width:100%;font-size:16px;padding:10px;margin:4px 0;border-radius:8px;border:1px solid #444;background:#111;color:#eee;box-sizing:border-box}
+select{font-size:16px;padding:8px;border-radius:8px;border:1px solid #444;background:#111;color:#eee}
 progress{width:100%;height:14px}
 .st{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;background:#333}
 .st.playing{background:#1e8449}.st.paused{background:#7d6608}.st.error{background:#c0392b}.st.uploading{background:#d68910}
@@ -116,6 +117,14 @@ small{color:#888}#msg{min-height:1.2em;color:#f5b041;font-size:14px;word-break:b
  <div class="row"><button id="srv_on">ON にして再起動</button><button id="srv_off" class="gray">OFF にして再起動</button></div>
 </div>
 <div class="card">
+ <div class="k">省電力</div>
+ <div class="row"><span class="k">AP 自動停止</span>
+  <select id="ap_idle"><option value="0">しない</option><option value="5">5 分</option><option value="10">10 分</option><option value="30">30 分</option><option value="60">60 分</option></select></div>
+ <div class="row"><span class="k">AP (Wi-Fi)</span><span id="ap_st" class="v">-</span><button id="ap_off" class="gray">今すぐ停止</button></div>
+ <div class="row"><span class="k">モデム省電力</span><button id="ms_on" class="gray">ON</button><button id="ms_off">OFF</button></div>
+ <p><small>AP は接続端末が 0 台のまま設定時間が経つと止まり、LAN 接続が無ければ無線ごと停止して電力を大きく減らします。再開はトリプルシェイク、電源の入れ直し、シリアル/MQTT です。映像の再生は AP が止まっても続きます。モデム省電力は LAN (STA) 接続中のみ効き、ON だと応答が鈍り UDP 映像を取りこぼすことがあります。</small></p>
+</div>
+<div class="card">
  <div class="row"><span class="k">デバイス</span><span id="dev" class="v">-</span></div>
  <div class="row"><span class="k">LAN (STA)</span><span id="sta" class="v">-</span></div>
  <div class="row"><button id="reboot" class="gray">再起動</button></div>
@@ -145,6 +154,11 @@ async function refresh(){if(busy)return;try{const r=await fetch('/api/status',{c
   sel('p_strip',L.pattern==='strip');sel('p_chase',L.pattern==='chase');
   sel('axis',L.axis);$('axis').textContent=L.axis?'XYZ軸を重ねる (ON)':'XYZ軸を重ねる';
   if(document.activeElement!==$('w')){$('w').value=L.width;$('wval').textContent=L.width}}
+ if(s.power){const P=s.power;
+  const sel=(id,on)=>$(id).className=on?'':'gray';
+  sel('ms_on',P.modem_sleep);sel('ms_off',!P.modem_sleep);
+  $('ap_st').textContent=P.ap_running?'動作中':'停止中';
+  if(document.activeElement!==$('ap_idle')){if(![...$('ap_idle').options].some(o=>+o.value===P.ap_idle_min))$('ap_idle').add(new Option(P.ap_idle_min+' 分',P.ap_idle_min));$('ap_idle').value=P.ap_idle_min}}
  if(s.sta){$('sta').textContent=!s.sta.enabled?'未設定':(s.sta.connected?`${s.sta.ssid} ${s.sta.ip} (${s.sta.origin})`:`${s.sta.ssid} 接続中… (${s.sta.origin})`);
   if(document.activeElement!==$('ssid')&&!$('ssid').value&&s.sta.origin==='nvs'&&s.sta.ssid)$('ssid').placeholder=s.sta.ssid}
  if(s.source){const R=s.source;const an={local:'本体の動画',network:'配信 (UDP)',none:'なし'}[R.active]||R.active;
@@ -171,6 +185,10 @@ $('del').onclick=()=>{if(confirm('保存済み動画を削除しますか？'))a
 $('reboot').onclick=()=>{if(confirm('再起動しますか？'))api('/api/reboot').then(()=>say('再起動中…')).catch(e=>say(e.message))};
 const srv=on=>{if(confirm(`サーバ接続を ${on?'ON':'OFF'} にして再起動しますか？`))api('/api/server',{enabled:on}).then(()=>say('保存しました。再起動中…')).catch(e=>say(e.message))};
 $('srv_on').onclick=()=>srv(true);$('srv_off').onclick=()=>srv(false);
+const pwr=b=>api('/api/power',b).then(refresh).catch(e=>say(e.message));
+$('ms_on').onclick=()=>pwr({modem_sleep:true});$('ms_off').onclick=()=>pwr({modem_sleep:false});
+$('ap_idle').onchange=e=>pwr({ap_idle_min:+e.target.value});
+$('ap_off').onclick=()=>{if(confirm('AP を停止します。この画面との接続も切れます。再開はトリプルシェイクか電源の入れ直しです。'))api('/api/power',{ap:false}).then(()=>say('AP を停止します…')).catch(e=>say(e.message))};
 const src=m=>api('/api/source',{mode:m}).then(refresh).catch(e=>say(e.message));
 $('s_auto').onclick=()=>src('auto');$('s_local').onclick=()=>src('local');$('s_net').onclick=()=>src('network');
 $('i_sm').oninput=e=>{$('i_smv').textContent=e.target.value;clearTimeout(smTimer);smTimer=setTimeout(()=>api('/api/imu',{smooth_frames:+e.target.value}).then(refresh).catch(e=>say(e.message)),250)};
@@ -261,6 +279,7 @@ bool SoloWebServer::begin(DeviceController& ctl, ConfigManager& config, SoloPlay
         {"/api/imu",          HTTP_GET,  onImuGet,     this, false, false, nullptr},
         {"/api/imu",          HTTP_POST, onImuPost,    this, false, false, nullptr},
         {"/api/server",       HTTP_POST, onServer,     this, false, false, nullptr},
+        {"/api/power",        HTTP_POST, onPower,      this, false, false, nullptr},
         {"/api/source",       HTTP_POST, onSource,     this, false, false, nullptr},
         {"/api/brightness",   HTTP_POST, onBrightness, this, false, false, nullptr},
         {"/api/video",        HTTP_POST, onUpload,     this, false, false, nullptr},
@@ -359,7 +378,6 @@ size_t SoloWebServer::maxUploadBytes(size_t& freeOut, size_t& existingOut) const
 // ---------------------------------------------------------------------------
 
 esp_err_t SoloWebServer::onRoot(httpd_req_t* req) {
-    static_cast<SoloWebServer*>(req->user_ctx)->_uiServed = true;
     httpd_resp_set_type(req, "text/html; charset=utf-8");
     httpd_resp_set_hdr(req, "Cache-Control", "no-store");
     return httpd_resp_send(req, kIndexHtml, sizeof(kIndexHtml) - 1);
@@ -426,6 +444,7 @@ esp_err_t SoloWebServer::onStatus(httpd_req_t* req) {
         "\"source\":{\"mode\":\"%s\",\"active\":\"%s\",\"net_frames\":%u,\"net_fps\":%.1f,\"net_errors\":%u,"
         "\"udp_rx\":%u,\"udp_drop\":%u,\"reasm_drop\":%u,\"last_net_ms\":%u,\"udp_listening\":%s},"
         "\"led\":{\"mode\":\"%s\",\"pattern\":\"%s\",\"width\":%u,\"axis\":%s},"
+        "\"power\":{\"ap_running\":%s,\"ap_idle_min\":%u,\"modem_sleep\":%s},"
         "\"imu\":{\"ok\":%s,\"mode\":%u,\"cal\":\"%u%u%u%u\","
         "\"quat\":[%.3f,%.3f,%.3f,%.3f],\"reads\":%u,\"fails\":%u,\"discards\":%u,\"partial\":%u,\"straddle\":%u,\"seq\":%u,\"smooth\":%u},"
         "\"render\":{\"fps\":%.1f,\"frames\":%u,\"map_us\":%u,\"out_us\":%u,\"stale\":%u},"
@@ -461,6 +480,8 @@ esp_err_t SoloWebServer::onStatus(httpd_req_t* req) {
         (unsigned)(ps.lastNetMs ? (millis() - ps.lastNetMs) : 0), udpListening ? "true" : "false",
         self->_ctl->ledModeName(), self->_ctl->testPatternName(), (unsigned)self->_ctl->testWidth(),
         self->_ctl->axisIndicator() ? "true" : "false",
+        self->_ctl->apRunning() ? "true" : "false", (unsigned)self->_ctl->apIdleMinutes(),
+        self->_ctl->modemSleep() ? "true" : "false",
         imuOk ? "true" : "false", (unsigned)imuMode,
         (unsigned)calSys, (unsigned)calGyro, (unsigned)calAccel, (unsigned)calMag,
         iqw, iqx, iqy, iqz,
@@ -557,6 +578,36 @@ esp_err_t SoloWebServer::onServer(httpd_req_t* req) {
     }
     snprintf(self->_jsonBuf, sizeof(self->_jsonBuf), "{\"ok\":true,\"enabled\":%s,\"reboot_in_ms\":%d}",
              on ? "true" : "false", reboot ? 800 : 0);
+    return self->sendJson(req, "200 OK", self->_jsonBuf);
+}
+
+// 省電力: {"ap":bool, "ap_idle_min":0..1440, "modem_sleep":bool} (指定したキーだけ反映)。
+// "ap":false は応答を返してから AP を止める (この UI の接続も切れる。再開は本体ボタン)。
+esp_err_t SoloWebServer::onPower(httpd_req_t* req) {
+    auto* self = static_cast<SoloWebServer*>(req->user_ctx);
+    char body[128];
+    size_t len = 0;
+    if (!self->readBody(req, body, sizeof(body), len)) {
+        return self->sendError(req, "400 Bad Request", "invalid body");
+    }
+    StaticJsonDocument<192> doc;
+    if (deserializeJson(doc, body, len) != DeserializationError::Ok) {
+        return self->sendError(req, "400 Bad Request", "invalid json");
+    }
+    if (doc.containsKey("ap_idle_min")) {
+        const int m = doc["ap_idle_min"] | 0;
+        if (m < 0 || m > 1440) {
+            return self->sendError(req, "400 Bad Request", "ap_idle_min must be 0..1440");
+        }
+        self->_ctl->setApIdleMinutes((uint16_t)m);
+    }
+    if (doc.containsKey("modem_sleep")) {
+        self->_ctl->setModemSleep(doc["modem_sleep"] | false);
+    }
+    if (doc.containsKey("ap")) {
+        self->_ctl->requestAp(doc["ap"] | true);
+    }
+    snprintf(self->_jsonBuf, sizeof(self->_jsonBuf), "{\"ok\":true}");
     return self->sendJson(req, "200 OK", self->_jsonBuf);
 }
 
@@ -879,7 +930,7 @@ esp_err_t SoloWebServer::onNotFound(httpd_req_t* req, httpd_err_code_t) {
     // Android: /generate_204, Windows: /connecttest.txt など)。
     //   captive_portal = false (既定): 期待どおりの応答を返し「ログイン」画面を開かせない。
     //     iOS の CNA はファイル選択ダイアログが出ず動画をアップロードできないため、
-    //     最初から Safari で開いてもらう (LCD が UI の URL QR を出す)。
+    //     最初から Safari で開いてもらう (利用者が URL を自分で開く)。
     //   captive_portal = true: 応答せずリダイレクトし、接続と同時に UI を自動表示する。
     auto* self = static_cast<SoloWebServer*>(req->user_ctx);
     const bool captive = (self && self->_config) ? self->_config->getSoloCaptivePortal() : false;

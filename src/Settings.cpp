@@ -15,6 +15,8 @@ constexpr const char* kNamespace = "solo";   // STA 資格情報と同じ namesp
 constexpr const char* kKeyBrightness = "bri";
 constexpr const char* kKeyAxis = "axis";
 constexpr const char* kKeySmooth = "smooth";
+constexpr const char* kKeyApIdle = "apidle";
+constexpr const char* kKeyMSleep = "msleep";
 
 bool s_ready = false;
 bool s_dirty = false;
@@ -25,6 +27,10 @@ bool s_axis = false;
 bool s_hasAxis = false;
 uint8_t s_smooth = 1;
 bool s_hasSmooth = false;
+uint16_t s_apIdle = 0;
+bool s_hasApIdle = false;
+bool s_msleep = false;
+bool s_hasMSleep = false;
 
 /// 1 回だけ開いて読み、以降は RAM 上の値で応答する
 void writeAll() {
@@ -42,6 +48,12 @@ void writeAll() {
     if (s_hasSmooth) {
         prefs.putUChar(kKeySmooth, s_smooth);
     }
+    if (s_hasApIdle) {
+        prefs.putUShort(kKeyApIdle, s_apIdle);
+    }
+    if (s_hasMSleep) {
+        prefs.putBool(kKeyMSleep, s_msleep);
+    }
     prefs.end();
     Serial.printf("[Settings] saved brightness=%u%% axis=%d\n", (unsigned)s_brightness, s_axis ? 1 : 0);
 }
@@ -57,6 +69,14 @@ void Settings::begin() {
     if (prefs.isKey(kKeySmooth)) {
         s_smooth = prefs.getUChar(kKeySmooth, 1);
         s_hasSmooth = true;
+    }
+    if (prefs.isKey(kKeyApIdle)) {
+        s_apIdle = prefs.getUShort(kKeyApIdle, 0);
+        s_hasApIdle = true;
+    }
+    if (prefs.isKey(kKeyMSleep)) {
+        s_msleep = prefs.getBool(kKeyMSleep, false);
+        s_hasMSleep = true;
     }
     if (prefs.isKey(kKeyAxis)) {
         s_axis = prefs.getBool(kKeyAxis, false);
@@ -119,6 +139,34 @@ void Settings::setBrightness(uint8_t percent) {
     }
     s_brightness = percent;
     s_hasBrightness = true;
+    s_dirty = true;
+    s_dirtyAtMs = millis();
+}
+
+uint16_t Settings::apIdleMinutes(uint16_t fallback) {
+    return s_hasApIdle ? s_apIdle : fallback;
+}
+
+void Settings::setApIdleMinutes(uint16_t minutes) {
+    if (s_hasApIdle && s_apIdle == minutes) {
+        return;
+    }
+    s_apIdle = minutes;
+    s_hasApIdle = true;
+    s_dirty = true;
+    s_dirtyAtMs = millis();
+}
+
+bool Settings::modemSleep(bool fallback) {
+    return s_hasMSleep ? s_msleep : fallback;
+}
+
+void Settings::setModemSleep(bool on) {
+    if (s_hasMSleep && s_msleep == on) {
+        return;
+    }
+    s_msleep = on;
+    s_hasMSleep = true;
     s_dirty = true;
     s_dirtyAtMs = millis();
 }

@@ -104,20 +104,6 @@ struct ImageConfig {
 };
 
 /**
- * @struct LCDConfig
- * @brief LCDディスプレイ設定
- */
-struct LCDConfig {
-    int width;           ///< LCD幅
-    int height;          ///< LCD高さ
-    int rotation;        ///< 画面回転角度
-    int offset[2];       ///< 表示オフセット [x, y]
-    int color_depth;     ///< 色深度 (ビット)
-    bool switch_enabled; ///< LCD切替有効化
-    bool debug;          ///< LCDデバッグ表示
-};
-
-/**
  * @struct SphereConfig
  * @brief 球体デバイス固有設定 (spheres[] から自機エントリを解決した結果)
  */
@@ -127,7 +113,6 @@ struct SphereConfig {
     String static_ip;    ///< P2P 網での固定 IP (空なら DHCP)
     bool LED_enabled;    ///< LED制御有効化
     String IMU_type;     ///< IMUセンサータイプ (例: BNO055)
-    LCDConfig lcd;       ///< LCD設定
     bool ui_enabled;     ///< UI有効化
 };
 
@@ -204,7 +189,6 @@ public:
     String getSphereIP() { return getSphereConfig().static_ip; }
     bool isLEDEnabled() { return getSphereConfig().LED_enabled; }
     String getIMUType() { return getSphereConfig().IMU_type; }
-    bool getLCDDebugEnabled() { return getSphereConfig().lcd.debug; }
 
     String getWiFiSSID() { return doc["wifi"]["SSID"] | ""; }
     String getWiFiPassword() { return doc["wifi"]["password"] | ""; }

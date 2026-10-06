@@ -109,6 +109,23 @@ public:
     /// server 接続 (config.json wifi.enabled) を切り替えて保存する。反映は再起動後
     bool setServerEnabled(bool enabled);
     bool serverConfigured();
+    // --- 省電力 (SoftAP / モデム省電力) ---
+    // 実際の Wi-Fi 操作は loopTask の tick() が行う (httpd タスクから WiFi を直接触らない。
+    // AP 停止は応答を返してから効かせる意味もある)。設定値は NVS に保存。
+    /// SoftAP を今すぐ止める/再開する (delayMs 後に実行)。止めても自動停止の設定は変わらない
+    void requestAp(bool on, uint32_t delayMs = 300);
+    bool apRunning() const { return _d.net && _d.net->isSoftAP(); }
+    /// デモ向けの切替: AP が動いていれば止め、止まっていれば再開する。トリプルシェイクから呼ぶ (loopTask)
+    void togglePowerSave();
+    /// 端末 0 台がこの分数続いたら AP を自動停止。0 = 常時 ON。NVS 保存
+    void setApIdleMinutes(uint16_t minutes);
+    uint16_t apIdleMinutes() const { return _d.net ? _d.net->apIdleTimeoutMin() : 0; }
+    void setModemSleep(bool on);       ///< NVS 保存。STA 接続中に効く
+    bool modemSleep() const { return _d.net && _d.net->modemSleep(); }
+
+    /// 初回起動時の AP 自動停止時間 [分]。NVS に値があればそちらが優先
+    static constexpr uint16_t kDefaultApIdleMin = 10;
+
     /// delayMs 後に再起動する (Settings は即時 flush)。応答を返す猶予を持たせるため予約制
     void scheduleReboot(uint32_t delayMs);
     bool rebootPending() const { return _rebootAtMs != 0; }
@@ -140,6 +157,8 @@ private:
     uint8_t _saturation = 100;
     LedMode _ledMode = LedMode::Sphere;
     volatile uint32_t _rebootAtMs = 0;   ///< 0 = 予約なし
+    volatile int8_t _apPending = -1;     ///< -1 = なし / 0 = 停止予約 / 1 = 再開予約
+    volatile uint32_t _apPendingAtMs = 0;
 
     /// mode:"test" 突入時に強制する低輝度 (0-255)。点灯/配線確認が目的で眩しさ・電流を抑える
     static constexpr uint8_t kTestBrightness = 24;
