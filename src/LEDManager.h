@@ -10,7 +10,7 @@
 #define LED_MANAGER_H
 
 #include <Arduino.h>
-#include "BoardConfig.h"   // BOARD_NUM_STRIPS (ストリップ配列サイズに使用)
+#include "BoardConfig.h"   // kNumStrips (ストリップ配列サイズに使用)
 #include "ConfigManager.h"
 #include "ImageManager.h"
 #include "IMUManager.h"
@@ -387,10 +387,9 @@ private:
     uint16_t* _pxLUT = nullptr;      ///< 静的UV→ピクセルX (IMU補正OFF時, 事前計算)
     uint16_t* _pyLUT = nullptr;      ///< 静的UV→ピクセルY (IMU補正OFF時, 事前計算)
     
-    uint8_t _stripPins[BOARD_NUM_STRIPS];        ///< ストリップGPIOピン
-    uint16_t _ledsPerStrip[BOARD_NUM_STRIPS];    ///< ストリップ毎のLED数
-    uint16_t _stripStartIndex[BOARD_NUM_STRIPS]; ///< ストリップ開始インデックス
-    CRGB* _stripBuffers[BOARD_NUM_STRIPS];       ///< ストリップ毎のバッファポインタ
+    uint16_t _ledsPerStrip[kNumStrips];    ///< ストリップ毎のLED数
+    uint16_t _stripStartIndex[kNumStrips]; ///< ストリップ開始インデックス
+    CRGB* _stripBuffers[kNumStrips];       ///< ストリップ毎のバッファポインタ
     
     LEDStats _stats;                 ///< 統計情報
     unsigned long _lastFPSUpdate;    ///< 最後のFPS更新時刻

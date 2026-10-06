@@ -100,7 +100,7 @@ docs/handoff.md           実装依頼時の仕様書
 
 | env | ボード | 構成 |
 | --- | --- | --- |
-| `xiao_esp32s3` (既定) | Seeed XIAO ESP32S3 | 4ストリップ (5 本化は基板に合わせて対応予定)、LCD なし、外部 BNO055。接続案内の QR は個体シール |
+| `xiao_esp32s3` (既定) | Seeed XIAO ESP32S3 | 5ストリップ×160 LED (GPIO 1/2/3/4/44)、ブザー (GPIO43)、外部 BNO055、LCD なし。接続案内の QR は個体シール。ピンは `src/BoardConfig.h` に集約 |
 
 ## 動画の要件
 

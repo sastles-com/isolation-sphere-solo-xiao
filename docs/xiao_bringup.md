@@ -14,11 +14,25 @@ XIAO には LCD・本体ボタン・M5 ライブラリが無く、代わりに�
   **実機は未確認** (XIAO 版としては一度も書き込んでいない)。
 - `data/config.json` の `features.LCD` 項目は読まれなくなったが残している (派生元との互換)。
 
+## ボード向けリファクタリング (2026-10-06)
+
+- ボード定義を `src/BoardConfig.h` 1 つにまとめた (`src/boards/` の振り分けと `-D BOARD_XIAO_ESP32S3` を廃止)。
+- **5 ストリップ化**: `kLedPins[] = {1, 2, 3, 4, 44}`、`kLedsPerStrip = 160`。以前の XIAO 定義は 4 本で、
+  5 本分の `led_layouts-5strip.csv` を読むと 5 本目の 160 個が捨てられていた。
+- 5 本目は **GPIO44 (D7, 8 番パッド) で暫定**。core-XIAO-03 の回路図ではネット名が "GPIO09" だが、
+  XIAO の 8 番パッドは D7 = GPIO44。基板レイアウトを再設計する予定なので、それまでこの値で進める。
+- FastLED の登録は `kLedPins[]` を再帰テンプレートで展開する 1 か所にまとめた (以前は 3 か所に本数ぶん複製し `#if` で出し分け)。
+- ブザーを有効化 (GPIO43 = core-XIAO-03 の LS1)。`BOARD_HAS_LCD` / `BOARD_HAS_BUZZER` / `BOARD_NUM_STRIPS` は廃止。
+- `data/config.json` の LCD 項目を削除。
+- 注意: `spheres[]` の MAC は AtomS3R 機 (sphere001/002) のもの。XIAO 機で server モードを使うなら MAC を登録し直す。
+- 注意: build_flags の `-std=c++14` は効いていない (`std::index_sequence` が使えなかった)。C++14 の機能に依存しないこと。
+
 ## 確定した方針 (ユーザー決定)
 
 - **GPIO**: PCA9632 (I2C) を維持して `VETO` / `PWR_OFF` を出し、GPIO はホール入力 1 本だけ追加する。
   ホール入力は RTC 対応 GPIO (D0〜D5, D8〜D10)。`HALL_OUT` は常時オン 3.3V 側なので、XIAO 未通電時の逆流防止に
-  直列抵抗 (10〜100kΩ) を入れる。D6/D7 (GPIO43/44) は WS2812 に使わない (起動時ブートログで誤点灯する)。
+  直列抵抗 (10〜100kΩ) を入れる。D6 (GPIO43, TX) は WS2812 に使わない (起動時ブートログで誤点灯する)。
+  D7 (GPIO44, RX) は起動中は入力のままなので WS2812 に使える (5 本目が暫定でここ)。
   D2 (GPIO3) はストラップピンなので、ストリップに使う場合は起動時の挙動を確認する。
 - **ホールボタン**: 短押し / ダブル / 長押しをファームで判定する。動作中の電源 OFF はハードの長押し (約 1.5 秒)。
   短い操作はファームのボタン。OFF→ON は今のまま (かざした瞬間に点灯)。
@@ -31,10 +45,8 @@ XIAO には LCD・本体ボタン・M5 ライブラリが無く、代わりに�
 
 ## 次にやること
 
-1. **ボード定義を新コア基板に合わせる** (`src/boards/board_xiao_esp32s3.h`)。
-   core-XIAO-03 の J4 は GPIO01〜04 + GPIO09 の 5 ストリップ。RMT は 4ch なので 5 本目は時分割 (`docs/solo_mode.md` §9)。
-   I2C (D4/D5)、ホール入力 `kHallPin`、PCA9632 のアドレスを追加する。
-   **設計書 (FPC-isolation-sphere docs/08, 09) の GPIO 番号と、ファームの定義が食い違っている。実機の配線を先に確認する。**
+1. **ボード定義の残り** (`src/BoardConfig.h`)。ホール入力 `kHallPin`、PCA9632 のアドレスを追加する。
+   RMT は 4ch なので 5 本目は時分割 (`docs/solo_mode.md` §9)。5 本目のピンは基板再設計で確定させる。
 2. **`HallButton`** (新規): 押下時間を測る純ロジック。イベントは Short / Double / Long (0.7〜1.4 秒)。
    1.5 秒以上はハードが電源を切るので扱わない。`test/test_hall_button` に native 単体テストを追加する (タイマーは注入)。
    操作の割り当ては未確定。叩き台: Short = 再生/一時停止、Double = AP の ON/OFF、Long = 省電力一括。

@@ -37,7 +37,6 @@ LEDManager::LEDManager()
     , _frameCount(0)
 {
     memset(&_stats, 0, sizeof(_stats));
-    memset(_stripPins, 0, sizeof(_stripPins));
     memset(_ledsPerStrip, 0, sizeof(_ledsPerStrip));
     
     _instance = this;
@@ -69,20 +68,39 @@ namespace {
 // 「最初から実バッファで登録する」方式にする。
 CRGB s_ledBufferStatic[sastle::kMaxLeds];
 bool s_earlyBlanked = false;
+
+// FastLED の addLeds<> はピンがテンプレート引数なので、kLedPins[] を再帰テンプレートで展開して
+// ストリップ 0..N-1 を順に登録する。std::index_sequence (C++14) はこのビルドでは使えなかった
+// (build_flags の -std=c++14 が効いていない。Arduino-ESP32 2.x の既定 gnu++11 が後から付くとみられる)。
+template <uint8_t N>
+struct StripRegistrar {
+    static void run(CRGB* const* buffers, const uint16_t* counts) {
+        StripRegistrar<N - 1>::run(buffers, counts);
+        FastLED.addLeds<LED_TYPE, kLedPins[N - 1], COLOR_ORDER>(buffers[N - 1], counts[N - 1]);
+    }
+};
+template <>
+struct StripRegistrar<0> {
+    static void run(CRGB* const*, const uint16_t*) {}
+};
+
+void registerStrips(CRGB* const* buffers, const uint16_t* counts) {
+    StripRegistrar<kNumStrips>::run(buffers, counts);
+}
 }  // namespace
 
 void LEDManager::earlyBlank() {
     if (s_earlyBlanked) return;
     // FastLED 3.10 以降は CRGB 配列向け memset オーバーロードを持ち、libc 版と曖昧になる
     fill_solid(s_ledBufferStatic, sastle::kMaxLeds, CRGB::Black);
-    constexpr int n = sastle::kMaxLeds / sastle::kNumStrips;
-    FastLED.addLeds<LED_TYPE, kLedPin0, COLOR_ORDER>(s_ledBufferStatic + 0 * n, n);
-    FastLED.addLeds<LED_TYPE, kLedPin1, COLOR_ORDER>(s_ledBufferStatic + 1 * n, n);
-    FastLED.addLeds<LED_TYPE, kLedPin2, COLOR_ORDER>(s_ledBufferStatic + 2 * n, n);
-    FastLED.addLeds<LED_TYPE, kLedPin3, COLOR_ORDER>(s_ledBufferStatic + 3 * n, n);
-#if BOARD_NUM_STRIPS >= 5
-    FastLED.addLeds<LED_TYPE, kLedPin4, COLOR_ORDER>(s_ledBufferStatic + 4 * n, n);
-#endif
+    // レイアウト読み込み前なので、各ストリップ kLedsPerStrip 個の均等割りで登録する
+    CRGB* buffers[kNumStrips];
+    uint16_t counts[kNumStrips];
+    for (uint8_t i = 0; i < kNumStrips; i++) {
+        buffers[i] = s_ledBufferStatic + i * kLedsPerStrip;
+        counts[i] = kLedsPerStrip;
+    }
+    registerStrips(buffers, counts);
     FastLED.setBrightness(0);
     FastLED.show();
     s_earlyBlanked = true;
@@ -130,15 +148,6 @@ bool LEDManager::begin(ConfigManager& config, ImageManager& imageManager, IMUMan
                    config.getLedMultisampleRadius(),
                    config.getLedMultisamplePoints());
     
-    // GPIO設定 (BoardConfig.h で一元管理)。本数は BOARD_NUM_STRIPS(=kNumStrips)。
-    _stripPins[0] = kLedPin0;
-    _stripPins[1] = kLedPin1;
-    _stripPins[2] = kLedPin2;
-    _stripPins[3] = kLedPin3;
-#if BOARD_NUM_STRIPS >= 5
-    _stripPins[4] = kLedPin4;
-#endif
-
     // ストリップ毎のLED数とオフセットを計算 (CSVの strip 列から導出)
     memset(_ledsPerStrip, 0, sizeof(_ledsPerStrip));
     memset(_stripStartIndex, 0, sizeof(_stripStartIndex));
@@ -168,24 +177,17 @@ bool LEDManager::begin(ConfigManager& config, ImageManager& imageManager, IMUMan
     Serial.println();
 
     // FastLED初期化。earlyBlank() 済みなら同一の静的バッファで登録済みのため
-    // 何もしない (均等160/本の前提のみ確認)。未実行なら従来どおり登録する。
+    // 何もしない (均等 kLedsPerStrip 個/本の前提のみ確認)。未実行ならレイアウトどおりに登録する。
     if (s_earlyBlanked) {
-        constexpr uint16_t n = kMaxLeds / kNumStrips;
         for (int i = 0; i < kNumStrips; i++) {
-            if (_ledsPerStrip[i] != n || _stripBuffers[i] != s_ledBufferStatic + i * n) {
+            if (_ledsPerStrip[i] != kLedsPerStrip ||
+                _stripBuffers[i] != s_ledBufferStatic + i * kLedsPerStrip) {
                 Serial.printf("[LEDManager] WARN strip%d layout mismatch (count=%d)\n",
                               i, _ledsPerStrip[i]);
             }
         }
     } else {
-        // ピンはコンパイル時定数が必須のため本数は #if で出し分ける。
-        FastLED.addLeds<LED_TYPE, kLedPin0, COLOR_ORDER>(_stripBuffers[0], _ledsPerStrip[0]);
-        FastLED.addLeds<LED_TYPE, kLedPin1, COLOR_ORDER>(_stripBuffers[1], _ledsPerStrip[1]);
-        FastLED.addLeds<LED_TYPE, kLedPin2, COLOR_ORDER>(_stripBuffers[2], _ledsPerStrip[2]);
-        FastLED.addLeds<LED_TYPE, kLedPin3, COLOR_ORDER>(_stripBuffers[3], _ledsPerStrip[3]);
-#if BOARD_NUM_STRIPS >= 5
-        FastLED.addLeds<LED_TYPE, kLedPin4, COLOR_ORDER>(_stripBuffers[4], _ledsPerStrip[4]);
-#endif
+        registerStrips(_stripBuffers, _ledsPerStrip);
     }
 
     // 電源保護: 高負荷フレーム (全白など) でも合計電流を上限内に自動スケール。
@@ -507,7 +509,7 @@ void LEDManager::updateLEDBuffer() {
 
 namespace {
 // ストリップ識別色 (led_drive_test の STRIP_ID と同じ並び): 0=R 1=G 2=B 3=Y 4=M。
-// 6本目以降は白 (通常は kNumStrips<=5 なので未使用)。
+// 6本目以降は白 (kNumStrips=5 なので未使用)。
 CRGB testStripColor(uint8_t strip) {
     switch (strip) {
         case 0: return CRGB::Red;
