@@ -62,23 +62,46 @@ LCSC：C2862876（BQ25792RQMR、VQFN-29）
 - BQ25883：<https://www.ti.com/product/BQ25883>（入力 3.9〜6.2 V。12 V 不可）
 - BQ25798：<https://www.ti.com/product/BQ25798>（BQ25792 に MPPT とバックアップを加えたもの。ピン配置は同じ）
 
-## BQ28Z610-R1 — Texas Instruments
+## BQ28Z620 — Texas Instruments（採用）
 
 製品ページ：
-<https://www.ti.com/product/BQ28Z610-R1>
+<https://www.ti.com/product/BQ28Z620>
+
+データシート（SLUSET3）：
+<https://www.ti.com/lit/ds/symlink/bq28z620.pdf>
+
+JLC：C22395771（登録あり、在庫は要確認）
+<https://jlcpcb.com/partdetail/TexasInstruments-BQ28Z620/C22395771>
+
+確認済み（2026-10-08）：
+
+- BQ28Z610-R1 とピン互換（VSON-12、DRZ）
+- R1 からの変更点：1.2 V ロジックの I/O、保護 FET ゲート駆動 5.75 V の選択肢、1 mΩ 未満のシャントに対応、BTP 機能を削除
+- SDA/SCL：推奨上限 5.5 V、絶対最大 6 V、VIH 0.78 V、VIL 0.42 V。3.3 V プルアップで使える
+- I²C が約 2 秒 Low に保持されるとバスを解放する
+- 設計例ではブロードキャスト（Master Mode）が有効。本設計では無効にする
 
 データシートとテクニカルリファレンスマニュアルの両方を読むこと。
 
 確認項目：
 
 - 2S セル電圧検出の接続
-- 保護 FET の構成
-- シャント / ケルビン配線
+- 保護 FET の構成とシャント / ケルビン配線
 - バランスの設定
-- 自律的な保護動作
-- パック設定 / 学習 / 校正の要件
-- I²C / 通信の要件とアドレス
+- パック設定 / 学習 / 校正の要件（bqStudio）
+- I²C アドレス（0x55 を想定）
 - 充電器 / システムのパワーパスとの相互作用
+
+### 比較した品種
+
+- BQ28Z610（無印）：<https://www.ti.com/product/BQ28Z610>。LCSC C157573。I²C タイムアウトの不具合があり、新規設計には推奨されない
+- BQ28Z610-R1：<https://www.ti.com/product/BQ28Z610-R1>。無印の不具合をシリコンで修正。LCSC に無い
+
+## JST XH（電池コネクタ）
+
+- 2.5 mm ピッチ、3 A（AWG22）、適合電線 AWG30〜22
+- 縦向きの B2B-XH-A は実装高さ 9.8 mm。基板間隔 7.0 mm に収まらないため使わない
+- データシート：<https://www.digikey.be/en/resources/datasheets/jst/xh-connector>
 
 ## DRV5032 — Texas Instruments
 

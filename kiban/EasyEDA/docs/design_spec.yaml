@@ -9,6 +9,14 @@ project:
   pcb_tool: EasyEDA
   pcb_tool_edition: Pro  # 進め方は easyeda_workflow.md
 
+battery_connection:
+  connector: JST XH 2P x 2  # セルごと、3 A / ピン、AWG22
+  J_CELL1: [B-, BM]
+  J_CELL2: [BM, B+]
+  series_link_on_board_B: true
+  discharge_cutoff_V_min: 6.4  # 1 セル 3.2 V。XH の 3 A を守るため
+  fits_core_03: false  # 50x35x10 x 2 は入らない（tools/fit_check.py）
+
 battery:
   chemistry: LiPo
   series_cells: 2
@@ -99,7 +107,9 @@ board_b:
     top: allowed
     bottom: forbidden
   charger: BQ25792
-  baseline_gauge_protector: BQ28Z610-R1
+  gauge_protector: BQ28Z620DRZR  # 2026-10-08 確定。BQ28Z610-R1 の後継、ピン互換
+  gauge_jlc: C22395771  # 在庫は要確認
+  gauge_settings: {broadcast: disabled, cuv_mV_per_cell_min: 3200}
   functions:
     - 2S 充電
     - パワーパス
@@ -199,7 +209,7 @@ i2c:
   bringup_speed_kHz: 100
   addresses_7bit:
     charger_BQ25792: 0x6B
-    gauge_BQ28Z610: 0x55  # 要確認
+    gauge_BQ28Z620: 0x55  # TRM で要確認
     TMAG5273: TBD  # 品種により異なる
 
 power_sequence:
@@ -236,10 +246,10 @@ legacy_not_baseline:
   - MAX17049
 
 open_items:
-  - LiPo 接続：JST PH の定格 2 A に対し電池電流は最大 3.1 A
-  - 電池と PH 嵌合部のコア内配置
-  - BQ28Z610 の型番（LCSC は無印のみ）
-  - 充電 IC と BQ28Z610 の保護付きパワーパス構成
+  - 電池の大きさと置き場所（50×35×10 × 2 は core-03 に収まらない。easyeda_workflow.md §5.5）
+  - 基板側の XH の形（横向き実装 / 電線 + 中継）
+  - BQ28Z620 の入手経路
+  - 充電 IC と BQ28Z620 の保護付きパワーパス構成
   - 充電入力の供給方法（12 V アダプタ / USB-PD）と入力電流上限
   - LED 降圧の出力電圧（3.4〜3.5 V、末端電圧の実測後に確定）
   - LED 降圧 IC
@@ -250,6 +260,8 @@ open_items:
   - 充電電流と入力電流制限
 
 resolved_items:
+  - 残量計 IC（BQ28Z620）
+  - 電池コネクタ（JST XH 2P × 2、セルごと）
   - 充電 IC（BQ25792）と入力電圧の方針（5〜12 V、推奨 12 V）
   - LTC2954 のバリアント（-1）とタイミング部品（C_ONT 0.33 µF、C_PDT 1.2 µF）
   - DRV5032 のバリアント（FC、全極性、オープンドレイン）
