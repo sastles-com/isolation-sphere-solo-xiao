@@ -89,6 +89,24 @@ board_a:
     enable_polarity: active_high
     exact_part: TBD
 
+mechanical:
+  core_to_power:
+    # core 基板（MCU / 北極側）と電源基板（基板A）をスペーサー経由でねじ止めする
+    mating_boards: [core, board_a]
+    method: spacer_and_screw
+    mounting_holes:
+      count: 4
+      positions: four_corners  # 40 mm 角の四隅
+      diagonal_pairs: [[top_left, bottom_right], [top_right, bottom_left]]
+      all_pairs_used: true
+    screw_size: TBD
+    hole_diameter_mm: TBD
+    spacer_height_mm: TBD
+    keepout_around_hole: true
+    pad_connected_to_gnd: false  # 既定は非導通。変更する場合は要承認
+    must_not_conflict_with: mother_ring_connectors
+    board_b_holes_required: false
+
 board_b:
   role: battery_charge_bms
   size_mm: [40, 40]
@@ -228,6 +246,7 @@ legacy_not_baseline:
   - MAX17049
 
 open_items:
+  - core 基板用取付穴のねじ径 / 穴径 / スペーサー高さ（四隅 4 点、スペーサー + ねじ。mechanical.core_to_power）
   - EasyEDA Standard か Pro か
   - 充電 IC と BQ28Z610 の保護付きパワーパス構成
   - 充電入力電圧（5 / 9 / 12 V）と充電 IC（BQ25883 / BQ25798）
