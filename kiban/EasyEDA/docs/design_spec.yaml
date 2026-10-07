@@ -93,6 +93,9 @@ mechanical:
   core_to_power:
     # core 基板（MCU / 北極側）と電源基板（基板A）をスペーサー経由でねじ止めする
     mating_boards: [core, board_a]
+    purpose: 動作中に基板が浮いてコネクタが抜けかける問題の防止（コネクタ嵌合力に頼らず機械固定）
+    spacer_height_rule: コネクタ完全嵌合時の基板間距離に一致させる（予圧なし）
+    screw_locking: TBD  # スプリングワッシャ / ネジロック / ナイロンナット等
     method: spacer_and_screw
     mounting_holes:
       count: 4
@@ -246,7 +249,7 @@ legacy_not_baseline:
   - MAX17049
 
 open_items:
-  - core 基板用取付穴のねじ径 / 穴径 / スペーサー高さ（四隅 4 点、スペーサー + ねじ。mechanical.core_to_power）
+  - core 基板用取付穴のねじ径 / 穴径 / スペーサー高さ / ねじの緩み止め（四隅 4 点、スペーサー + ねじ。mechanical.core_to_power）
   - EasyEDA Standard か Pro か
   - 充電 IC と BQ28Z610 の保護付きパワーパス構成
   - 充電入力電圧（5 / 9 / 12 V）と充電 IC（BQ25883 / BQ25798）
