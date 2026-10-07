@@ -77,7 +77,7 @@
 | 常時オン磁気センサ | DRV5032FCDBZR（SOT-23） | `hardware_spec.md` §5 |
 | PB 入力保護 | 直列 5.1 kΩ + PB–GND 0.1 µF | LTC2954 データシートの長配線向け推奨 |
 | `PWR_KILL` プルアップ | 100 kΩ → `3V3_MCU` | `interfaces.md` §5、§7 |
-| 残量計 / 保護 | BQ28Z620DRZR（VSON-12） | `hardware_spec.md` §4。入手経路は要確認 |
+| 残量計 / 保護 | BQ28Z620DRZR（VSON-12、LCSC C20345237） | `hardware_spec.md` §4 |
 | 電池コネクタ | JST XH 2P × 2（セルごと） | `easyeda_workflow.md` §5 |
 | 充電 IC | BQ25792RQMR（VQFN-29、LCSC C2862876） | `hardware_spec.md` §3 |
 | LED | WS2812C-2020-V6（LCSC C55109522、SMD2020-4P） | 確定。VDD 3.3〜5.3 V |
@@ -91,7 +91,7 @@
 - 電流検出シャント
 - サーミスタ
 - スペーサ（基板A↔B 間隔 7.0 mm 用）
-- 電池（2000 mAh × 2 は現在のコアに収まらない。`easyeda_workflow.md` §5.5）
+- 電池の電線の経路（北のセル → 基板B）と、セルの実寸（`easyeda_workflow.md` §5.5）
 
 ## 第3作業：回路図の作成
 
@@ -251,7 +251,7 @@ EasyEDA のプロジェクト JSON を**やみくもに生成しないこと**�
 6. LED 降圧の出力電圧。WS2812C-2020-V6 の VDD 下限が 3.3 V のため、末端の電圧降下を見込んで 3.4〜3.5 V に設定する（`hardware_spec.md` §8.1）。
 7. I²C プルアップのドメインと逆給電防止。
 8. mother-ring コネクタの向き / 1 番ピンの規則。
-9. 基板A ↔ 基板B のピン割り当て（案は `easyeda_workflow.md` §4.3）と、電池の大きさ・置き場所。
+9. 基板A ↔ 基板B のピン割り当て（案は `easyeda_workflow.md` §4.3）と、電池の電線の経路。
 
 解決済み：
 

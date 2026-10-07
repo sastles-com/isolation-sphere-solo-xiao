@@ -228,6 +228,20 @@ def svg_section(meshes, z, boxes, path):
     open(path, "w").write("\n".join(lines))
 
 
+RING_T = 1.6          # mother-ring の板厚（z = ±0.8）
+CLEAR = 0.5           # セルと隣の基板の間（絶縁フィルムなど）
+
+
+def max_square(meshes, z0, z1, r=BOARD_R):
+    """高さ z0〜z1 に置いた角丸の正方形基板の、入る最大の一辺。"""
+    lo, hi = 20.0, 50.0
+    for _ in range(14):
+        mid = (lo + hi) / 2
+        c = box_clearance(meshes, dict(cx=0, cy=0, z0=z0, z1=z1, sx=mid, sy=mid, yaw=0, r=r))
+        lo, hi = (mid, hi) if c >= 0 else (lo, mid)
+    return lo
+
+
 def main():
     stl_dir = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_STL_DIR
     out_dir = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_OUT_DIR
@@ -236,73 +250,53 @@ def main():
         Mesh(load_stl(os.path.join(stl_dir, "core-north-03_fixed.stl"))),
         Mesh(load_stl(os.path.join(stl_dir, "core-south-03_fixed.stl"), flip=True)),
     ]
-    report = ["# 電池・基板の配置検討（fit_check.py の出力）", "",
-              f"セル {CELL[0]}×{CELL[1]}×{CELL[2]} mm × 2、基板 {BOARD} mm 角、基板間隔 {BOARD_GAP} mm、フィルム {FILM} mm。",
-              "すき間が負（干渉）の候補は載せない。南半球（z < 0）を LiPo 側とする。", ""]
+    L, W, T = CELL
+    ring_top, ring_bot = RING_T / 2, -RING_T / 2
 
-    # 基板Aの下面高さを振って、基板スタック自体が入る範囲を調べる
-    report += ["## 基板スタック", "", "基板A下面の高さを 0.5 mm 刻みで振り、両方の基板が殻に当たらない範囲を調べた。", "",
-               "| 基板A下面 z | 基板A すき間 | 基板B すき間 |", "| ---: | ---: | ---: |"]
-    stack_ok = []
-    for za in [x * 0.5 for x in range(-12, 29)]:
-        a, b = stack_boxes(za)
-        ca, cb = box_clearance(meshes, a), box_clearance(meshes, b)
-        fa = "干渉" if ca < 0 else f"{ca:.1f}"
-        fb = "干渉" if cb < 0 else f"{cb:.1f}"
-        report.append(f"| {za:.1f} | {fa} | {fb} |")
-        if ca >= 0 and cb >= 0:
-            stack_ok.append(za)
+    # 北から：MCU – セル – mother-ring – セル – 基板A – 基板B（ユーザー指定、2026-10-08）
+    cell_n = dict(z0=ring_top + CLEAR, z1=ring_top + CLEAR + T)
+    cell_s = dict(z0=ring_bot - CLEAR - T, z1=ring_bot - CLEAR)
+    a_top = cell_s["z0"] - CLEAR
+    a, b = stack_boxes(a_top - BOARD_T)
+
+    report = ["# 電池・基板の配置検討（fit_check.py の出力）", "",
+              "重ね順（北から）：MCU – セル – mother-ring – セル – 基板A – 基板B。",
+              f"mother-ring は z = 0（板厚 {RING_T} mm）。南（LiPo 側）は −z。",
+              f"セル {L:.0f}×{W:.0f}×{T:.0f} mm、基板 {BOARD:.0f} mm 角（角 R{BOARD_R:.0f}）、"
+              f"基板A↔B 間隔 {BOARD_GAP} mm、セルと隣の面の間 {CLEAR} mm。", "",
+              "コアの断面は島状なので、角度ごとに最も内側の点を壁とみなす（安全側の概算）。", ""]
+
+    report += ["## セル（50×35×10 mm）", "",
+               "| 場所 | 高さ z | 入るか | 入る最大（縦横比 50:35） |", "| --- | --- | --- | --- |"]
+    for name, c in (("北：MCU と mother-ring の間", cell_n), ("南：mother-ring と基板A の間", cell_s)):
+        fit = cell_fits(meshes, c["z0"], c["z1"], L, W)
+        mx, deg = max_footprint(meshes, c["z0"], c["z1"], L / W)
+        ok = f"入る（回転 {fit[0]}°、すき間 {fit[1]:.1f} mm）" if fit else "**入らない**"
+        report.append(f"| {name} | {c['z0']:.1f}〜{c['z1']:.1f} | {ok} | {mx:.1f} × {mx * W / L:.1f} mm（回転 {deg}°） |")
     report.append("")
 
-    if not stack_ok:
-        report += ["基板スタックが入る高さがない。"]
-        open(os.path.join(out_dir, "fit_report.md"), "w").write("\n".join(report) + "\n")
-        print("\n".join(report))
-        return
-    za = max(stack_ok, key=lambda z: min(box_clearance(meshes, x) for x in stack_boxes(z)))
-    a, b = stack_boxes(za)
-    report += [f"以下、基板A下面 z = {za:.1f} mm（すき間が最大の高さ）で検討する。", ""]
-
-    L, W, T = CELL
-    south_top = b["z0"] - FILM
-    north_bottom = max(a["z1"], 1.0) + 0.5   # 基板Aと mother-ring（z = ±1）の上
-    regions = [("南：基板Bの下", south_top - 2 * T, south_top, south_top - T, south_top),
-               ("北：mother-ring の上", north_bottom, north_bottom + 2 * T, north_bottom, north_bottom + T)]
-    report += ["## 電池が入るか", "",
-               "セル 1 個（平置き、厚さ 10 mm）と 2 個重ね（20 mm）を、5° 刻みで回して調べた。",
-               "", "| 場所 | 高さ範囲 z | 50×35 平置き 1 個 | 50×35 平置き 2 段 | 入る最大（縦横比 50:35、厚さ 10） | 入る最大（正方形、厚さ 10） |",
-               "| --- | --- | --- | --- | --- | --- |"]
-    fits = {}
-    for name, z2a, z2b, z1a, z1b in regions:
-        one = cell_fits(meshes, z1a, z1b, L, W)
-        two = cell_fits(meshes, z2a, z2b, L, W)
-        mx, mdeg = max_footprint(meshes, z1a, z1b, L / W)
-        sq, sdeg = max_footprint(meshes, z1a, z1b, 1.0)
-        fits[name] = (one, z1a, z1b)
-        f1 = f"入る（{one[0]}°、すき間 {one[1]:.1f}）" if one else "入らない"
-        f2 = f"入る（{two[0]}°、すき間 {two[1]:.1f}）" if two else "入らない"
-        report.append(f"| {name} | {min(z1a, z2a):.1f}〜{max(z1b, z2b):.1f} | {f1} | {f2} | "
-                      f"{mx:.1f} × {mx * W / L:.1f}（{mdeg}°） | {sq:.1f} × {sq:.1f}（{sdeg}°） |")
+    report += ["## 基板（40 mm 角）", "",
+               "| 基板 | 高さ z | すき間 | 入る最大の正方形 |", "| --- | --- | --- | --- |"]
+    for bx in (a, b):
+        c = box_clearance(meshes, bx)
+        ms = max_square(meshes, bx["z0"], bx["z1"])
+        report.append(f"| {bx['name']} | {bx['z0']:.1f}〜{bx['z1']:.1f} | {'**干渉**' if c < 0 else f'{c:.1f} mm'} | {ms:.1f} mm |")
     report.append("")
 
     ring_r = (BOARD / 2 - BOARD_R) * math.sqrt(2) + BOARD_R
-    report += ["## 新しい mother-ring に必要な開口", "",
-               f"基板（{BOARD:.0f} mm 角、角 R{BOARD_R:.0f}）の最遠点は軸から {ring_r:.1f} mm。"
-               f"基板スタックが赤道面を通る場合、mother-ring の開口は半径 {ring_r + 0.5:.1f} mm 以上（0.5 mm の余裕込み）が必要。"
-               "現行 KiCad の mother-ring（kiban-mother-ring.stl）の開口は最小半径約 17 mm で、通らない。", ""]
-    room = edge_room(meshes, b["z0"] + BOARD_T / 2)
-    report += ["## 基板Bの周囲", "",
-               "基板Bの各辺の中点から殻までの距離（横向きコネクタなどを置く余地）：" +
-               "、".join(f"{k} {v:.1f} mm" for k, v in room.items()), ""]
+    report += ["## mother-ring と間隔", "",
+               f"- 基板の最遠点は軸から {ring_r:.1f} mm（40 mm 角、R{BOARD_R:.0f}）。",
+               f"- mother-ring↔基板A の間隔（面から面）は約 {CLEAR * 2 + T:.1f} mm 必要（セル {T:.0f} mm + 両側のすき間）。"
+               "ソケット（FH-1x6SG/RH、ハウジング 8.5 mm）とヘッダ（絶縁体 2.5 mm）を重ねた長さが目安。", ""]
 
     boxes = [dict(a, color="green"), dict(b, color="green")]
-    for name, (one, z1a, z1b) in fits.items():
-        if one:
-            boxes.append(dict(cx=0, cy=0, z0=z1a, z1=z1b, sx=L, sy=W, yaw=math.radians(one[0]), color="blue"))
-    sections = [a["z0"] + 0.8, b["z0"] + 0.8, south_top - T / 2, south_top - T - 5, north_bottom + T / 2]
-    report.append("## 断面図")
-    report.append("")
-    for zs in sections:
+    for c in (cell_n, cell_s):
+        fit = cell_fits(meshes, c["z0"], c["z1"], L, W)
+        if fit:
+            boxes.append(dict(cx=0, cy=0, z0=c["z0"], z1=c["z1"], sx=L, sy=W, yaw=math.radians(fit[0]), color="blue"))
+    report += ["## 断面図", ""]
+    for zs in ((cell_n["z0"] + cell_n["z1"]) / 2, (cell_s["z0"] + cell_s["z1"]) / 2,
+               a["z0"] + 0.8, b["z0"] + 0.8):
         fn = f"section_z{zs:+.0f}.svg"
         svg_section(meshes, zs, boxes, os.path.join(out_dir, fn))
         report.append(f"- [{fn}]({fn})")

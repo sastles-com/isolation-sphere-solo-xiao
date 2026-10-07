@@ -70,8 +70,10 @@ LCSC：C2862876（BQ25792RQMR、VQFN-29）
 データシート（SLUSET3）：
 <https://www.ti.com/lit/ds/symlink/bq28z620.pdf>
 
-JLC：C22395771（登録あり、在庫は要確認）
-<https://jlcpcb.com/partdetail/TexasInstruments-BQ28Z620/C22395771>
+LCSC：C20345237（VSON-12、64 個、1 個 $6.98 / 100 個 $5.28）
+<https://www.lcsc.com/product-detail/C20345237.html>
+
+JLC の登録 C22395771 は購入不可（2026-10-08）。
 
 確認済み（2026-10-08）：
 

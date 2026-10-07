@@ -15,7 +15,9 @@ battery_connection:
   J_CELL2: [BM, B+]
   series_link_on_board_B: true
   discharge_cutoff_V_min: 6.4  # 1 セル 3.2 V。XH の 3 A を守るため
-  fits_core_03: false  # 50x35x10 x 2 は入らない（tools/fit_check.py）
+  fits_core_03: true  # 実機で収納確認済み（2026-10-08）。tools/fit_check.py の概算は厳しめ
+  stack_order_north_to_south: [MCU, LiPo_N, mother_ring, LiPo_S, board_A, board_B]
+  stack_gap_parts: Akizuki FH-1x6SG/RH (socket, 8.5 mm housing)
 
 battery:
   chemistry: LiPo
@@ -108,7 +110,7 @@ board_b:
     bottom: forbidden
   charger: BQ25792
   gauge_protector: BQ28Z620DRZR  # 2026-10-08 確定。BQ28Z610-R1 の後継、ピン互換
-  gauge_jlc: C22395771  # 在庫は要確認
+  gauge_lcsc: C20345237  # 64 個（2026-10-08）。JLC 登録 C22395771 は購入不可
   gauge_settings: {broadcast: disabled, cuv_mV_per_cell_min: 3200}
   functions:
     - 2S 充電
@@ -246,9 +248,9 @@ legacy_not_baseline:
   - MAX17049
 
 open_items:
-  - 電池の大きさと置き場所（50×35×10 × 2 は core-03 に収まらない。easyeda_workflow.md §5.5）
+  - 電池の電線の経路（北のセル → 基板B）とセルの実寸
   - 基板側の XH の形（横向き実装 / 電線 + 中継）
-  - BQ28Z620 の入手経路
+  - BQ28Z620（C20345237）が JLC の PCBA で選べるか
   - 充電 IC と BQ28Z620 の保護付きパワーパス構成
   - 充電入力の供給方法（12 V アダプタ / USB-PD）と入力電流上限
   - LED 降圧の出力電圧（3.4〜3.5 V、末端電圧の実測後に確定）
