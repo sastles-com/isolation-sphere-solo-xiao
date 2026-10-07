@@ -7,7 +7,7 @@ project:
   revision: architecture-baseline-2026-10-07
   status: adopted  # 2026-10-07 採用。kiban/power-2s は参考資料扱い
   pcb_tool: EasyEDA
-  pcb_tool_edition: TBD  # Pro を推奨（作業環境に EasyEDA Pro API あり）
+  pcb_tool_edition: Pro  # 進め方は easyeda_workflow.md
 
 battery:
   chemistry: LiPo
@@ -33,13 +33,15 @@ power_budget:
   full_load_runtime_min: 48
 
 charging:
-  input_voltage_V: 5.0  # 9 / 12 V を検討中（hardware_spec.md §3.2）
-  input_voltage_candidates_V: [5, 9, 12]
-  recommended_input_V: 12  # 承認待ち
+  input_voltage_range_V: [5, 12]
+  recommended_input_V: 12
   input_connector: 南極マグネット接点
   operation_while_charging_required: true
-  baseline_charger: BQ25883
-  alternative_charger_for_12V: BQ25798  # 入力 3.6〜24 V、5 V 互換を保てる
+  charger: BQ25792RQMR  # 2026-10-08 確定、LCSC C2862876、VQFN-29
+  charger_pin_compatible_alternative: BQ25798
+  charger_prog_resistor: 2S  # 1.5 MHz=6.04k / 750 kHz=8.2k
+  autonomous_default_charge: {vreg_V: 8.4, ichg_A: 1.0, iindpm_A: 3.0, vac_ovp_V: 26}
+  watchdog_default_s: 40
   required_input_power_full_load_plus_1A_charge_W: 29
   charge_current_A: TBD
   input_current_limit_A: TBD
@@ -96,7 +98,7 @@ board_b:
   component_sides:
     top: allowed
     bottom: forbidden
-  baseline_charger: BQ25883
+  charger: BQ25792
   baseline_gauge_protector: BQ28Z610-R1
   functions:
     - 2S 充電
@@ -177,7 +179,12 @@ mother_ring:
     6: LED_EN
 
 board_a_to_b:
-  connector: TBD
+  connector: Akizuki PH-1x40SG cut to 2 x 1x6  # 2.54 mm、3 A / ピン
+  spacer_mm: 4.5
+  board_gap_mm: 7.0
+  pinout_proposal:
+    J_AB1: [VSYS, VSYS, VSYS, GND, GND, GND]
+    J_AB2: [I2C_SDA, GND, I2C_SCL, CHG_INT, NC, GND]
   min_continuous_current_A: 3.0
   required_nets:
     - VSYS
@@ -191,7 +198,7 @@ board_a_to_b:
 i2c:
   bringup_speed_kHz: 100
   addresses_7bit:
-    charger: 0x6B  # BQ25883 / BQ25798 とも
+    charger_BQ25792: 0x6B
     gauge_BQ28Z610: 0x55  # 要確認
     TMAG5273: TBD  # 品種により異なる
 
@@ -222,25 +229,28 @@ firmware_requirements:  # 詳細は interfaces.md §7
 
 legacy_not_baseline:
   - IP2326_module
+  - BQ25883
   - XR-2S-30A_module
   - MP1584_module
   - MAX16054
   - MAX17049
 
 open_items:
-  - EasyEDA Standard か Pro か
+  - LiPo 接続：JST PH の定格 2 A に対し電池電流は最大 3.1 A
+  - 電池と PH 嵌合部のコア内配置
+  - BQ28Z610 の型番（LCSC は無印のみ）
   - 充電 IC と BQ28Z610 の保護付きパワーパス構成
-  - 充電入力電圧（5 / 9 / 12 V）と充電 IC（BQ25883 / BQ25798）
+  - 充電入力の供給方法（12 V アダプタ / USB-PD）と入力電流上限
   - LED 降圧の出力電圧（3.4〜3.5 V、末端電圧の実測後に確定）
   - LED 降圧 IC
   - MCU 降圧 IC
   - AON レギュレータ IC
-  - 基板A ↔ 基板B コネクタ
   - DRV5032FC と磁石の距離・磁束密度の確認
   - I2C プルアップの電源ドメイン
   - 充電電流と入力電流制限
 
 resolved_items:
+  - 充電 IC（BQ25792）と入力電圧の方針（5〜12 V、推奨 12 V）
   - LTC2954 のバリアント（-1）とタイミング部品（C_ONT 0.33 µF、C_PDT 1.2 µF）
   - DRV5032 のバリアント（FC、全極性、オープンドレイン）
   - PWR_KILL のバイアス（3V3_MCU へ 100 kΩ プルアップ）

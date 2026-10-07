@@ -26,34 +26,41 @@
 - 選定した MCU 降圧の EN 入力との電圧整合
 - LCSC での入手性
 
-## BQ25883 — Texas Instruments
+## BQ25792 — Texas Instruments（採用）
 
 製品ページ：
-<https://www.ti.com/product/BQ25883>
+<https://www.ti.com/product/BQ25792>
 
-確認済み：VBUS 動作範囲 3.9〜6.2 V（絶対最大 20 V）、入力電流制限 0.5〜3.3 A、充電 2 A、I²C アドレス 0x6B、VQFN-24（4 × 4 mm）。
+データシート：
+<https://www.ti.com/lit/ds/symlink/bq25792.pdf>
+
+LCSC：C2862876（BQ25792RQMR、VQFN-29）
+<https://www.lcsc.com/product-detail/C2862876.html>
+
+確認済み（2026-10-08）：
+
+- 入力動作範囲 3.6〜24 V（絶対最大 30 V）、入力過電圧保護の初期値 26 V
+- 1〜4 セル、昇降圧、NVDC、充電 最大 5 A、電池放電 6 A RMS 連続 / 10 A ピーク（1 s 以内）
+- PROG 抵抗でセル数と周波数を設定。2 セルの初期値は 8.4 V・1 A
+- 入力電流上限の初期値 3 A（ILIM_HIZ の抵抗で制限）
+- I²C アドレス 0x6B、電池のみで動作中の静止電流 17 µA typ（ADC 無効時）
+- BQ25798 とピン配置が同じ（評価ボード BQ25792EVM / BQ25798EVM を共用）
 
 確認項目：
 
-- 2S 昇圧充電のリファレンス設計
-- NVDC / パワーパスの挙動
-- 充電電流の設定
-- SYS/BAT 構成と BATFET の連続放電電流の定格（3 A 以上必要）
-- システム負荷と充電を同時に行うときの挙動
-- I²C のプルアップ要件
-
-## BQ25798 — Texas Instruments（12 V 入力にする場合の候補）
-
-製品ページ：
-<https://www.ti.com/product/BQ25798>
-
-確認済み：入力動作範囲 3.6〜24 V（絶対最大 30 V）、1〜4 セル、昇降圧、NVDC、充電 最大 5 A、電池放電 6 A RMS 連続 / 10 A ピーク（1 s 以内）、I²C アドレス 0x6B、VQFN-29（4 × 4 mm）、電池のみで動作中の静止電流 17 µA typ（ADC 無効時）。
-
-確認項目：
-
-- 2S、12 V 入力のリファレンス回路とインダクタ選定
+- 2S、12 V 入力のリファレンス回路（BQ25792EVM ユーザーガイド SLUUCB5）とインダクタ選定
 - BQ28Z610 との接続構成
-- JLC での実装可否と在庫
+- 入力 1 系統で使う場合の ACDRV / SDRV の処理
+
+ユーザーガイド：
+<https://www.ti.com/document-viewer/lit/html/SLUUCB5E>
+
+## 不採用にした充電 IC
+
+比較は `hardware_spec.md` §3.3。
+
+- BQ25883：<https://www.ti.com/product/BQ25883>（入力 3.9〜6.2 V。12 V 不可）
+- BQ25798：<https://www.ti.com/product/BQ25798>（BQ25792 に MPPT とバックアップを加えたもの。ピン配置は同じ）
 
 ## BQ28Z610-R1 — Texas Instruments
 
