@@ -7,6 +7,7 @@ import sys, time
 import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import eda_bridge as e
+PAGE = '94446b1a98d03840'   # BoardB 回路図の CHARGER ページ
 U1 = {'id': 'C2862876', 'ref': 'U1', 'x': 560, 'y': 520, 'val': 'BQ25792', 'nets': {
     '1': 'STAT', '2': 'VBUS', '3': 'VBUS', '4': 'BTST1', '5': 'REGN', '8': 'VBUS', '9': 'VBUS',
     '10': 'GND', '11': 'GND', '13': 'CE', '14': 'I2C_SCL', '15': 'I2C_SDA', '16': 'TS', '17': 'ILIM_HIZ',
@@ -52,5 +53,5 @@ for i, (ref, lc, val, nets) in enumerate(P):
     specs.append({'id': lc, 'ref': ref, 'x': 120 + 100 * col, 'y': 380 - 70 * row, 'val': val, 'nets': nets})
 for k in range(0, len(specs), 8):
     t = time.time()
-    r = e.place(specs[k:k + 8])
+    r = e.place(specs[k:k + 8], PAGE)
     print('batch', k // 10, round(time.time() - t, 1), 's', [x.get('err') or x['ref'] for x in r])

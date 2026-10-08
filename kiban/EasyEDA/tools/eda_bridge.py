@@ -2,7 +2,7 @@
 
 - run(code)     : ブリッジの /execute にコードを送り、結果を返す
 - place(specs)  : 部品を置き、ピンから短い線を出してネット名を付ける（LCSC 番号で指定）
-- nets()        : 現在の回路図ページのネットリストを {ネット名: [部品.ピン(ピン名), ...]} で返す
+- nets(page)    : ページが属するボードの回路図全体のネットリストを {ネット名: [部品.ピン(ピン名), ...]} で返す
 - clear_page()  : 現在の回路図ページの部品と線を、シート以外すべて削除する（試験用）
 
 spec の形式:
@@ -18,6 +18,12 @@ import sys
 
 HELPER = r"""
 const specs = SPECS;
+const page = PAGE;
+if (page) {
+  await eda.dmt_EditorControl.openDocument(page);
+  const doc = await eda.dmt_SelectControl.getCurrentDocumentInfo();
+  if (!doc || doc.uuid !== page) return [{ref: '*', err: 'active page is ' + (doc && doc.uuid) + ', expected ' + page}];
+}
 const ids = [...new Set(specs.map(s => s.id))];
 const devs = await eda.lib_Device.getByLcscIds(ids);
 const map = {};
@@ -49,6 +55,8 @@ return log;
 """
 
 NETLIST = r"""
+const page = PAGE;
+if (page) await eda.dmt_EditorControl.openDocument(page);
 const f = await eda.sch_ManufactureData.getNetlistFile('n');
 if (!f) return null;
 return await f.text();
@@ -78,13 +86,16 @@ def run(code, timeout=170):
     return out['result']
 
 
-def place(specs):
-    return run(HELPER.replace('SPECS', json.dumps(specs)))
+def place(specs, page=None):
+    """部品を置く。page（回路図ページの UUID）を渡すと、同じ処理の中で開いて確認してから置く。"""
+    return run(HELPER.replace('SPECS', json.dumps(specs)).replace('PAGE', json.dumps(page)))
 
 
-def nets():
-    """ネットリストを {ネット名: [部品.ピン(ピン名), ...]} にして返す。ネットなしのピンは '(未接続)'。"""
-    data = json.loads(run(NETLIST))
+def nets(page=None):
+    """ネットリストを {ネット名: [部品.ピン(ピン名), ...]} にして返す。ネットなしのピンは '(未接続)'。
+    getNetlistFile() は、開いているページが属するボードの回路図全体（全ページ）を返す。
+    page で、対象のボードのページを指定する（別のボードを見ないように）。"""
+    data = json.loads(run(NETLIST.replace('PAGE', json.dumps(page))))
     result = {}
     for comp in data.get('components', {}).values():
         props = comp.get('props', {})
@@ -95,8 +106,14 @@ def nets():
     return {k: sorted(v) for k, v in result.items()}, data
 
 
-def clear_page():
-    return run(CLEAR)
+def clear_page(page=None):
+    """ページ上の部品と線を、シート以外すべて削除する。page を渡すと、先に開いて確認する。"""
+    pre = ''
+    if page:
+        pre = ("await eda.dmt_EditorControl.openDocument(%s);\n"
+               "const doc = await eda.dmt_SelectControl.getCurrentDocumentInfo();\n"
+               "if (!doc || doc.uuid !== %s) return 'wrong page';\n") % (json.dumps(page), json.dumps(page))
+    return run(pre + CLEAR)
 
 
 if __name__ == '__main__':
