@@ -1,0 +1,2473 @@
+{
+ "project": {
+  "uuid": "7e4e4dc8a39b4a638569e10a608e76b6",
+  "name": "power-2s-xiao"
+ },
+ "doc": {
+  "uuid": "a9ace616ca30334c",
+  "parentProjectUuid": "7e4e4dc8a39b4a638569e10a608e76b6"
+ },
+ "parts": [
+  {
+   "type": "part",
+   "des": "U6",
+   "x": 180,
+   "y": 620,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "VCC",
+     "x": 140,
+     "y": 640
+    },
+    {
+     "num": "2",
+     "name": "FB",
+     "x": 140,
+     "y": 630
+    },
+    {
+     "num": "3",
+     "name": "EN",
+     "x": 140,
+     "y": 620
+    },
+    {
+     "num": "4",
+     "name": "PGND",
+     "x": 140,
+     "y": 610
+    },
+    {
+     "num": "5",
+     "name": "VIN",
+     "x": 140,
+     "y": 600
+    },
+    {
+     "num": "6",
+     "name": "VIN",
+     "x": 220,
+     "y": 600
+    },
+    {
+     "num": "7",
+     "name": "BST",
+     "x": 220,
+     "y": 610
+    },
+    {
+     "num": "8",
+     "name": "SW",
+     "x": 220,
+     "y": 620
+    },
+    {
+     "num": "9",
+     "name": "PG",
+     "x": 220,
+     "y": 630
+    }
+   ],
+   "value": "TPS566238P",
+   "lcsc": "C2876603",
+   "mpn": "TPS566238PRQFR",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "8b9311e17de23e44"
+  },
+  {
+   "type": "part",
+   "des": "CIN7",
+   "x": 380,
+   "y": 720,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 380,
+     "y": 700
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 380,
+     "y": 740
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CIN8",
+   "x": 440,
+   "y": 720,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 440,
+     "y": 700
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 440,
+     "y": 740
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CIN9",
+   "x": 500,
+   "y": 720,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 500,
+     "y": 700
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 500,
+     "y": 740
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CIN10",
+   "x": 560,
+   "y": 720,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 560,
+     "y": 740
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 560,
+     "y": 700
+    }
+   ],
+   "value": "0.1uF",
+   "lcsc": "C1591",
+   "mpn": "CL10B104KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "b807779ef4ddfc95"
+  },
+  {
+   "type": "part",
+   "des": "CVCC",
+   "x": 380,
+   "y": 560,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 380,
+     "y": 540
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 380,
+     "y": 580
+    }
+   ],
+   "value": "1uF",
+   "lcsc": "C15849",
+   "mpn": "CL10A105KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "37e3be77928a2add"
+  },
+  {
+   "type": "part",
+   "des": "CBST3",
+   "x": 450,
+   "y": 560,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 450,
+     "y": 580
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 450,
+     "y": 540
+    }
+   ],
+   "value": "0.1uF",
+   "lcsc": "C1591",
+   "mpn": "CL10B104KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "b807779ef4ddfc95"
+  },
+  {
+   "type": "part",
+   "des": "L3",
+   "x": 560,
+   "y": 470,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 580,
+     "y": 470
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 540,
+     "y": 470
+    }
+   ],
+   "value": "2.2uH",
+   "lcsc": "C76855",
+   "mpn": "SPM6530T-2R2M",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "5d99fe3806c405e5"
+  },
+  {
+   "type": "part",
+   "des": "RUP",
+   "x": 680,
+   "y": 650,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 680,
+     "y": 630
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 680,
+     "y": 670
+    }
+   ],
+   "value": "93.1k",
+   "lcsc": "C23266",
+   "mpn": "0603WAF9312T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "8cc8c5a4267b0c26"
+  },
+  {
+   "type": "part",
+   "des": "RLO",
+   "x": 680,
+   "y": 530,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 680,
+     "y": 510
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 680,
+     "y": 550
+    }
+   ],
+   "value": "20k",
+   "lcsc": "C4184",
+   "mpn": "0603WAF2002T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "edf65671a48940cc"
+  },
+  {
+   "type": "part",
+   "des": "CFF",
+   "x": 740,
+   "y": 650,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 740,
+     "y": 665
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 740,
+     "y": 635
+    }
+   ],
+   "value": "47pF",
+   "lcsc": "C1671",
+   "mpn": "CL10C470JB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "8b72b798055d1016"
+  },
+  {
+   "type": "part",
+   "des": "COUT7",
+   "x": 60,
+   "y": 450,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 60,
+     "y": 470
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 60,
+     "y": 430
+    }
+   ],
+   "value": "22uF",
+   "lcsc": "C45783",
+   "mpn": "CL21A226MAQNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "42c1e9f46b07ad78"
+  },
+  {
+   "type": "part",
+   "des": "COUT8",
+   "x": 120,
+   "y": 450,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 120,
+     "y": 470
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 120,
+     "y": 430
+    }
+   ],
+   "value": "22uF",
+   "lcsc": "C45783",
+   "mpn": "CL21A226MAQNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "42c1e9f46b07ad78"
+  },
+  {
+   "type": "part",
+   "des": "COUT9",
+   "x": 180,
+   "y": 450,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 180,
+     "y": 470
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 180,
+     "y": 430
+    }
+   ],
+   "value": "22uF",
+   "lcsc": "C45783",
+   "mpn": "CL21A226MAQNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "42c1e9f46b07ad78"
+  },
+  {
+   "type": "part",
+   "des": "COUT10",
+   "x": 240,
+   "y": 450,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 240,
+     "y": 470
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 240,
+     "y": 430
+    }
+   ],
+   "value": "22uF",
+   "lcsc": "C45783",
+   "mpn": "CL21A226MAQNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "42c1e9f46b07ad78"
+  },
+  {
+   "type": "part",
+   "des": "RLEN",
+   "x": 330,
+   "y": 450,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 330,
+     "y": 430
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 330,
+     "y": 470
+    }
+   ],
+   "value": "100k",
+   "lcsc": "C25803",
+   "mpn": "0603WAF1003T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "ae6ae5c6c65d325c"
+  },
+  {
+   "type": "part",
+   "des": "RSDA",
+   "x": 830,
+   "y": 680,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 830,
+     "y": 660
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 830,
+     "y": 700
+    }
+   ],
+   "value": "4.7k",
+   "lcsc": "C23162",
+   "mpn": "0603WAF4701T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "9e98e398084ece8f"
+  },
+  {
+   "type": "part",
+   "des": "RSCL",
+   "x": 910,
+   "y": 680,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 910,
+     "y": 660
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 910,
+     "y": 700
+    }
+   ],
+   "value": "4.7k",
+   "lcsc": "C23162",
+   "mpn": "0603WAF4701T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "9e98e398084ece8f"
+  },
+  {
+   "type": "part",
+   "des": "RINT",
+   "x": 990,
+   "y": 680,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 990,
+     "y": 660
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 990,
+     "y": 700
+    }
+   ],
+   "value": "10k",
+   "lcsc": "C25804",
+   "mpn": "0603WAF1002T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "fdd1149ef613be6a"
+  },
+  {
+   "type": "part",
+   "des": "J_ML",
+   "x": 120,
+   "y": 220,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 100,
+     "y": 245
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 100,
+     "y": 235
+    },
+    {
+     "num": "3",
+     "name": "3",
+     "x": 100,
+     "y": 225
+    },
+    {
+     "num": "4",
+     "name": "4",
+     "x": 100,
+     "y": 215
+    },
+    {
+     "num": "5",
+     "name": "5",
+     "x": 100,
+     "y": 205
+    },
+    {
+     "num": "6",
+     "name": "6",
+     "x": 100,
+     "y": 195
+    }
+   ],
+   "value": "MOTHER LEFT",
+   "lcsc": "C492405",
+   "mpn": "PZ254V-11-06P",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "653acdc8f3652d04"
+  },
+  {
+   "type": "part",
+   "des": "J_MR",
+   "x": 380,
+   "y": 220,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 360,
+     "y": 245
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 360,
+     "y": 235
+    },
+    {
+     "num": "3",
+     "name": "3",
+     "x": 360,
+     "y": 225
+    },
+    {
+     "num": "4",
+     "name": "4",
+     "x": 360,
+     "y": 215
+    },
+    {
+     "num": "5",
+     "name": "5",
+     "x": 360,
+     "y": 205
+    },
+    {
+     "num": "6",
+     "name": "6",
+     "x": 360,
+     "y": 195
+    }
+   ],
+   "value": "MOTHER RIGHT",
+   "lcsc": "C492405",
+   "mpn": "PZ254V-11-06P",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "653acdc8f3652d04"
+  },
+  {
+   "type": "part",
+   "des": "J_BA1",
+   "x": 720,
+   "y": 220,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 700,
+     "y": 245
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 700,
+     "y": 235
+    },
+    {
+     "num": "3",
+     "name": "3",
+     "x": 700,
+     "y": 225
+    },
+    {
+     "num": "4",
+     "name": "4",
+     "x": 700,
+     "y": 215
+    },
+    {
+     "num": "5",
+     "name": "5",
+     "x": 700,
+     "y": 205
+    },
+    {
+     "num": "6",
+     "name": "6",
+     "x": 700,
+     "y": 195
+    }
+   ],
+   "value": "TO BOARD B PWR",
+   "lcsc": "C492405",
+   "mpn": "PZ254V-11-06P",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "653acdc8f3652d04"
+  },
+  {
+   "type": "part",
+   "des": "J_BA2",
+   "x": 980,
+   "y": 220,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 960,
+     "y": 245
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 960,
+     "y": 235
+    },
+    {
+     "num": "3",
+     "name": "3",
+     "x": 960,
+     "y": 225
+    },
+    {
+     "num": "4",
+     "name": "4",
+     "x": 960,
+     "y": 215
+    },
+    {
+     "num": "5",
+     "name": "5",
+     "x": 960,
+     "y": 205
+    },
+    {
+     "num": "6",
+     "name": "6",
+     "x": 960,
+     "y": 195
+    }
+   ],
+   "value": "TO BOARD B SIG",
+   "lcsc": "C492405",
+   "mpn": "PZ254V-11-06P",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "653acdc8f3652d04"
+  }
+ ],
+ "netports": [],
+ "netflags": [],
+ "others": [
+  {
+   "type": "sheet",
+   "des": null,
+   "x": 0,
+   "y": 0,
+   "rot": 0,
+   "mirror": false,
+   "net": null
+  }
+ ],
+ "wires": [
+  {
+   "net": "L_VCC",
+   "pts": [
+    [
+     110,
+     640
+    ],
+    [
+     140,
+     640
+    ]
+   ]
+  },
+  {
+   "net": "L_FB",
+   "pts": [
+    [
+     110,
+     630
+    ],
+    [
+     140,
+     630
+    ]
+   ]
+  },
+  {
+   "net": "LED_EN",
+   "pts": [
+    [
+     110,
+     620
+    ],
+    [
+     140,
+     620
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     110,
+     610
+    ],
+    [
+     140,
+     610
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     110,
+     600
+    ],
+    [
+     140,
+     600
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     250,
+     600
+    ],
+    [
+     220,
+     600
+    ]
+   ]
+  },
+  {
+   "net": "L_BST",
+   "pts": [
+    [
+     250,
+     610
+    ],
+    [
+     220,
+     610
+    ]
+   ]
+  },
+  {
+   "net": "L_SW",
+   "pts": [
+    [
+     250,
+     620
+    ],
+    [
+     220,
+     620
+    ]
+   ]
+  },
+  {
+   "net": "L_PG",
+   "pts": [
+    [
+     250,
+     630
+    ],
+    [
+     220,
+     630
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     380,
+     750
+    ],
+    [
+     380,
+     740
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     380,
+     690
+    ],
+    [
+     380,
+     700
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     440,
+     750
+    ],
+    [
+     440,
+     740
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     440,
+     690
+    ],
+    [
+     440,
+     700
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     500,
+     750
+    ],
+    [
+     500,
+     740
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     500,
+     690
+    ],
+    [
+     500,
+     700
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     560,
+     750
+    ],
+    [
+     560,
+     740
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     560,
+     690
+    ],
+    [
+     560,
+     700
+    ]
+   ]
+  },
+  {
+   "net": "L_VCC",
+   "pts": [
+    [
+     380,
+     590
+    ],
+    [
+     380,
+     580
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     380,
+     530
+    ],
+    [
+     380,
+     540
+    ]
+   ]
+  },
+  {
+   "net": "L_BST",
+   "pts": [
+    [
+     450,
+     590
+    ],
+    [
+     450,
+     580
+    ]
+   ]
+  },
+  {
+   "net": "L_SW",
+   "pts": [
+    [
+     450,
+     530
+    ],
+    [
+     450,
+     540
+    ]
+   ]
+  },
+  {
+   "net": "L_SW",
+   "pts": [
+    [
+     520,
+     470
+    ],
+    [
+     540,
+     470
+    ]
+   ]
+  },
+  {
+   "net": "3V3_LED",
+   "pts": [
+    [
+     600,
+     470
+    ],
+    [
+     580,
+     470
+    ]
+   ]
+  },
+  {
+   "net": "3V3_LED",
+   "pts": [
+    [
+     680,
+     680
+    ],
+    [
+     680,
+     670
+    ]
+   ]
+  },
+  {
+   "net": "L_FB",
+   "pts": [
+    [
+     680,
+     630
+    ],
+    [
+     680,
+     590
+    ],
+    [
+     630,
+     590
+    ],
+    [
+     680,
+     590
+    ],
+    [
+     680,
+     550
+    ],
+    [
+     680,
+     590
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     680,
+     500
+    ],
+    [
+     680,
+     510
+    ]
+   ]
+  },
+  {
+   "net": "3V3_LED",
+   "pts": [
+    [
+     740,
+     675
+    ],
+    [
+     740,
+     665
+    ]
+   ]
+  },
+  {
+   "net": "L_FB",
+   "pts": [
+    [
+     740,
+     625
+    ],
+    [
+     740,
+     635
+    ]
+   ]
+  },
+  {
+   "net": "3V3_LED",
+   "pts": [
+    [
+     60,
+     480
+    ],
+    [
+     60,
+     470
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     60,
+     420
+    ],
+    [
+     60,
+     430
+    ]
+   ]
+  },
+  {
+   "net": "3V3_LED",
+   "pts": [
+    [
+     120,
+     480
+    ],
+    [
+     120,
+     470
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     120,
+     420
+    ],
+    [
+     120,
+     430
+    ]
+   ]
+  },
+  {
+   "net": "3V3_LED",
+   "pts": [
+    [
+     180,
+     480
+    ],
+    [
+     180,
+     470
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     180,
+     420
+    ],
+    [
+     180,
+     430
+    ]
+   ]
+  },
+  {
+   "net": "3V3_LED",
+   "pts": [
+    [
+     240,
+     480
+    ],
+    [
+     240,
+     470
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     240,
+     420
+    ],
+    [
+     240,
+     430
+    ]
+   ]
+  },
+  {
+   "net": "LED_EN",
+   "pts": [
+    [
+     330,
+     480
+    ],
+    [
+     330,
+     470
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     330,
+     420
+    ],
+    [
+     330,
+     430
+    ]
+   ]
+  },
+  {
+   "net": "3V3_MCU",
+   "pts": [
+    [
+     830,
+     710
+    ],
+    [
+     830,
+     700
+    ]
+   ]
+  },
+  {
+   "net": "I2C_SDA",
+   "pts": [
+    [
+     830,
+     650
+    ],
+    [
+     830,
+     660
+    ]
+   ]
+  },
+  {
+   "net": "3V3_MCU",
+   "pts": [
+    [
+     910,
+     710
+    ],
+    [
+     910,
+     700
+    ]
+   ]
+  },
+  {
+   "net": "I2C_SCL",
+   "pts": [
+    [
+     910,
+     650
+    ],
+    [
+     910,
+     660
+    ]
+   ]
+  },
+  {
+   "net": "3V3_MCU",
+   "pts": [
+    [
+     990,
+     710
+    ],
+    [
+     990,
+     700
+    ]
+   ]
+  },
+  {
+   "net": "CHG_INT",
+   "pts": [
+    [
+     990,
+     650
+    ],
+    [
+     990,
+     660
+    ]
+   ]
+  },
+  {
+   "net": "3V3_LED",
+   "pts": [
+    [
+     70,
+     245
+    ],
+    [
+     100,
+     245
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     70,
+     235
+    ],
+    [
+     100,
+     235
+    ]
+   ]
+  },
+  {
+   "net": "3V3_MCU",
+   "pts": [
+    [
+     70,
+     225
+    ],
+    [
+     100,
+     225
+    ]
+   ]
+  },
+  {
+   "net": "I2C_SDA",
+   "pts": [
+    [
+     70,
+     215
+    ],
+    [
+     100,
+     215
+    ]
+   ]
+  },
+  {
+   "net": "I2C_SCL",
+   "pts": [
+    [
+     70,
+     205
+    ],
+    [
+     100,
+     205
+    ]
+   ]
+  },
+  {
+   "net": "3V3_AON",
+   "pts": [
+    [
+     70,
+     195
+    ],
+    [
+     100,
+     195
+    ]
+   ]
+  },
+  {
+   "net": "3V3_LED",
+   "pts": [
+    [
+     330,
+     245
+    ],
+    [
+     360,
+     245
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     330,
+     235
+    ],
+    [
+     360,
+     235
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     330,
+     225
+    ],
+    [
+     360,
+     225
+    ]
+   ]
+  },
+  {
+   "net": "HALL_WAKE",
+   "pts": [
+    [
+     330,
+     215
+    ],
+    [
+     360,
+     215
+    ]
+   ]
+  },
+  {
+   "net": "PWR_KILL",
+   "pts": [
+    [
+     330,
+     205
+    ],
+    [
+     360,
+     205
+    ]
+   ]
+  },
+  {
+   "net": "LED_EN",
+   "pts": [
+    [
+     330,
+     195
+    ],
+    [
+     360,
+     195
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     670,
+     245
+    ],
+    [
+     700,
+     245
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     670,
+     235
+    ],
+    [
+     700,
+     235
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     670,
+     225
+    ],
+    [
+     700,
+     225
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     670,
+     215
+    ],
+    [
+     700,
+     215
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     670,
+     205
+    ],
+    [
+     700,
+     205
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     670,
+     195
+    ],
+    [
+     700,
+     195
+    ]
+   ]
+  },
+  {
+   "net": "I2C_SDA",
+   "pts": [
+    [
+     930,
+     245
+    ],
+    [
+     960,
+     245
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     930,
+     235
+    ],
+    [
+     960,
+     235
+    ]
+   ]
+  },
+  {
+   "net": "I2C_SCL",
+   "pts": [
+    [
+     930,
+     225
+    ],
+    [
+     960,
+     225
+    ]
+   ]
+  },
+  {
+   "net": "CHG_INT",
+   "pts": [
+    [
+     930,
+     215
+    ],
+    [
+     960,
+     215
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     930,
+     195
+    ],
+    [
+     960,
+     195
+    ]
+   ]
+  }
+ ],
+ "rects": [
+  {
+   "x": 20,
+   "yRead": -790,
+   "topY": 790,
+   "w": 780,
+   "h": 420,
+   "color": null,
+   "lineType": 1
+  },
+  {
+   "x": 810,
+   "yRead": -790,
+   "topY": 790,
+   "w": 340,
+   "h": 420,
+   "color": null,
+   "lineType": 1
+  },
+  {
+   "x": 20,
+   "yRead": -360,
+   "topY": 360,
+   "w": 540,
+   "h": 330,
+   "color": null,
+   "lineType": 1
+  },
+  {
+   "x": 570,
+   "yRead": -360,
+   "topY": 360,
+   "w": 580,
+   "h": 330,
+   "color": null,
+   "lineType": 1
+  }
+ ],
+ "texts": [
+  {
+   "content": "LED 用 3.3 V 降圧  U6 TPS566238P（6 A、LED_EN で ON）",
+   "x": 25,
+   "y": 778,
+   "size": 10,
+   "bold": true,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "プルアップ（3V3_MCU、基板A に集約）",
+   "x": 815,
+   "y": 778,
+   "size": 10,
+   "bold": true,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "mother-ring 接続（1x6 × 2、左右の張り出し）",
+   "x": 25,
+   "y": 348,
+   "size": 10,
+   "bold": true,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "基板B 接続（ピンヘッダ 1x6 × 2）",
+   "x": 575,
+   "y": 348,
+   "size": 10,
+   "bold": true,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "L_VCC",
+   "x": 86,
+   "y": 637,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "L_FB",
+   "x": 91,
+   "y": 627,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "LED_EN",
+   "x": 82,
+   "y": 617,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 89,
+   "y": 607,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 91,
+   "y": 597,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 253,
+   "y": 597,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "L_BST",
+   "x": 253,
+   "y": 607,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "L_SW",
+   "x": 253,
+   "y": 617,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "L_PG",
+   "x": 253,
+   "y": 627,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 371,
+   "y": 753,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 372,
+   "y": 680,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 431,
+   "y": 753,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 432,
+   "y": 680,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 491,
+   "y": 753,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 492,
+   "y": 680,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 551,
+   "y": 753,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 552,
+   "y": 680,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "L_VCC",
+   "x": 368,
+   "y": 593,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 372,
+   "y": 520,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "L_BST",
+   "x": 438,
+   "y": 593,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "L_SW",
+   "x": 441,
+   "y": 519,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "L_SW",
+   "x": 501,
+   "y": 467,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_LED",
+   "x": 603,
+   "y": 467,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_LED",
+   "x": 664,
+   "y": 683,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "L_FB",
+   "x": 633,
+   "y": 587,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 672,
+   "y": 490,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_LED",
+   "x": 724,
+   "y": 678,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "L_FB",
+   "x": 731,
+   "y": 614,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_LED",
+   "x": 44,
+   "y": 483,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 52,
+   "y": 410,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_LED",
+   "x": 104,
+   "y": 483,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 112,
+   "y": 410,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_LED",
+   "x": 164,
+   "y": 483,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 172,
+   "y": 410,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_LED",
+   "x": 224,
+   "y": 483,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 232,
+   "y": 410,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "LED_EN",
+   "x": 316,
+   "y": 483,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 322,
+   "y": 410,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "出力 = 0.6 x (1 + 93.1k / 20k) = 3.39 V",
+   "x": 620,
+   "y": 770,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "（WS2812C の下限 3.3 V に余裕。実測後に RUP を調整）",
+   "x": 620,
+   "y": 760,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "LED_EN：GND へ 100k（MCU 起動前は OFF）",
+   "x": 300,
+   "y": 400,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "L_PG：テストパッドへ（任意）",
+   "x": 40,
+   "y": 400,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_MCU",
+   "x": 814,
+   "y": 713,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "I2C_SDA",
+   "x": 814,
+   "y": 639,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_MCU",
+   "x": 894,
+   "y": 713,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "I2C_SCL",
+   "x": 894,
+   "y": 639,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_MCU",
+   "x": 974,
+   "y": 713,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "CHG_INT",
+   "x": 974,
+   "y": 639,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "I2C 4.7k、CHG_INT 10k",
+   "x": 830,
+   "y": 600,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PWR_KILL の 100k は POWER ページ",
+   "x": 830,
+   "y": 590,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_LED",
+   "x": 38,
+   "y": 242,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 49,
+   "y": 232,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_MCU",
+   "x": 38,
+   "y": 222,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "I2C_SDA",
+   "x": 38,
+   "y": 212,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "I2C_SCL",
+   "x": 38,
+   "y": 202,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_AON",
+   "x": 38,
+   "y": 192,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_LED",
+   "x": 298,
+   "y": 242,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 309,
+   "y": 232,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 309,
+   "y": 222,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "HALL_WAKE",
+   "x": 290,
+   "y": 212,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PWR_KILL",
+   "x": 294,
+   "y": 202,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "LED_EN",
+   "x": 302,
+   "y": 192,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 651,
+   "y": 242,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 651,
+   "y": 232,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 651,
+   "y": 222,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 649,
+   "y": 212,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 649,
+   "y": 202,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 649,
+   "y": 192,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "I2C_SDA",
+   "x": 898,
+   "y": 242,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 909,
+   "y": 232,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "I2C_SCL",
+   "x": 898,
+   "y": 222,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "CHG_INT",
+   "x": 898,
+   "y": 212,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 909,
+   "y": 192,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "NC",
+   "x": 935,
+   "y": 208,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "J_ML：左（3V3_LED_L / GND_L / 3V3_MCU / SDA / SCL / 3V3_AON）",
+   "x": 40,
+   "y": 330,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "J_MR：右（3V3_LED_R / GND_R / GND_SYS / HALL_WAKE / PWR_KILL / LED_EN）",
+   "x": 40,
+   "y": 320,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "J_BA1 / J_BA2 は基板B の J_AB1 / J_AB2 と同じピン配置",
+   "x": 590,
+   "y": 330,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  }
+ ],
+ "counts": {
+  "parts": 23,
+  "netports": 0,
+  "netflags": 0,
+  "wires": 67,
+  "rects": 4,
+  "texts": 81
+ }
+}

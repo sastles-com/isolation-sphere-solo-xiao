@@ -1,0 +1,100 @@
+(kicad_sch
+	(version 20260306)
+	(generator "kicad_export.py")
+	(generator_version "10.0")
+	(uuid "af36042b-f1bb-520b-998b-f743abfc708c")
+	(paper "A4")
+	(lib_symbols)
+	(text "boardA（power-2s-xiao）— EasyEDA から自動生成。編集は EasyEDA で行う"
+		(exclude_from_sim no)
+		(at 20 20 0)
+		(effects
+			(font
+				(size 2 2)
+			)
+			(justify left bottom)
+		)
+		(uuid "4317f27d-9b05-54c3-94c2-ef4b6631098e")
+	)
+	(sheet
+		(at 25 40)
+		(size 110 50)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "c38c7f84-739c-56b8-b76a-7782a093698d")
+		(property "Sheetname" "POWER"
+			(at 25 39.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "boardA_POWER.kicad_sch"
+			(at 25 90.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "power-2s-xiao"
+				(path "/af36042b-f1bb-520b-998b-f743abfc708c"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 155 40)
+		(size 110 50)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "e3960e4f-9e12-50ff-8904-2e8510166398")
+		(property "Sheetname" "LED_IO"
+			(at 155 39.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "boardA_LED_IO.kicad_sch"
+			(at 155 90.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "power-2s-xiao"
+				(path "/af36042b-f1bb-520b-998b-f743abfc708c"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)

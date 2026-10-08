@@ -1,0 +1,100 @@
+(kicad_sch
+	(version 20260306)
+	(generator "kicad_export.py")
+	(generator_version "10.0")
+	(uuid "fde9b7c9-3568-5b34-b8e6-a8d7174c8828")
+	(paper "A4")
+	(lib_symbols)
+	(text "boardB（power-2s-xiao）— EasyEDA から自動生成。編集は EasyEDA で行う"
+		(exclude_from_sim no)
+		(at 20 20 0)
+		(effects
+			(font
+				(size 2 2)
+			)
+			(justify left bottom)
+		)
+		(uuid "2e3d80f1-ebca-5faf-93f4-eb8ba06e36f5")
+	)
+	(sheet
+		(at 25 40)
+		(size 110 50)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "b17c2007-8ac3-5813-b909-6f41a65ba1a6")
+		(property "Sheetname" "CHARGER"
+			(at 25 39.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "boardB_CHARGER.kicad_sch"
+			(at 25 90.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "power-2s-xiao"
+				(path "/fde9b7c9-3568-5b34-b8e6-a8d7174c8828"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 155 40)
+		(size 110 50)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "83c56de2-2b08-545f-9e78-84d885169e86")
+		(property "Sheetname" "PROTECTION"
+			(at 155 39.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "boardB_PROTECTION.kicad_sch"
+			(at 155 90.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "power-2s-xiao"
+				(path "/fde9b7c9-3568-5b34-b8e6-a8d7174c8828"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)

@@ -1,0 +1,3258 @@
+{
+ "project": {
+  "uuid": "7e4e4dc8a39b4a638569e10a608e76b6",
+  "name": "power-2s-xiao"
+ },
+ "doc": {
+  "uuid": "94446b1a98d03840",
+  "parentProjectUuid": "7e4e4dc8a39b4a638569e10a608e76b6"
+ },
+ "parts": [
+  {
+   "type": "part",
+   "des": "U1",
+   "x": 590,
+   "y": 615,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "STAT",
+     "x": 525,
+     "y": 685
+    },
+    {
+     "num": "2",
+     "name": "VBUS",
+     "x": 525,
+     "y": 675
+    },
+    {
+     "num": "3",
+     "name": "VBUS",
+     "x": 525,
+     "y": 665
+    },
+    {
+     "num": "4",
+     "name": "BTST1",
+     "x": 525,
+     "y": 655
+    },
+    {
+     "num": "5",
+     "name": "REGN",
+     "x": 525,
+     "y": 645
+    },
+    {
+     "num": "6",
+     "name": "D+",
+     "x": 525,
+     "y": 635
+    },
+    {
+     "num": "7",
+     "name": "D-",
+     "x": 525,
+     "y": 625
+    },
+    {
+     "num": "8",
+     "name": "VAC2",
+     "x": 525,
+     "y": 615
+    },
+    {
+     "num": "9",
+     "name": "VAC1",
+     "x": 525,
+     "y": 605
+    },
+    {
+     "num": "10",
+     "name": "ACDRV2",
+     "x": 525,
+     "y": 595
+    },
+    {
+     "num": "11",
+     "name": "ACDRV1",
+     "x": 525,
+     "y": 585
+    },
+    {
+     "num": "12",
+     "name": "QON#",
+     "x": 525,
+     "y": 575
+    },
+    {
+     "num": "13",
+     "name": "CE#",
+     "x": 525,
+     "y": 565
+    },
+    {
+     "num": "14",
+     "name": "SCL",
+     "x": 525,
+     "y": 555
+    },
+    {
+     "num": "15",
+     "name": "SDA",
+     "x": 525,
+     "y": 545
+    },
+    {
+     "num": "16",
+     "name": "TS",
+     "x": 655,
+     "y": 550
+    },
+    {
+     "num": "17",
+     "name": "ILIM_HIZ",
+     "x": 655,
+     "y": 560
+    },
+    {
+     "num": "18",
+     "name": "BATP",
+     "x": 655,
+     "y": 570
+    },
+    {
+     "num": "19",
+     "name": "BTST2",
+     "x": 655,
+     "y": 580
+    },
+    {
+     "num": "20",
+     "name": "PROG",
+     "x": 655,
+     "y": 590
+    },
+    {
+     "num": "21",
+     "name": "INT#",
+     "x": 655,
+     "y": 600
+    },
+    {
+     "num": "22",
+     "name": "BAT",
+     "x": 655,
+     "y": 610
+    },
+    {
+     "num": "23",
+     "name": "BAT",
+     "x": 655,
+     "y": 620
+    },
+    {
+     "num": "24",
+     "name": "SDRV",
+     "x": 655,
+     "y": 630
+    },
+    {
+     "num": "25",
+     "name": "SYS",
+     "x": 655,
+     "y": 640
+    },
+    {
+     "num": "26",
+     "name": "SW2",
+     "x": 655,
+     "y": 650
+    },
+    {
+     "num": "27",
+     "name": "GND",
+     "x": 655,
+     "y": 660
+    },
+    {
+     "num": "28",
+     "name": "SW1",
+     "x": 655,
+     "y": 670
+    },
+    {
+     "num": "29",
+     "name": "PMID",
+     "x": 655,
+     "y": 680
+    }
+   ],
+   "value": "BQ25792",
+   "lcsc": "C2862876",
+   "mpn": "BQ25792RQMR",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "00c1dc5321c81231"
+  },
+  {
+   "type": "part",
+   "des": "J_CHG",
+   "x": 50,
+   "y": 640,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 30,
+     "y": 645
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 30,
+     "y": 635
+    }
+   ],
+   "value": "CHG IN (wire pads)",
+   "lcsc": "C492401",
+   "mpn": "PZ254V-11-02P",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "577b40f278b202b2"
+  },
+  {
+   "type": "part",
+   "des": "D_TVS",
+   "x": 120,
+   "y": 640,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 120,
+     "y": 625
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 120,
+     "y": 655
+    }
+   ],
+   "value": "SMF15A",
+   "lcsc": "C2900732",
+   "mpn": "SMF15A",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "1f3491a98d362f1b"
+  },
+  {
+   "type": "part",
+   "des": "CIN1",
+   "x": 180,
+   "y": 640,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 180,
+     "y": 620
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 180,
+     "y": 660
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CIN2",
+   "x": 235,
+   "y": 640,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 235,
+     "y": 620
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 235,
+     "y": 660
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CIN3",
+   "x": 290,
+   "y": 640,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 290,
+     "y": 660
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 290,
+     "y": 620
+    }
+   ],
+   "value": "0.1uF",
+   "lcsc": "C1591",
+   "mpn": "CL10B104KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "b807779ef4ddfc95"
+  },
+  {
+   "type": "part",
+   "des": "CPM1",
+   "x": 120,
+   "y": 510,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 120,
+     "y": 490
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 120,
+     "y": 530
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CPM2",
+   "x": 175,
+   "y": 510,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 175,
+     "y": 490
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 175,
+     "y": 530
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CPM3",
+   "x": 230,
+   "y": 510,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 230,
+     "y": 490
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 230,
+     "y": 530
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CPM4",
+   "x": 285,
+   "y": 510,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 285,
+     "y": 530
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 285,
+     "y": 490
+    }
+   ],
+   "value": "0.1uF",
+   "lcsc": "C1591",
+   "mpn": "CL10B104KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "b807779ef4ddfc95"
+  },
+  {
+   "type": "part",
+   "des": "CSY1",
+   "x": 880,
+   "y": 690,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 880,
+     "y": 670
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 880,
+     "y": 710
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CSY2",
+   "x": 925,
+   "y": 690,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 925,
+     "y": 670
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 925,
+     "y": 710
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CSY3",
+   "x": 970,
+   "y": 690,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 970,
+     "y": 670
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 970,
+     "y": 710
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CSY4",
+   "x": 1015,
+   "y": 690,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 1015,
+     "y": 670
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 1015,
+     "y": 710
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CSY5",
+   "x": 1060,
+   "y": 690,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 1060,
+     "y": 670
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 1060,
+     "y": 710
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CSY6",
+   "x": 1105,
+   "y": 690,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 1105,
+     "y": 710
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 1105,
+     "y": 670
+    }
+   ],
+   "value": "0.1uF",
+   "lcsc": "C1591",
+   "mpn": "CL10B104KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "b807779ef4ddfc95"
+  },
+  {
+   "type": "part",
+   "des": "CBA1",
+   "x": 890,
+   "y": 550,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 890,
+     "y": 530
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 890,
+     "y": 570
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CBA2",
+   "x": 940,
+   "y": 550,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 940,
+     "y": 530
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 940,
+     "y": 570
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "RBP",
+   "x": 1060,
+   "y": 550,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 1060,
+     "y": 530
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 1060,
+     "y": 570
+    }
+   ],
+   "value": "100",
+   "lcsc": "C22775",
+   "mpn": "0603WAF1000T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "59f0de84dd751d57"
+  },
+  {
+   "type": "part",
+   "des": "L1",
+   "x": 980,
+   "y": 380,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 1000,
+     "y": 380
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 960,
+     "y": 380
+    }
+   ],
+   "value": "1uH",
+   "lcsc": "C87572",
+   "mpn": "SPM6530T-1R0M120",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "e305eb25bc349644"
+  },
+  {
+   "type": "part",
+   "des": "CBT1",
+   "x": 870,
+   "y": 330,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 870,
+     "y": 345
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 870,
+     "y": 315
+    }
+   ],
+   "value": "47nF",
+   "lcsc": "C1622",
+   "mpn": "CL10B473KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "a6502bc38aa5f3ab"
+  },
+  {
+   "type": "part",
+   "des": "CBT2",
+   "x": 1090,
+   "y": 330,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 1090,
+     "y": 345
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 1090,
+     "y": 315
+    }
+   ],
+   "value": "47nF",
+   "lcsc": "C1622",
+   "mpn": "CL10B473KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "a6502bc38aa5f3ab"
+  },
+  {
+   "type": "part",
+   "des": "RPROG",
+   "x": 70,
+   "y": 300,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 70,
+     "y": 280
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 70,
+     "y": 320
+    }
+   ],
+   "value": "6.04k",
+   "lcsc": "C25977",
+   "mpn": "0603WAF6041T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "f7b90f42275d80ff"
+  },
+  {
+   "type": "part",
+   "des": "RIL1",
+   "x": 190,
+   "y": 360,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 190,
+     "y": 340
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 190,
+     "y": 380
+    }
+   ],
+   "value": "127k",
+   "lcsc": "C22869",
+   "mpn": "0603WAF1273T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3bb33b41674dc3f5"
+  },
+  {
+   "type": "part",
+   "des": "RIL2",
+   "x": 190,
+   "y": 220,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 190,
+     "y": 200
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 190,
+     "y": 240
+    }
+   ],
+   "value": "100k",
+   "lcsc": "C25803",
+   "mpn": "0603WAF1003T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "ae6ae5c6c65d325c"
+  },
+  {
+   "type": "part",
+   "des": "RTS1",
+   "x": 340,
+   "y": 360,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 340,
+     "y": 340
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 340,
+     "y": 380
+    }
+   ],
+   "value": "5.23k",
+   "lcsc": "C23068",
+   "mpn": "0603WAF5231T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "555eeff6a7dde637"
+  },
+  {
+   "type": "part",
+   "des": "RTS2",
+   "x": 340,
+   "y": 220,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 340,
+     "y": 200
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 340,
+     "y": 240
+    }
+   ],
+   "value": "30.1k",
+   "lcsc": "C23000",
+   "mpn": "0603WAF3012T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "5fcdcd7b73536e02"
+  },
+  {
+   "type": "part",
+   "des": "RT1",
+   "x": 420,
+   "y": 220,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 420,
+     "y": 200
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 420,
+     "y": 240
+    }
+   ],
+   "value": "10k NTC",
+   "lcsc": "C13564",
+   "mpn": "NCP18XH103F03RB",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "6655fd8e038ffc10"
+  },
+  {
+   "type": "part",
+   "des": "RCE",
+   "x": 520,
+   "y": 300,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 520,
+     "y": 280
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 520,
+     "y": 320
+    }
+   ],
+   "value": "10k",
+   "lcsc": "C25804",
+   "mpn": "0603WAF1002T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "fdd1149ef613be6a"
+  },
+  {
+   "type": "part",
+   "des": "RST",
+   "x": 620,
+   "y": 360,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 620,
+     "y": 340
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 620,
+     "y": 380
+    }
+   ],
+   "value": "2.2k",
+   "lcsc": "C4190",
+   "mpn": "0603WAF2201T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "50526698947ba59e"
+  },
+  {
+   "type": "part",
+   "des": "DST",
+   "x": 620,
+   "y": 220,
+   "rot": 90,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "K",
+     "x": 620,
+     "y": 200
+    },
+    {
+     "num": "1",
+     "name": "A",
+     "x": 620,
+     "y": 240
+    }
+   ],
+   "value": "STAT",
+   "lcsc": "C2286",
+   "mpn": "KT-0603R",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "ac2acf317cb907f7"
+  },
+  {
+   "type": "part",
+   "des": "CREGN",
+   "x": 700,
+   "y": 300,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 700,
+     "y": 320
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 700,
+     "y": 280
+    }
+   ],
+   "value": "4.7uF",
+   "lcsc": "C19666",
+   "mpn": "CL10A475KO8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "ac69ceff572ede3c"
+  },
+  {
+   "type": "part",
+   "des": "CSD",
+   "x": 760,
+   "y": 300,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 760,
+     "y": 315
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 760,
+     "y": 285
+    }
+   ],
+   "value": "1nF",
+   "lcsc": "C1588",
+   "mpn": "CL10B102KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "d59f372ae04cd1f2"
+  }
+ ],
+ "netports": [],
+ "netflags": [],
+ "others": [
+  {
+   "type": "sheet",
+   "des": null,
+   "x": 0,
+   "y": 0,
+   "rot": 0,
+   "mirror": false,
+   "net": null
+  }
+ ],
+ "wires": [
+  {
+   "net": "STAT",
+   "pts": [
+    [
+     495,
+     685
+    ],
+    [
+     525,
+     685
+    ]
+   ]
+  },
+  {
+   "net": "VBUS",
+   "pts": [
+    [
+     495,
+     675
+    ],
+    [
+     525,
+     675
+    ]
+   ]
+  },
+  {
+   "net": "VBUS",
+   "pts": [
+    [
+     495,
+     665
+    ],
+    [
+     525,
+     665
+    ]
+   ]
+  },
+  {
+   "net": "BTST1",
+   "pts": [
+    [
+     495,
+     655
+    ],
+    [
+     525,
+     655
+    ]
+   ]
+  },
+  {
+   "net": "REGN",
+   "pts": [
+    [
+     495,
+     645
+    ],
+    [
+     525,
+     645
+    ]
+   ]
+  },
+  {
+   "net": "VBUS",
+   "pts": [
+    [
+     495,
+     615
+    ],
+    [
+     525,
+     615
+    ]
+   ]
+  },
+  {
+   "net": "VBUS",
+   "pts": [
+    [
+     495,
+     605
+    ],
+    [
+     525,
+     605
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     495,
+     595
+    ],
+    [
+     525,
+     595
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     495,
+     585
+    ],
+    [
+     525,
+     585
+    ]
+   ]
+  },
+  {
+   "net": "CE",
+   "pts": [
+    [
+     495,
+     565
+    ],
+    [
+     525,
+     565
+    ]
+   ]
+  },
+  {
+   "net": "I2C_SCL",
+   "pts": [
+    [
+     495,
+     555
+    ],
+    [
+     525,
+     555
+    ]
+   ]
+  },
+  {
+   "net": "I2C_SDA",
+   "pts": [
+    [
+     495,
+     545
+    ],
+    [
+     525,
+     545
+    ]
+   ]
+  },
+  {
+   "net": "TS",
+   "pts": [
+    [
+     685,
+     550
+    ],
+    [
+     655,
+     550
+    ]
+   ]
+  },
+  {
+   "net": "ILIM_HIZ",
+   "pts": [
+    [
+     685,
+     560
+    ],
+    [
+     655,
+     560
+    ]
+   ]
+  },
+  {
+   "net": "BATP",
+   "pts": [
+    [
+     685,
+     570
+    ],
+    [
+     655,
+     570
+    ]
+   ]
+  },
+  {
+   "net": "BTST2",
+   "pts": [
+    [
+     685,
+     580
+    ],
+    [
+     655,
+     580
+    ]
+   ]
+  },
+  {
+   "net": "PROG",
+   "pts": [
+    [
+     685,
+     590
+    ],
+    [
+     655,
+     590
+    ]
+   ]
+  },
+  {
+   "net": "CHG_INT",
+   "pts": [
+    [
+     685,
+     600
+    ],
+    [
+     655,
+     600
+    ]
+   ]
+  },
+  {
+   "net": "PACK_P",
+   "pts": [
+    [
+     685,
+     610
+    ],
+    [
+     655,
+     610
+    ]
+   ]
+  },
+  {
+   "net": "PACK_P",
+   "pts": [
+    [
+     685,
+     620
+    ],
+    [
+     655,
+     620
+    ]
+   ]
+  },
+  {
+   "net": "SDRV",
+   "pts": [
+    [
+     685,
+     630
+    ],
+    [
+     655,
+     630
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     685,
+     640
+    ],
+    [
+     655,
+     640
+    ]
+   ]
+  },
+  {
+   "net": "SW2",
+   "pts": [
+    [
+     685,
+     650
+    ],
+    [
+     655,
+     650
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     685,
+     660
+    ],
+    [
+     655,
+     660
+    ]
+   ]
+  },
+  {
+   "net": "SW1",
+   "pts": [
+    [
+     685,
+     670
+    ],
+    [
+     655,
+     670
+    ]
+   ]
+  },
+  {
+   "net": "PMID",
+   "pts": [
+    [
+     685,
+     680
+    ],
+    [
+     655,
+     680
+    ]
+   ]
+  },
+  {
+   "net": "VBUS",
+   "pts": [
+    [
+     30,
+     700
+    ],
+    [
+     30,
+     645
+    ],
+    [
+     30,
+     700
+    ],
+    [
+     120,
+     700
+    ],
+    [
+     120,
+     700
+    ],
+    [
+     120,
+     655
+    ],
+    [
+     120,
+     700
+    ],
+    [
+     180,
+     700
+    ],
+    [
+     180,
+     700
+    ],
+    [
+     180,
+     660
+    ],
+    [
+     180,
+     700
+    ],
+    [
+     235,
+     700
+    ],
+    [
+     235,
+     700
+    ],
+    [
+     235,
+     660
+    ],
+    [
+     235,
+     700
+    ],
+    [
+     290,
+     700
+    ],
+    [
+     290,
+     700
+    ],
+    [
+     290,
+     660
+    ],
+    [
+     350,
+     700
+    ],
+    [
+     290,
+     700
+    ],
+    [
+     350,
+     710
+    ],
+    [
+     350,
+     700
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     30,
+     625
+    ],
+    [
+     30,
+     635
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     120,
+     615
+    ],
+    [
+     120,
+     625
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     180,
+     610
+    ],
+    [
+     180,
+     620
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     235,
+     610
+    ],
+    [
+     235,
+     620
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     290,
+     610
+    ],
+    [
+     290,
+     620
+    ]
+   ]
+  },
+  {
+   "net": "PMID",
+   "pts": [
+    [
+     350,
+     570
+    ],
+    [
+     350,
+     560
+    ],
+    [
+     350,
+     560
+    ],
+    [
+     285,
+     560
+    ],
+    [
+     285,
+     560
+    ],
+    [
+     285,
+     530
+    ],
+    [
+     230,
+     560
+    ],
+    [
+     285,
+     560
+    ],
+    [
+     230,
+     560
+    ],
+    [
+     230,
+     530
+    ],
+    [
+     175,
+     560
+    ],
+    [
+     230,
+     560
+    ],
+    [
+     175,
+     560
+    ],
+    [
+     175,
+     530
+    ],
+    [
+     120,
+     560
+    ],
+    [
+     175,
+     560
+    ],
+    [
+     120,
+     560
+    ],
+    [
+     120,
+     530
+    ],
+    [
+     90,
+     560
+    ],
+    [
+     120,
+     560
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     120,
+     480
+    ],
+    [
+     120,
+     490
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     175,
+     480
+    ],
+    [
+     175,
+     490
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     230,
+     480
+    ],
+    [
+     230,
+     490
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     285,
+     480
+    ],
+    [
+     285,
+     490
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     1130,
+     740
+    ],
+    [
+     1105,
+     740
+    ],
+    [
+     1105,
+     740
+    ],
+    [
+     1105,
+     710
+    ],
+    [
+     1060,
+     740
+    ],
+    [
+     1105,
+     740
+    ],
+    [
+     1060,
+     740
+    ],
+    [
+     1060,
+     710
+    ],
+    [
+     1015,
+     740
+    ],
+    [
+     1060,
+     740
+    ],
+    [
+     1015,
+     740
+    ],
+    [
+     1015,
+     710
+    ],
+    [
+     970,
+     740
+    ],
+    [
+     1015,
+     740
+    ],
+    [
+     970,
+     740
+    ],
+    [
+     970,
+     710
+    ],
+    [
+     925,
+     740
+    ],
+    [
+     970,
+     740
+    ],
+    [
+     925,
+     740
+    ],
+    [
+     925,
+     710
+    ],
+    [
+     880,
+     740
+    ],
+    [
+     925,
+     740
+    ],
+    [
+     880,
+     740
+    ],
+    [
+     880,
+     710
+    ],
+    [
+     850,
+     740
+    ],
+    [
+     880,
+     740
+    ],
+    [
+     850,
+     750
+    ],
+    [
+     850,
+     740
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     880,
+     660
+    ],
+    [
+     880,
+     670
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     925,
+     660
+    ],
+    [
+     925,
+     670
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     970,
+     660
+    ],
+    [
+     970,
+     670
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     1015,
+     660
+    ],
+    [
+     1015,
+     670
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     1060,
+     660
+    ],
+    [
+     1060,
+     670
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     1105,
+     660
+    ],
+    [
+     1105,
+     670
+    ]
+   ]
+  },
+  {
+   "net": "PACK_P",
+   "pts": [
+    [
+     1130,
+     600
+    ],
+    [
+     1060,
+     600
+    ],
+    [
+     1060,
+     600
+    ],
+    [
+     1060,
+     570
+    ],
+    [
+     940,
+     600
+    ],
+    [
+     1060,
+     600
+    ],
+    [
+     940,
+     600
+    ],
+    [
+     940,
+     570
+    ],
+    [
+     890,
+     600
+    ],
+    [
+     940,
+     600
+    ],
+    [
+     890,
+     600
+    ],
+    [
+     890,
+     570
+    ],
+    [
+     850,
+     600
+    ],
+    [
+     890,
+     600
+    ],
+    [
+     850,
+     610
+    ],
+    [
+     850,
+     600
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     890,
+     520
+    ],
+    [
+     890,
+     530
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     940,
+     520
+    ],
+    [
+     940,
+     530
+    ]
+   ]
+  },
+  {
+   "net": "BATP",
+   "pts": [
+    [
+     1060,
+     520
+    ],
+    [
+     1060,
+     530
+    ]
+   ]
+  },
+  {
+   "net": "SW1",
+   "pts": [
+    [
+     930,
+     380
+    ],
+    [
+     960,
+     380
+    ]
+   ]
+  },
+  {
+   "net": "SW2",
+   "pts": [
+    [
+     1030,
+     380
+    ],
+    [
+     1000,
+     380
+    ]
+   ]
+  },
+  {
+   "net": "BTST1",
+   "pts": [
+    [
+     870,
+     355
+    ],
+    [
+     870,
+     345
+    ]
+   ]
+  },
+  {
+   "net": "SW1",
+   "pts": [
+    [
+     870,
+     305
+    ],
+    [
+     870,
+     315
+    ]
+   ]
+  },
+  {
+   "net": "BTST2",
+   "pts": [
+    [
+     1090,
+     355
+    ],
+    [
+     1090,
+     345
+    ]
+   ]
+  },
+  {
+   "net": "SW2",
+   "pts": [
+    [
+     1090,
+     305
+    ],
+    [
+     1090,
+     315
+    ]
+   ]
+  },
+  {
+   "net": "PROG",
+   "pts": [
+    [
+     70,
+     330
+    ],
+    [
+     70,
+     320
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     70,
+     270
+    ],
+    [
+     70,
+     280
+    ]
+   ]
+  },
+  {
+   "net": "REGN",
+   "pts": [
+    [
+     190,
+     390
+    ],
+    [
+     190,
+     380
+    ]
+   ]
+  },
+  {
+   "net": "ILIM_HIZ",
+   "pts": [
+    [
+     190,
+     340
+    ],
+    [
+     190,
+     290
+    ],
+    [
+     240,
+     290
+    ],
+    [
+     190,
+     290
+    ],
+    [
+     190,
+     240
+    ],
+    [
+     190,
+     290
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     190,
+     190
+    ],
+    [
+     190,
+     200
+    ]
+   ]
+  },
+  {
+   "net": "REGN",
+   "pts": [
+    [
+     340,
+     390
+    ],
+    [
+     340,
+     380
+    ]
+   ]
+  },
+  {
+   "net": "TS",
+   "pts": [
+    [
+     340,
+     340
+    ],
+    [
+     340,
+     290
+    ],
+    [
+     290,
+     290
+    ],
+    [
+     340,
+     290
+    ],
+    [
+     340,
+     240
+    ],
+    [
+     340,
+     290
+    ],
+    [
+     420,
+     290
+    ],
+    [
+     340,
+     290
+    ],
+    [
+     420,
+     240
+    ],
+    [
+     420,
+     290
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     340,
+     190
+    ],
+    [
+     340,
+     200
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     420,
+     190
+    ],
+    [
+     420,
+     200
+    ]
+   ]
+  },
+  {
+   "net": "CE",
+   "pts": [
+    [
+     520,
+     330
+    ],
+    [
+     520,
+     320
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     520,
+     270
+    ],
+    [
+     520,
+     280
+    ]
+   ]
+  },
+  {
+   "net": "REGN",
+   "pts": [
+    [
+     620,
+     390
+    ],
+    [
+     620,
+     380
+    ]
+   ]
+  },
+  {
+   "net": "STAT_A",
+   "pts": [
+    [
+     620,
+     240
+    ],
+    [
+     620,
+     340
+    ]
+   ]
+  },
+  {
+   "net": "STAT",
+   "pts": [
+    [
+     620,
+     190
+    ],
+    [
+     620,
+     200
+    ]
+   ]
+  },
+  {
+   "net": "REGN",
+   "pts": [
+    [
+     700,
+     330
+    ],
+    [
+     700,
+     320
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     700,
+     270
+    ],
+    [
+     700,
+     280
+    ]
+   ]
+  },
+  {
+   "net": "SDRV",
+   "pts": [
+    [
+     760,
+     325
+    ],
+    [
+     760,
+     315
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     760,
+     275
+    ],
+    [
+     760,
+     285
+    ]
+   ]
+  }
+ ],
+ "rects": [
+  {
+   "x": 20,
+   "yRead": -790,
+   "topY": 790,
+   "w": 350,
+   "h": 330,
+   "color": null,
+   "lineType": 1
+  },
+  {
+   "x": 380,
+   "yRead": -790,
+   "topY": 790,
+   "w": 420,
+   "h": 330,
+   "color": null,
+   "lineType": 1
+  },
+  {
+   "x": 810,
+   "yRead": -790,
+   "topY": 790,
+   "w": 340,
+   "h": 330,
+   "color": null,
+   "lineType": 1
+  },
+  {
+   "x": 810,
+   "yRead": -450,
+   "topY": 450,
+   "w": 340,
+   "h": 200,
+   "color": null,
+   "lineType": 1
+  },
+  {
+   "x": 20,
+   "yRead": -450,
+   "topY": 450,
+   "w": 780,
+   "h": 420,
+   "color": null,
+   "lineType": 1
+  }
+ ],
+ "texts": [
+  {
+   "content": "充電入力（線をはんだ付けする 2 穴、5〜12 V）",
+   "x": 25,
+   "y": 778,
+   "size": 10,
+   "bold": true,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "充電 IC  U1 BQ25792",
+   "x": 385,
+   "y": 778,
+   "size": 10,
+   "bold": true,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "出力（VSYS → 基板A、PACK_P → 保護部）",
+   "x": 815,
+   "y": 778,
+   "size": 10,
+   "bold": true,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "電力段（インダクタ、ブートストラップ）",
+   "x": 815,
+   "y": 438,
+   "size": 10,
+   "bold": true,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "設定（PROG、入力電流、温度、CE、STAT）と REGN",
+   "x": 25,
+   "y": 438,
+   "size": 10,
+   "bold": true,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "STAT",
+   "x": 476,
+   "y": 682,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VBUS",
+   "x": 476,
+   "y": 672,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VBUS",
+   "x": 476,
+   "y": 662,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "BTST1",
+   "x": 471,
+   "y": 652,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "REGN",
+   "x": 476,
+   "y": 642,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VBUS",
+   "x": 476,
+   "y": 612,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VBUS",
+   "x": 476,
+   "y": 602,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 474,
+   "y": 592,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 474,
+   "y": 582,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "CE",
+   "x": 484,
+   "y": 562,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "I2C_SCL",
+   "x": 463,
+   "y": 552,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "I2C_SDA",
+   "x": 463,
+   "y": 542,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "TS",
+   "x": 688,
+   "y": 547,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "ILIM_HIZ",
+   "x": 688,
+   "y": 557,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "BATP",
+   "x": 688,
+   "y": 567,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "BTST2",
+   "x": 688,
+   "y": 577,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PROG",
+   "x": 688,
+   "y": 587,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "CHG_INT",
+   "x": 688,
+   "y": 597,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PACK_P",
+   "x": 688,
+   "y": 607,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PACK_P",
+   "x": 688,
+   "y": 617,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "SDRV",
+   "x": 688,
+   "y": 627,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 688,
+   "y": 637,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "SW2",
+   "x": 688,
+   "y": 647,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 688,
+   "y": 657,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "SW1",
+   "x": 688,
+   "y": 667,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PMID",
+   "x": 688,
+   "y": 677,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "NC",
+   "x": 500,
+   "y": 638,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "NC",
+   "x": 500,
+   "y": 628,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "NC",
+   "x": 500,
+   "y": 578,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VBUS",
+   "x": 342,
+   "y": 713,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 22,
+   "y": 615,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "J_CHG：PH 2P の線をはんだ付け（部品なし）",
+   "x": 30,
+   "y": 590,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 112,
+   "y": 605,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 172,
+   "y": 600,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 227,
+   "y": 600,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 282,
+   "y": 600,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PMID",
+   "x": 342,
+   "y": 573,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 112,
+   "y": 470,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 167,
+   "y": 470,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 222,
+   "y": 470,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 277,
+   "y": 470,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 842,
+   "y": 753,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 872,
+   "y": 650,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 917,
+   "y": 650,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 962,
+   "y": 650,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 1007,
+   "y": 650,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 1052,
+   "y": 650,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 1097,
+   "y": 650,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PACK_P",
+   "x": 838,
+   "y": 613,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 882,
+   "y": 510,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 932,
+   "y": 510,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "BATP",
+   "x": 1051,
+   "y": 509,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "BATP：電池の＋を検出",
+   "x": 1080,
+   "y": 520,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "SW1",
+   "x": 915,
+   "y": 377,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "SW2",
+   "x": 1033,
+   "y": 377,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "BTST1",
+   "x": 858,
+   "y": 358,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "SW1",
+   "x": 863,
+   "y": 294,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "BTST2",
+   "x": 1078,
+   "y": 358,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "SW2",
+   "x": 1083,
+   "y": 294,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PROG",
+   "x": 61,
+   "y": 333,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 62,
+   "y": 260,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PROG 6.04k",
+   "x": 35,
+   "y": 410,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "2S / 1.5 MHz",
+   "x": 35,
+   "y": 400,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "REGN",
+   "x": 182,
+   "y": 393,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "ILIM_HIZ",
+   "x": 243,
+   "y": 287,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 182,
+   "y": 180,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "入力電流の上限",
+   "x": 150,
+   "y": 410,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "REGN",
+   "x": 332,
+   "y": 393,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "TS",
+   "x": 279,
+   "y": 287,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 332,
+   "y": 180,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 412,
+   "y": 180,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "温度 TS（NTC は基板上）",
+   "x": 300,
+   "y": 410,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "CE",
+   "x": 515,
+   "y": 333,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 512,
+   "y": 260,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "CE：L で充電",
+   "x": 480,
+   "y": 410,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "REGN",
+   "x": 612,
+   "y": 393,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "STAT",
+   "x": 611,
+   "y": 179,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "充電表示 LED",
+   "x": 580,
+   "y": 410,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "REGN",
+   "x": 692,
+   "y": 333,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 692,
+   "y": 260,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "SDRV",
+   "x": 751,
+   "y": 328,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 752,
+   "y": 265,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "REGN / SDRV",
+   "x": 680,
+   "y": 410,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  }
+ ],
+ "counts": {
+  "parts": 33,
+  "netports": 0,
+  "netflags": 0,
+  "wires": 72,
+  "rects": 5,
+  "texts": 88
+ }
+}

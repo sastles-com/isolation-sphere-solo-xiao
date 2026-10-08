@@ -1,0 +1,2087 @@
+{
+ "project": {
+  "uuid": "7e4e4dc8a39b4a638569e10a608e76b6",
+  "name": "power-2s-xiao"
+ },
+ "doc": {
+  "uuid": "e671a2341d4b3a66",
+  "parentProjectUuid": "7e4e4dc8a39b4a638569e10a608e76b6"
+ },
+ "parts": [
+  {
+   "type": "part",
+   "des": "U3",
+   "x": 160,
+   "y": 640,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "VIN",
+     "x": 115,
+     "y": 655
+    },
+    {
+     "num": "2",
+     "name": "PB#",
+     "x": 115,
+     "y": 645
+    },
+    {
+     "num": "3",
+     "name": "ONT",
+     "x": 115,
+     "y": 635
+    },
+    {
+     "num": "4",
+     "name": "GND",
+     "x": 115,
+     "y": 625
+    },
+    {
+     "num": "5",
+     "name": "INT#",
+     "x": 205,
+     "y": 625
+    },
+    {
+     "num": "6",
+     "name": "EN/EN#",
+     "x": 205,
+     "y": 635
+    },
+    {
+     "num": "7",
+     "name": "PDT",
+     "x": 205,
+     "y": 645
+    },
+    {
+     "num": "8",
+     "name": "KILL#",
+     "x": 205,
+     "y": 655
+    }
+   ],
+   "value": "LTC2954-1",
+   "lcsc": "C683782",
+   "mpn": "LTC2954CTS8-1#TRPBF",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "77b857c5d3d6a8d3"
+  },
+  {
+   "type": "part",
+   "des": "RPB",
+   "x": 330,
+   "y": 720,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 350,
+     "y": 720
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 310,
+     "y": 720
+    }
+   ],
+   "value": "5.1k",
+   "lcsc": "C23186",
+   "mpn": "0603WAF5101T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "dbff2b37be528bb3"
+  },
+  {
+   "type": "part",
+   "des": "CPB",
+   "x": 420,
+   "y": 640,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 420,
+     "y": 660
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 420,
+     "y": 620
+    }
+   ],
+   "value": "0.1uF",
+   "lcsc": "C1591",
+   "mpn": "CL10B104KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "b807779ef4ddfc95"
+  },
+  {
+   "type": "part",
+   "des": "CONT",
+   "x": 300,
+   "y": 520,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 300,
+     "y": 500
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 300,
+     "y": 540
+    }
+   ],
+   "value": "0.33uF",
+   "lcsc": "C159798",
+   "mpn": "CL10B334KO8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "8339cf78341f98fe"
+  },
+  {
+   "type": "part",
+   "des": "CPDT1",
+   "x": 380,
+   "y": 520,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 380,
+     "y": 500
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 380,
+     "y": 540
+    }
+   ],
+   "value": "1uF",
+   "lcsc": "C15849",
+   "mpn": "CL10A105KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "37e3be77928a2add"
+  },
+  {
+   "type": "part",
+   "des": "CPDT2",
+   "x": 460,
+   "y": 520,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 460,
+     "y": 535
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 460,
+     "y": 505
+    }
+   ],
+   "value": "0.22uF",
+   "lcsc": "C64705",
+   "mpn": "CL10B224KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "1611f55ff6a1f036"
+  },
+  {
+   "type": "part",
+   "des": "CVIN3",
+   "x": 60,
+   "y": 520,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 60,
+     "y": 540
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 60,
+     "y": 500
+    }
+   ],
+   "value": "0.1uF",
+   "lcsc": "C1591",
+   "mpn": "CL10B104KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "b807779ef4ddfc95"
+  },
+  {
+   "type": "part",
+   "des": "RKILL",
+   "x": 520,
+   "y": 640,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 520,
+     "y": 620
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 520,
+     "y": 660
+    }
+   ],
+   "value": "100k",
+   "lcsc": "C25803",
+   "mpn": "0603WAF1003T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "ae6ae5c6c65d325c"
+  },
+  {
+   "type": "part",
+   "des": "U4",
+   "x": 760,
+   "y": 660,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "IN",
+     "x": 720,
+     "y": 670
+    },
+    {
+     "num": "2",
+     "name": "GND",
+     "x": 720,
+     "y": 660
+    },
+    {
+     "num": "3",
+     "name": "EN",
+     "x": 720,
+     "y": 650
+    },
+    {
+     "num": "4",
+     "name": "NC",
+     "x": 800,
+     "y": 650
+    },
+    {
+     "num": "5",
+     "name": "OUT",
+     "x": 800,
+     "y": 670
+    }
+   ],
+   "value": "TPS70933",
+   "lcsc": "C89347",
+   "mpn": "TPS70933DBVR",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "a6f0b979c60086c0"
+  },
+  {
+   "type": "part",
+   "des": "CIN4",
+   "x": 920,
+   "y": 560,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 920,
+     "y": 540
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 920,
+     "y": 580
+    }
+   ],
+   "value": "1uF",
+   "lcsc": "C15849",
+   "mpn": "CL10A105KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "37e3be77928a2add"
+  },
+  {
+   "type": "part",
+   "des": "COUT4",
+   "x": 1010,
+   "y": 560,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 1010,
+     "y": 575
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 1010,
+     "y": 545
+    }
+   ],
+   "value": "2.2uF",
+   "lcsc": "C23630",
+   "mpn": "CL10A225KO8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "322027e71dfc206f"
+  },
+  {
+   "type": "part",
+   "des": "U5",
+   "x": 200,
+   "y": 230,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "8",
+     "name": "FB",
+     "x": 230,
+     "y": 250
+    },
+    {
+     "num": "7",
+     "name": "SS",
+     "x": 230,
+     "y": 240
+    },
+    {
+     "num": "6",
+     "name": "BST",
+     "x": 230,
+     "y": 230
+    },
+    {
+     "num": "5",
+     "name": "SW",
+     "x": 230,
+     "y": 220
+    },
+    {
+     "num": "4",
+     "name": "GND",
+     "x": 160,
+     "y": 220
+    },
+    {
+     "num": "3",
+     "name": "VIN",
+     "x": 160,
+     "y": 230
+    },
+    {
+     "num": "2",
+     "name": "EN",
+     "x": 160,
+     "y": 240
+    },
+    {
+     "num": "1",
+     "name": "RT",
+     "x": 160,
+     "y": 250
+    }
+   ],
+   "value": "TPS62933",
+   "lcsc": "C3200405",
+   "mpn": "TPS62933DRLR",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "51fd5d425562ecc3"
+  },
+  {
+   "type": "part",
+   "des": "CIN5",
+   "x": 400,
+   "y": 180,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 400,
+     "y": 160
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 400,
+     "y": 200
+    }
+   ],
+   "value": "10uF",
+   "lcsc": "C15850",
+   "mpn": "CL21A106KAYNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "3d68d0aa13ec26d2"
+  },
+  {
+   "type": "part",
+   "des": "CIN6",
+   "x": 460,
+   "y": 180,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 460,
+     "y": 200
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 460,
+     "y": 160
+    }
+   ],
+   "value": "0.1uF",
+   "lcsc": "C1591",
+   "mpn": "CL10B104KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "b807779ef4ddfc95"
+  },
+  {
+   "type": "part",
+   "des": "CSS",
+   "x": 520,
+   "y": 180,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 520,
+     "y": 195
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 520,
+     "y": 165
+    }
+   ],
+   "value": "10nF",
+   "lcsc": "C1589",
+   "mpn": "CL10B103KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "07d17c38303c8bf2"
+  },
+  {
+   "type": "part",
+   "des": "CBST2",
+   "x": 600,
+   "y": 180,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 600,
+     "y": 200
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 600,
+     "y": 160
+    }
+   ],
+   "value": "0.1uF",
+   "lcsc": "C1591",
+   "mpn": "CL10B104KB8NNNC",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "b807779ef4ddfc95"
+  },
+  {
+   "type": "part",
+   "des": "L2",
+   "x": 730,
+   "y": 300,
+   "rot": 0,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 750,
+     "y": 300
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 710,
+     "y": 300
+    }
+   ],
+   "value": "2.2uH",
+   "lcsc": "C279948",
+   "mpn": "SWPA4030S2R2NT",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "e3f149c5edd43ba3"
+  },
+  {
+   "type": "part",
+   "des": "RFT",
+   "x": 860,
+   "y": 250,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 860,
+     "y": 230
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 860,
+     "y": 270
+    }
+   ],
+   "value": "31.6k",
+   "lcsc": "C25967",
+   "mpn": "0603WAF3162T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "91d673e7ff50f005"
+  },
+  {
+   "type": "part",
+   "des": "RFB",
+   "x": 860,
+   "y": 130,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "2",
+     "name": "2",
+     "x": 860,
+     "y": 110
+    },
+    {
+     "num": "1",
+     "name": "1",
+     "x": 860,
+     "y": 150
+    }
+   ],
+   "value": "10k",
+   "lcsc": "C25804",
+   "mpn": "0603WAF1002T5E",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "fdd1149ef613be6a"
+  },
+  {
+   "type": "part",
+   "des": "COUT5",
+   "x": 980,
+   "y": 180,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 980,
+     "y": 200
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 980,
+     "y": 160
+    }
+   ],
+   "value": "22uF",
+   "lcsc": "C45783",
+   "mpn": "CL21A226MAQNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "42c1e9f46b07ad78"
+  },
+  {
+   "type": "part",
+   "des": "COUT6",
+   "x": 1050,
+   "y": 180,
+   "rot": 270,
+   "mirror": false,
+   "net": null,
+   "pins": [
+    {
+     "num": "1",
+     "name": "1",
+     "x": 1050,
+     "y": 200
+    },
+    {
+     "num": "2",
+     "name": "2",
+     "x": 1050,
+     "y": 160
+    }
+   ],
+   "value": "22uF",
+   "lcsc": "C45783",
+   "mpn": "CL21A226MAQNNNE",
+   "libUuid": "0819f05c4eef4c71ace90d822a990e87",
+   "symUuid": "42c1e9f46b07ad78"
+  }
+ ],
+ "netports": [],
+ "netflags": [],
+ "others": [
+  {
+   "type": "sheet",
+   "des": null,
+   "x": 0,
+   "y": 0,
+   "rot": 0,
+   "mirror": false,
+   "net": null
+  }
+ ],
+ "wires": [
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     85,
+     655
+    ],
+    [
+     115,
+     655
+    ]
+   ]
+  },
+  {
+   "net": "PB_F",
+   "pts": [
+    [
+     85,
+     645
+    ],
+    [
+     115,
+     645
+    ]
+   ]
+  },
+  {
+   "net": "ONT",
+   "pts": [
+    [
+     85,
+     635
+    ],
+    [
+     115,
+     635
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     85,
+     625
+    ],
+    [
+     115,
+     625
+    ]
+   ]
+  },
+  {
+   "net": "PWR_INT",
+   "pts": [
+    [
+     235,
+     625
+    ],
+    [
+     205,
+     625
+    ]
+   ]
+  },
+  {
+   "net": "MCU_EN",
+   "pts": [
+    [
+     235,
+     635
+    ],
+    [
+     205,
+     635
+    ]
+   ]
+  },
+  {
+   "net": "PDT",
+   "pts": [
+    [
+     235,
+     645
+    ],
+    [
+     205,
+     645
+    ]
+   ]
+  },
+  {
+   "net": "PWR_KILL",
+   "pts": [
+    [
+     235,
+     655
+    ],
+    [
+     205,
+     655
+    ]
+   ]
+  },
+  {
+   "net": "HALL_WAKE",
+   "pts": [
+    [
+     290,
+     720
+    ],
+    [
+     310,
+     720
+    ]
+   ]
+  },
+  {
+   "net": "PB_F",
+   "pts": [
+    [
+     370,
+     720
+    ],
+    [
+     350,
+     720
+    ]
+   ]
+  },
+  {
+   "net": "PB_F",
+   "pts": [
+    [
+     420,
+     670
+    ],
+    [
+     420,
+     660
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     420,
+     610
+    ],
+    [
+     420,
+     620
+    ]
+   ]
+  },
+  {
+   "net": "ONT",
+   "pts": [
+    [
+     300,
+     550
+    ],
+    [
+     300,
+     540
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     300,
+     490
+    ],
+    [
+     300,
+     500
+    ]
+   ]
+  },
+  {
+   "net": "PDT",
+   "pts": [
+    [
+     380,
+     550
+    ],
+    [
+     380,
+     540
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     380,
+     490
+    ],
+    [
+     380,
+     500
+    ]
+   ]
+  },
+  {
+   "net": "PDT",
+   "pts": [
+    [
+     460,
+     545
+    ],
+    [
+     460,
+     535
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     460,
+     495
+    ],
+    [
+     460,
+     505
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     60,
+     550
+    ],
+    [
+     60,
+     540
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     60,
+     490
+    ],
+    [
+     60,
+     500
+    ]
+   ]
+  },
+  {
+   "net": "3V3_MCU",
+   "pts": [
+    [
+     520,
+     670
+    ],
+    [
+     520,
+     660
+    ]
+   ]
+  },
+  {
+   "net": "PWR_KILL",
+   "pts": [
+    [
+     520,
+     610
+    ],
+    [
+     520,
+     620
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     690,
+     670
+    ],
+    [
+     720,
+     670
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     690,
+     660
+    ],
+    [
+     720,
+     660
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     690,
+     650
+    ],
+    [
+     720,
+     650
+    ]
+   ]
+  },
+  {
+   "net": "3V3_AON",
+   "pts": [
+    [
+     830,
+     670
+    ],
+    [
+     800,
+     670
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     920,
+     590
+    ],
+    [
+     920,
+     580
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     920,
+     530
+    ],
+    [
+     920,
+     540
+    ]
+   ]
+  },
+  {
+   "net": "3V3_AON",
+   "pts": [
+    [
+     1010,
+     585
+    ],
+    [
+     1010,
+     575
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     1010,
+     535
+    ],
+    [
+     1010,
+     545
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     130,
+     250
+    ],
+    [
+     160,
+     250
+    ]
+   ]
+  },
+  {
+   "net": "MCU_EN",
+   "pts": [
+    [
+     130,
+     240
+    ],
+    [
+     160,
+     240
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     130,
+     230
+    ],
+    [
+     160,
+     230
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     130,
+     220
+    ],
+    [
+     160,
+     220
+    ]
+   ]
+  },
+  {
+   "net": "M_SW",
+   "pts": [
+    [
+     260,
+     220
+    ],
+    [
+     230,
+     220
+    ]
+   ]
+  },
+  {
+   "net": "M_BST",
+   "pts": [
+    [
+     260,
+     230
+    ],
+    [
+     230,
+     230
+    ]
+   ]
+  },
+  {
+   "net": "M_SS",
+   "pts": [
+    [
+     260,
+     240
+    ],
+    [
+     230,
+     240
+    ]
+   ]
+  },
+  {
+   "net": "M_FB",
+   "pts": [
+    [
+     260,
+     250
+    ],
+    [
+     230,
+     250
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     400,
+     210
+    ],
+    [
+     400,
+     200
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     400,
+     150
+    ],
+    [
+     400,
+     160
+    ]
+   ]
+  },
+  {
+   "net": "VSYS",
+   "pts": [
+    [
+     460,
+     210
+    ],
+    [
+     460,
+     200
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     460,
+     150
+    ],
+    [
+     460,
+     160
+    ]
+   ]
+  },
+  {
+   "net": "M_SS",
+   "pts": [
+    [
+     520,
+     205
+    ],
+    [
+     520,
+     195
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     520,
+     155
+    ],
+    [
+     520,
+     165
+    ]
+   ]
+  },
+  {
+   "net": "M_BST",
+   "pts": [
+    [
+     600,
+     210
+    ],
+    [
+     600,
+     200
+    ]
+   ]
+  },
+  {
+   "net": "M_SW",
+   "pts": [
+    [
+     600,
+     150
+    ],
+    [
+     600,
+     160
+    ]
+   ]
+  },
+  {
+   "net": "M_SW",
+   "pts": [
+    [
+     690,
+     300
+    ],
+    [
+     710,
+     300
+    ]
+   ]
+  },
+  {
+   "net": "3V3_MCU",
+   "pts": [
+    [
+     770,
+     300
+    ],
+    [
+     750,
+     300
+    ]
+   ]
+  },
+  {
+   "net": "3V3_MCU",
+   "pts": [
+    [
+     860,
+     280
+    ],
+    [
+     860,
+     270
+    ]
+   ]
+  },
+  {
+   "net": "M_FB",
+   "pts": [
+    [
+     860,
+     230
+    ],
+    [
+     860,
+     190
+    ],
+    [
+     910,
+     190
+    ],
+    [
+     860,
+     190
+    ],
+    [
+     860,
+     150
+    ],
+    [
+     860,
+     190
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     860,
+     100
+    ],
+    [
+     860,
+     110
+    ]
+   ]
+  },
+  {
+   "net": "3V3_MCU",
+   "pts": [
+    [
+     980,
+     210
+    ],
+    [
+     980,
+     200
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     980,
+     150
+    ],
+    [
+     980,
+     160
+    ]
+   ]
+  },
+  {
+   "net": "3V3_MCU",
+   "pts": [
+    [
+     1050,
+     210
+    ],
+    [
+     1050,
+     200
+    ]
+   ]
+  },
+  {
+   "net": "GND",
+   "pts": [
+    [
+     1050,
+     150
+    ],
+    [
+     1050,
+     160
+    ]
+   ]
+  }
+ ],
+ "rects": [
+  {
+   "x": 20,
+   "yRead": -790,
+   "topY": 790,
+   "w": 560,
+   "h": 380,
+   "color": null,
+   "lineType": 1
+  },
+  {
+   "x": 590,
+   "yRead": -790,
+   "topY": 790,
+   "w": 560,
+   "h": 380,
+   "color": null,
+   "lineType": 1
+  },
+  {
+   "x": 20,
+   "yRead": -400,
+   "topY": 400,
+   "w": 1130,
+   "h": 370,
+   "color": null,
+   "lineType": 1
+  }
+ ],
+ "texts": [
+  {
+   "content": "電源 ON/OFF  U3 LTC2954-1（磁石の長押し）",
+   "x": 25,
+   "y": 778,
+   "size": 10,
+   "bold": true,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "常時オン 3.3 V  U4 TPS70933",
+   "x": 595,
+   "y": 778,
+   "size": 10,
+   "bold": true,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "MCU 用 3.3 V 降圧  U5 TPS62933（1.2 MHz、LTC2954 が EN を制御）",
+   "x": 25,
+   "y": 388,
+   "size": 10,
+   "bold": true,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 66,
+   "y": 652,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PB_F",
+   "x": 66,
+   "y": 642,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "ONT",
+   "x": 70,
+   "y": 632,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 64,
+   "y": 622,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PWR_INT",
+   "x": 238,
+   "y": 622,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "MCU_EN",
+   "x": 238,
+   "y": 632,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PDT",
+   "x": 238,
+   "y": 642,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PWR_KILL",
+   "x": 238,
+   "y": 652,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "HALL_WAKE",
+   "x": 250,
+   "y": 717,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PB_F",
+   "x": 373,
+   "y": 717,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PB_F",
+   "x": 411,
+   "y": 673,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 412,
+   "y": 600,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "HALL_WAKE：北極 DRV5032FC（磁石で L）",
+   "x": 300,
+   "y": 760,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "ONT",
+   "x": 293,
+   "y": 553,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 292,
+   "y": 480,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PDT",
+   "x": 373,
+   "y": 553,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 372,
+   "y": 480,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PDT",
+   "x": 453,
+   "y": 548,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 452,
+   "y": 485,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "ON 長押し 約 2.15 s",
+   "x": 270,
+   "y": 580,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "強制 OFF 約 7.9 s（1 + 0.22 uF）",
+   "x": 360,
+   "y": 580,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 51,
+   "y": 553,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 52,
+   "y": 480,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_MCU",
+   "x": 504,
+   "y": 673,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PWR_KILL",
+   "x": 502,
+   "y": 599,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "KILL は 3V3_MCU へプルアップ",
+   "x": 480,
+   "y": 700,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "EN（MCU_EN）は U5 の EN に直結（外付けプルアップなし。U5 の内部プルアップ 0.7 uA）",
+   "x": 40,
+   "y": 450,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "PWR_INT はテストパッドへ（任意）",
+   "x": 40,
+   "y": 440,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 671,
+   "y": 667,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 669,
+   "y": 657,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 671,
+   "y": 647,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_AON",
+   "x": 833,
+   "y": 667,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "NC",
+   "x": 805,
+   "y": 653,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 911,
+   "y": 593,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 912,
+   "y": 520,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_AON",
+   "x": 994,
+   "y": 588,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 1002,
+   "y": 525,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_AON：北極の DRV5032FC だけに給電（待機電流 1.4 uA）",
+   "x": 620,
+   "y": 470,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 109,
+   "y": 247,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "MCU_EN",
+   "x": 102,
+   "y": 237,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 111,
+   "y": 227,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 109,
+   "y": 217,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "M_SW",
+   "x": 263,
+   "y": 217,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "M_BST",
+   "x": 263,
+   "y": 227,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "M_SS",
+   "x": 263,
+   "y": 237,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "M_FB",
+   "x": 263,
+   "y": 247,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 391,
+   "y": 213,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 392,
+   "y": 140,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "VSYS",
+   "x": 451,
+   "y": 213,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 452,
+   "y": 140,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "M_SS",
+   "x": 511,
+   "y": 208,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 512,
+   "y": 145,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "M_BST",
+   "x": 588,
+   "y": 213,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "M_SW",
+   "x": 591,
+   "y": 139,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "M_SW",
+   "x": 671,
+   "y": 297,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_MCU",
+   "x": 773,
+   "y": 297,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_MCU",
+   "x": 844,
+   "y": 283,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "M_FB",
+   "x": 913,
+   "y": 187,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 852,
+   "y": 90,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_MCU",
+   "x": 964,
+   "y": 213,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 972,
+   "y": 140,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3V3_MCU",
+   "x": 1034,
+   "y": 213,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "GND",
+   "x": 1042,
+   "y": 140,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "RT = GND：1.2 MHz",
+   "x": 40,
+   "y": 360,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  },
+  {
+   "content": "3.3 V = 0.8 x (1 + 31.6k / 10k)",
+   "x": 800,
+   "y": 360,
+   "size": 7,
+   "bold": false,
+   "rot": 0,
+   "align": 6
+  }
+ ],
+ "counts": {
+  "parts": 21,
+  "netports": 0,
+  "netflags": 0,
+  "wires": 55,
+  "rects": 3,
+  "texts": 68
+ }
+}

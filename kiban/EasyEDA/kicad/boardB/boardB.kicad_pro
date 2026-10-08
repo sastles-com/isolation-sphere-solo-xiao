@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "filename": "boardB.kicad_pro",
+    "version": 3
+  },
+  "sheets": [
+    [
+      "fde9b7c9-3568-5b34-b8e6-a8d7174c8828",
+      "Root"
+    ],
+    [
+      "b17c2007-8ac3-5813-b909-6f41a65ba1a6",
+      "CHARGER"
+    ],
+    [
+      "83c56de2-2b08-545f-9e78-84d885169e86",
+      "PROTECTION"
+    ]
+  ]
+}

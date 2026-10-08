@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "filename": "boardA.kicad_pro",
+    "version": 3
+  },
+  "sheets": [
+    [
+      "af36042b-f1bb-520b-998b-f743abfc708c",
+      "Root"
+    ],
+    [
+      "c38c7f84-739c-56b8-b76a-7782a093698d",
+      "POWER"
+    ],
+    [
+      "e3960e4f-9e12-50ff-8904-2e8510166398",
+      "LED_IO"
+    ]
+  ]
+}
