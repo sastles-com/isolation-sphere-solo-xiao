@@ -57,6 +57,7 @@ return log;
 NETLIST = r"""
 const page = PAGE;
 if (page) await eda.dmt_EditorControl.openDocument(page);
+await eda.sch_Document.save();
 const f = await eda.sch_ManufactureData.getNetlistFile('n');
 if (!f) return null;
 return await f.text();
@@ -96,6 +97,7 @@ def place(specs, page=None):
 def nets(page=None):
     """ネットリストを {ネット名: [部品.ピン(ピン名), ...]} にして返す。ネットなしのピンは '(未接続)'。
     getNetlistFile() は、開いているページが属するボードの回路図全体（全ページ）を返す。
+    保存しないと古い内容が返るので、先に保存する。
     page で、対象のボードのページを指定する（別のボードを見ないように）。"""
     data = json.loads(run(NETLIST.replace('PAGE', json.dumps(page))))
     result = {}
