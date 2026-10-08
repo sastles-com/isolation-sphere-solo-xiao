@@ -116,6 +116,24 @@ board_a:
 
 board_b:
   role: battery_charge_bms
+  fuse:  # 決定（2026-10-08）：リセッタブル。球体を開けずに復帰できることを優先
+    part: SMD2920P500TF/16
+    manufacturer: PTTC
+    lcsc: C108585
+    package: 2920
+    ihold_A: 5.0
+    itrip_A: 10.0
+    vmax_V: 16
+    tripped_power_W: 2.0
+    placement: B_plus_series_near_J_CELL2_away_from_LiPo
+    rejected: [{part: SF-1206S500-2, lcsc: C913282, reason: one_time}]
+  protection_fet:
+    part: FS8205A
+    manufacturer: FUXINSEMI
+    lcsc: C908265
+    package: SOT-23-6
+    config: dual_N_common_drain
+    vgs_max_V: 12
   size_mm: [40, 40]
   position: lower_lipo_side
   component_sides:

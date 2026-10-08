@@ -79,6 +79,8 @@
 | `PWR_KILL` プルアップ | 100 kΩ → `3V3_MCU` | `interfaces.md` §5、§7 |
 | 残量計 / 保護 | BQ28Z620DRZR（VSON-12、LCSC C20345237） | `hardware_spec.md` §4 |
 | 電池コネクタ | JST XH 2P × 2（セルごと） | `easyeda_workflow.md` §5 |
+| ヒューズ | SMD2920P500TF/16（PTTC、LCSC C108585、リセッタブル） | `boardB_schematic_notes.md` §6 |
+| 保護 FET | FS8205A（FUXINSEMI、LCSC C908265、SOT-23-6） | `boardB_schematic_notes.md` §5。採用候補（ゲート余裕が小さい） |
 | 充電 IC | BQ25792RQMR（VQFN-29、LCSC C2862876） | `hardware_spec.md` §3 |
 | LED | WS2812C-2020-V6（LCSC C55109522、SMD2020-4P） | 確定。VDD 3.3〜5.3 V |
 
