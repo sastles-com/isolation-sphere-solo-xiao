@@ -23,10 +23,10 @@ battery_connection:
     x_out: 24.63
     half_y: 8.12
     legacy: {x_out: 25.0, half_y: 9.25}
-  board_b_outline_options:  # A↔B 7 mm のとき。40 角はそのままでは当たる
-    - {side: 37.0}
-    - {side: 40, corner_chamfer_min: 7}
-    - {side: 40, requires: core_inner_shell_redesign}
+  board_b_outline:  # 決定（2026-10-08）：隅を面取りした 40 mm 角。A↔B 7 mm で内殻に当たらない最小は 7 mm
+    side: 40
+    corner_chamfer: 8  # すき間 1.3 mm、面積 92%
+    alternatives_rejected: [{side: 37.0}]
   stack_order_north_to_south: [MCU, LiPo_N, mother_ring, LiPo_S, board_A, board_B]
   stack_gap_parts: Akizuki FH-1x6SG/RH (socket, 8.5 mm housing)
 
@@ -259,7 +259,6 @@ legacy_not_baseline:
   - MAX17049
 
 open_items:
-  - 基板Bの外形（37 mm 角 / 隅面取り / 内殻の再設計）
   - 基板Aの張り出しの向きとソケット位置
   - 電池の電線の経路（北のセル → 基板B）
   - 基板側の XH の形（横向き実装 / 電線 + 中継）
