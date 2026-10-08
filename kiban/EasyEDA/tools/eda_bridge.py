@@ -72,6 +72,8 @@ for (const c of parts) {
 }
 const wires = await eda.sch_PrimitiveWire.getAll();
 for (const w of wires) { await eda.sch_PrimitiveWire.delete(w); n++; }
+for (const t of await eda.sch_PrimitiveText.getAll()) { await eda.sch_PrimitiveText.delete(t); n++; }
+for (const r of await eda.sch_PrimitiveRectangle.getAll()) { await eda.sch_PrimitiveRectangle.delete(r); n++; }
 return n;
 """
 
