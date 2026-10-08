@@ -41,6 +41,8 @@ battery:
   cell_midpoint_available: true
 
 power_budget:
+  battery_current_limit_A: 2.0  # ユーザー決定（2026-10-08）。セルの PCM と 1.5C を避けるため
+  led_current_at_limit_A: {at_8V4: 3.6, at_7V4: 3.0, at_6V4: 2.5}
   led_output_W: 13.2   # 3.3 V × 4 A
   mcu_output_W: 3.3    # 3.3 V × 1 A
   assumed_buck_efficiency: 0.90
