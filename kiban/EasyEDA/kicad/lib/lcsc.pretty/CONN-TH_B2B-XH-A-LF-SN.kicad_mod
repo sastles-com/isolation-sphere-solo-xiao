@@ -1,0 +1,233 @@
+(footprint "CONN-TH_B2B-XH-A-LF-SN"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 -4 0)
+		(layer "F.SilkS")
+		(uuid "e67b7f70-d574-41ab-a94c-b6630dca630b")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "CONN-TH_B2B-XH-A-LF-SN"
+		(at 0 4 0)
+		(layer "F.Fab")
+		(uuid "064891a7-f3b6-4904-804c-bd4270948fbd")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "5da7a2fa-a06d-4470-84b2-7db7bd30b73b")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "7e13ac4d-48fe-4b6a-85cd-1c18ec802b27")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "LCSC Part" "C158012"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "eac42ecf-0138-4133-8776-4322b5ce9b6a")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr through_hole)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_line
+		(start -3.68 -3.43)
+		(end 3.68 -3.43)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "a5e99deb-dabf-4908-93f3-02eb36e67976")
+	)
+	(fp_line
+		(start -3.68 1.02)
+		(end -3.68 -3.43)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "1befc7d2-c739-4e23-9699-d20362901248")
+	)
+	(fp_line
+		(start -3.68 2.41)
+		(end -3.68 2.16)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "250334de-d7e5-4ef2-8883-4a16fc5190e8")
+	)
+	(fp_line
+		(start -3.68 2.41)
+		(end -2.67 2.41)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "cb3ed15b-9989-4bc9-8b81-2a25415fc5ae")
+	)
+	(fp_line
+		(start -1.27 2.41)
+		(end 1.27 2.41)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "a964075d-8849-4558-8de0-9eb6fb9330d3")
+	)
+	(fp_line
+		(start 3.68 -3.43)
+		(end 3.68 1.02)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "74171636-4300-4491-aa7d-c145f9c7c904")
+	)
+	(fp_line
+		(start 3.68 2.41)
+		(end 2.54 2.41)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "648d99e6-8200-4bbe-bf88-e2bfd19c8322")
+	)
+	(fp_line
+		(start 3.68 2.41)
+		(end 3.68 2.16)
+		(stroke
+			(width 0.25)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "62f2bb1a-2f95-44c5-a549-85fc5fb44cb1")
+	)
+	(fp_circle
+		(center 3.73 -3.53)
+		(end 3.76 -3.53)
+		(stroke
+			(width 0.06)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.SilkS")
+		(uuid "4bf31c01-04d3-416a-82cb-80d60581c6b9")
+	)
+	(fp_line
+		(start -3.7 -3.4)
+		(end 3.7 -3.4)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "f4e931c5-85d5-4550-b50f-8186f0137756")
+	)
+	(fp_line
+		(start -3.7 2.35)
+		(end -3.7 -3.4)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "8043f1a2-e61f-4040-9106-a8bf7a157de9")
+	)
+	(fp_line
+		(start 3.7 -3.4)
+		(end 3.7 2.35)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "461e07fd-1972-4ddb-942d-4000c316046f")
+	)
+	(fp_line
+		(start 3.7 2.35)
+		(end -3.7 2.35)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "455de679-ed0c-4113-910b-1e15312f830e")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(uuid "19f447e4-2e4b-44e5-bff1-5aa179c67c91")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" thru_hole circle
+		(at 1.25 0 180)
+		(size 1.7 1.7)
+		(drill 0.999998)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "04abf7eb-53f5-4852-b7a2-7e0a7bb4d143")
+	)
+	(pad "2" thru_hole circle
+		(at -1.25 0 180)
+		(size 1.7 1.7)
+		(drill 0.999998)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "055417f3-d4b6-4f59-931a-98117bb74b20")
+	)
+	(embedded_fonts no)
+	(model "${KIPRJMOD}/../lib/lcsc.3dshapes/XH2.5-2A.wrl"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 180)
+		)
+	)
+)

@@ -37,11 +37,26 @@ python3 tools/kicad/kicad_export.py          # 両方の基板
 
 道具は `tools/kicad/`。座標変換・シンボル生成は、FPC-isolation-sphere の power-2S-02 で作った変換ツール（`eda2kicad_core.py`）を取り込んだもの。
 
+## LCSC のシンボル・フットプリント（`kicad/lib/`）
+
+`easyeda2kicad` で、LCSC 番号からシンボル・フットプリント・3D モデルを取得して使う。
+
+```sh
+pipx install --backend pip easyeda2kicad      # 初回だけ
+python3 tools/kicad/lcsc_lib.py                # 未取得の部品を取得して整える
+python3 tools/kicad/kicad_export.py            # 取得したシンボルで作り直す
+```
+
+- `kicad/lib/lcsc.kicad_sym`、`lcsc.pretty/` は Git に入れる。`lcsc.3dshapes/`（1 部品 2〜3 MB）は入れない。必要なら `lcsc_lib.py` で取得し直す
+- 各プロジェクトの `sym-lib-table` / `fp-lib-table` に `lcsc` ライブラリを登録済み
+- 取得したシンボルは、EasyEDA の回路図とピン位置が一致する向き（0/90/180/270°）を自動で探して使う。合わない部品と未取得の部品は、従来の矩形シンボルにする
+- **EasyEDA の API は、続けて 30 部品ほど取得すると 403 を返す**（一時的なブロック）。時間を置いて `lcsc_lib.py` を再実行すると、未取得の部品だけを取得する
+
 ## 限界
 
-- **フットプリントは空。** KiCad で PCB は作れない（PCB は EasyEDA で作る）
-- **ERC は通らない。** 電源フラグ（`PWR_FLAG`）がなく、ピンの種類もすべて passive のため
-- シンボルの見た目は KiCad の作図規約と異なる（接続の正しさを優先）
+- 未取得の部品は矩形シンボルで、フットプリントは空
+- **ERC は通らない。** 電源フラグ（`PWR_FLAG`）がないため
+- 取得したフットプリント（特に QFN の熱パッドとピン番号）は、データシートと照合していない
 
 ## 検証結果（2026-10-08）
 

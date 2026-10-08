@@ -57,6 +57,69 @@ def dump_page(page: str) -> dict:
     return r
 
 
+# ------------------------------------------------------------------ LCSC ライブラリ（easyeda2kicad）
+LCSC_SYM = os.path.join(ROOT, 'kicad', 'lib', 'lcsc.kicad_sym')
+
+
+def top_blocks(text):
+    """S 式の最上位の子要素（kicad_symbol_lib 直下）を、元の文字列のまま取り出す。"""
+    out, depth, start, i, n = [], 0, None, 0, len(text)
+    while i < n:
+        c = text[i]
+        if c == '"':
+            i += 1
+            while i < n and text[i] != '"':
+                i += 2 if text[i] == '\\' else 1
+        elif c == '(':
+            depth += 1
+            if depth == 2:
+                start = i
+        elif c == ')':
+            if depth == 2 and start is not None:
+                out.append(text[start:i + 1])
+                start = None
+            depth -= 1
+        i += 1
+    return out
+
+
+def load_lcsc():
+    """{LCSC 番号: {name, block, footprint, pins{番号: (x, y)}}}"""
+    if not os.path.exists(LCSC_SYM):
+        return {}
+    lib = {}
+    for b in top_blocks(open(LCSC_SYM, encoding='utf-8').read()):
+        m = re.match(r'\(symbol\s+"([^"]+)"', b)
+        lc = re.search(r'\(property\s+"LCSC Part"\s+"(C\d+)"', b)
+        if not m or not lc:
+            continue
+        fp = re.search(r'\(property\s+"Footprint"\s+"([^"]*)"', b)
+        pins = {}
+        for pm in re.finditer(r'\(pin\s+\w+\s+\w+\s*\(at\s+([-\d.]+)\s+([-\d.]+)', b):
+            num = re.search(r'\(number\s+"([^"]+)"', b[pm.end():pm.end() + 600])
+            if num:
+                pins[num.group(1)] = (float(pm.group(1)), float(pm.group(2)))
+        lib[lc.group(1)] = {'name': m.group(1), 'block': b, 'footprint': fp.group(1) if fp else '', 'pins': pins}
+    return lib
+
+
+def match_angle(part, entry, tol=0.02):
+    """EasyEDA のピン配置に合う KiCad の回転角（0/90/180/270）。合わなければ None。"""
+    import math
+    eda = {q['num']: ((q['x'] - part['x']) * 0.254, (q['y'] - part['y']) * 0.254) for q in part.get('pins') or []}
+    if set(eda) != set(entry['pins']):
+        return None
+    for ang in (0, 90, 180, 270):
+        c, s_ = round(math.cos(math.radians(ang))), round(math.sin(math.radians(ang)))
+        if all(abs(lx * c - ly * s_ - eda[k][0]) < tol and abs(lx * s_ + ly * c - eda[k][1]) < tol
+               for k, (lx, ly) in entry['pins'].items()):
+            return ang
+    return None
+
+
+LCSC = load_lcsc()
+
+
 # ------------------------------------------------------------------ 線の島とラベル
 class UF:
     def __init__(self):
@@ -113,15 +176,16 @@ def label_anchor(segs, idx, pin_pts):
 
 
 # ------------------------------------------------------------------ 子シート
-def instance(lib_id, ref, val, x, y, uid, props, path, in_bom=True):
-    o = ['\t(symbol', f'\t\t(lib_id "{lib_id}")', f'\t\t(at {fnum(x)} {fnum(y)} 0)',
+def instance(lib_id, ref, val, x, y, uid, props, path, in_bom=True, angle=0):
+    o = ['\t(symbol', f'\t\t(lib_id "{lib_id}")', f'\t\t(at {fnum(x)} {fnum(y)} {angle})',
          '\t\t(unit 1)\n\t\t(body_style 1)\n\t\t(exclude_from_sim no)',
          f'\t\t(in_bom {"yes" if in_bom else "no"})\n\t\t(on_board yes)\n\t\t(in_pos_files {"yes" if in_bom else "no"})\n\t\t(dnp no)',
          f'\t\t(uuid "{uid}")']
     dy = 0.0
     for name, v, hide in [("Reference", ref, False), ("Value", val, False)] + props:
         o.append(f'\t\t(property "{name}" "{esc(v)}"')
-        o.append(f'\t\t\t(at {fnum(x)} {fnum(y - 6.0 - dy)} 0)')
+        # 部品を回しても文字は横書きのまま（KiCad の文字の向きは部品の向きに対する相対値）
+        o.append(f'\t\t\t(at {fnum(x + (3.0 if angle in (90, 270) else 0))} {fnum(y - 6.0 - dy)} {angle})')
         if hide:
             o.append('\t\t\t(hide yes)')
         o.append('\t\t\t(show_name no)\n\t\t\t(do_not_autoplace no)')
@@ -137,12 +201,23 @@ def child_sheet(board, page, dump, global_nets, root_uuid, sheet_uuid):
     tr = Transform(dump)
     path = f'/{root_uuid}/{sheet_uuid}'
     symbols = {}
+    use = {}          # 部品 → (lib_id, 角度, フットプリント)
     for p in dump['parts']:
+        entry = LCSC.get(p.get('lcsc') or '')
+        ang = match_angle(p, entry) if entry else None
+        if entry and ang is not None:
+            lid = f"lcsc:{entry['name']}"
+            if lid not in symbols:
+                symbols[lid] = re.sub(r'^\(symbol\s+"[^"]+"', f'(symbol "{lid}"', entry['block'], count=1)
+            use[p['des']] = (lid, ang, entry['footprint'])
+            continue
         n = sym_name(p)
-        if n not in symbols:
+        use[p['des']] = (f'gen:{n}', 0, '')
+        if f'gen:{n}' not in symbols and n not in symbols:
             pref = re.match(r'^[A-Za-z_]+', p['des'] or 'X').group(0)
             show = pref in ('U', 'Q', 'J') or len(p.get('pins') or []) > 2
             symbols[n] = build_symbol(n, p, show)[0]
+    n_lib = sum(1 for v in use.values() if v[0].startswith('lcsc:'))
 
     a = []
     a.append('(kicad_sch')
@@ -211,12 +286,13 @@ def child_sheet(board, page, dump, global_nets, root_uuid, sheet_uuid):
         a.append(f'\t\t(uuid "{det_uuid("text", board, page, i, t["content"])}")\n\t)')
 
     for p in dump['parts']:
-        props = [('Footprint', '', True), ('Datasheet', '', True), ('Description', p.get('mpn') or '', True),
+        lid, ang, fp = use[p['des']]
+        props = [('Footprint', fp, True), ('Datasheet', '', True), ('Description', p.get('mpn') or '', True),
                  ('LCSC', p.get('lcsc') or '', True), ('MPN', p.get('mpn') or '', True)]
-        a.append(instance(f'gen:{sym_name(p)}', p['des'], p.get('value') or '', tr.x(p['x']), tr.y(p['y']),
-                          det_uuid('part', board, p['des']), props, path))
+        a.append(instance(lid, p['des'], p.get('value') or '', tr.x(p['x']), tr.y(p['y']),
+                          det_uuid('part', board, p['des']), props, path, angle=ang))
     a.append(')')
-    stats = dict(parts=len(dump['parts']), wires=len(segs), junctions=len(junctions(segs)),
+    stats = dict(parts=len(dump['parts']), lcsc_symbols=n_lib, wires=len(segs), junctions=len(junctions(segs)),
                  global_labels=n_glob, labels=n_loc, texts=n_txt, rects=len(dump['rects']))
     return '\n'.join(a) + '\n', stats
 

@@ -3,3 +3,7 @@ __pycache__/
 *.kicad_prl
 *-backups/
 fp-info-cache
+kicad/lib/lcsc.3dshapes/
+.easyeda_cache/
+.history/
+*.lck
