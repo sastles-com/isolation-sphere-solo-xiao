@@ -15,7 +15,18 @@ battery_connection:
   J_CELL2: [BM, B+]
   series_link_on_board_B: true
   discharge_cutoff_V_min: 6.4  # 1 セル 3.2 V。XH の 3 A を守るため
-  fits_core_03: true  # 実機で収納確認済み（2026-10-08）。tools/fit_check.py の概算は厳しめ
+  fits_core_03: true  # 実機で収納確認済み（2026-10-08）。内殻は再設計してよい
+  cell_mm: [40, 40, 10]
+  core_inner_shell_redesign_allowed: true
+  board_a_tab:  # ピンソケット 1x6（FH-1x6SG/RH）を載せる張り出し。向きは ±y（±15°）
+    socket_center_x: 22.86
+    x_out: 24.63
+    half_y: 8.12
+    legacy: {x_out: 25.0, half_y: 9.25}
+  board_b_outline_options:  # A↔B 7 mm のとき。40 角はそのままでは当たる
+    - {side: 37.0}
+    - {side: 40, corner_chamfer_min: 7}
+    - {side: 40, requires: core_inner_shell_redesign}
   stack_order_north_to_south: [MCU, LiPo_N, mother_ring, LiPo_S, board_A, board_B]
   stack_gap_parts: Akizuki FH-1x6SG/RH (socket, 8.5 mm housing)
 
@@ -248,9 +259,10 @@ legacy_not_baseline:
   - MAX17049
 
 open_items:
-  - 電池の電線の経路（北のセル → 基板B）とセルの実寸
+  - 基板Bの外形（37 mm 角 / 隅面取り / 内殻の再設計）
+  - 基板Aの張り出しの向きとソケット位置
+  - 電池の電線の経路（北のセル → 基板B）
   - 基板側の XH の形（横向き実装 / 電線 + 中継）
-  - BQ28Z620（C20345237）が JLC の PCBA で選べるか
   - 充電 IC と BQ28Z620 の保護付きパワーパス構成
   - 充電入力の供給方法（12 V アダプタ / USB-PD）と入力電流上限
   - LED 降圧の出力電圧（3.4〜3.5 V、末端電圧の実測後に確定）

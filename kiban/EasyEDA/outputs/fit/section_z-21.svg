@@ -2270,5 +2270,5 @@
 <line x1="-96.0" y1="0.2" x2="-96.0" y2="0.5" stroke="black" stroke-width="0.6"/>
 <line x1="-96.1" y1="1.1" x2="-96.1" y2="1.1" stroke="black" stroke-width="0.6"/>
 <line x1="-96.0" y1="0.5" x2="-96.1" y2="1.1" stroke="black" stroke-width="0.6"/>
-<polygon points="-80.0,80.0 80.0,80.0 80.0,-80.0 -80.0,-80.0" fill="green" fill-opacity="0.2" stroke="green"/>
+<polygon points="52.0,80.0 80.0,52.0 80.0,-52.0 52.0,-80.0 -52.0,-80.0 -80.0,-52.0 -80.0,52.0 -52.0,80.0" fill="green" fill-opacity="0.2" stroke="green"/>
 </svg>
