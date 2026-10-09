@@ -5,8 +5,8 @@ KiCad で回路図を見る・レビューするためのスナップショッ�
 
 | フォルダ | 親シート | 子シート |
 | --- | --- | --- |
-| `boardA/` | `boardA.kicad_sch` | `boardA_POWER.kicad_sch`、`boardA_LED_IO.kicad_sch` |
-| `boardB/` | `boardB.kicad_sch` | `boardB_CHARGER.kicad_sch`、`boardB_PROTECTION.kicad_sch` |
+| `boardA/` | `boardA.kicad_sch`（1 枚、`kicad_flat.py` で生成） | なし |
+| `boardB/` | `boardB.kicad_sch`（1 枚に統合） | なし |
 
 KiCad で `boardA/boardA.kicad_pro`（または `.kicad_sch`）を開き、親シートの四角をダブルクリックして各ページへ入る。
 
@@ -64,3 +64,23 @@ python3 tools/kicad/kicad_export.py            # 取得したシンボルで作�
 | --- | ---: | ---: | --- |
 | 基板A | 44 | 23 | ✅ 一致 |
 | 基板B | 67 | 43 | ✅ 一致 |
+
+## 基板B は KiCad 側で統合した（2026-10-09）
+
+基板B の回路図は、CHARGER と PROTECTION を手で 1 枚（`boardB/boardB.kicad_sch`）に統合し、**KiCad 側が元データ**になった。
+EasyEDA からの自動生成（`kicad_export.py boardB`）は、統合前の 2 枚構成を作り直して上書きするので、**もう実行しない**。
+フットプリントと LCSC 品番の割り当ては `python3 tools/kicad/assign_footprints.py`（L2 は `lcsc_lib.py` で C87572 を取得してから）。
+
+## 基板A も 1 枚にした（2026-10-09）
+
+基板A は、EasyEDA のダンプとネットリストから、基板B と同じ書き方で 1 枚の回路図に作り直した。
+
+```
+python3 tools/kicad/kicad_flat.py      # → kicad/boardA/boardA.kicad_sch、refmap.json
+```
+
+- ルール：階層なし 1 枚（A3）、機能ごとの点線の枠と日本語の見出し、接続は短い線 + グローバルラベル、GND は部品ごとに GND 記号、
+  標準の抵抗・コンデンサ・インダクタ記号、通し番号の部品名（旧名は `refmap.json` と、部品の `EasyEDA` プロパティ）
+- 生成の直後に kicad-cli のネットリストを、EasyEDA のネットリスト（`outputs/schematic/boardA_nets.txt`）と照合する
+- 基板A の元データは EasyEDA のまま。回路を変えたら、EasyEDA を直し、ダンプとネットリストを更新して、`kicad_flat.py` を実行する。
+  KiCad 側で手直しすると、次の生成で上書きされる（基板B と違い、基板A は KiCad を元データにはしていない）
