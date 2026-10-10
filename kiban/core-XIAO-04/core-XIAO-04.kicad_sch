@@ -2826,17 +2826,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "core-XIAO-04-U1"
-			(at 58.42 57.15 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(instances
 			(project "core-XIAO-04"
 				(path "/6340347a-e2e0-5227-8bde-6958b258adfa"
@@ -3172,7 +3161,7 @@
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
@@ -3222,17 +3211,6 @@
 			)
 		)
 		(property "LCSC Part" ""
-			(at 38.1 83.82 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "core-XIAO-04-JP1"
 			(at 38.1 83.82 0)
 			(hide yes)
 			(show_name no)
@@ -3352,17 +3330,6 @@
 			)
 		)
 		(property "LCSC Part" "C19702"
-			(at 111.76 57.15 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "core-XIAO-04-C1"
 			(at 111.76 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -3512,17 +3479,6 @@
 			)
 		)
 		(property "LCSC Part" "C14663"
-			(at 127 57.15 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "core-XIAO-04-C2"
 			(at 127 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -3749,17 +3705,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "core-XIAO-04-R7"
-			(at 158.75 50.8 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(instances
 			(project "core-XIAO-04"
 				(path "/6340347a-e2e0-5227-8bde-6958b258adfa"
@@ -3909,17 +3854,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "core-XIAO-04-R1"
-			(at 173.99 50.8 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(instances
 			(project "core-XIAO-04"
 				(path "/6340347a-e2e0-5227-8bde-6958b258adfa"
@@ -4029,17 +3963,6 @@
 			)
 		)
 		(property "LCSC Part" "C23140"
-			(at 187.96 50.8 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "core-XIAO-04-R2"
 			(at 187.96 50.8 0)
 			(hide yes)
 			(show_name no)
@@ -4169,17 +4092,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "core-XIAO-04-R3"
-			(at 201.93 50.8 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(instances
 			(project "core-XIAO-04"
 				(path "/6340347a-e2e0-5227-8bde-6958b258adfa"
@@ -4289,17 +4201,6 @@
 			)
 		)
 		(property "LCSC Part" "C23140"
-			(at 217.17 50.8 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "core-XIAO-04-R4"
 			(at 217.17 50.8 0)
 			(hide yes)
 			(show_name no)
@@ -4429,17 +4330,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "core-XIAO-04-R5"
-			(at 158.75 92.71 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(instances
 			(project "core-XIAO-04"
 				(path "/6340347a-e2e0-5227-8bde-6958b258adfa"
@@ -4549,17 +4439,6 @@
 			)
 		)
 		(property "LCSC Part" "C23140"
-			(at 173.99 92.71 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "core-XIAO-04-R6"
 			(at 173.99 92.71 0)
 			(hide yes)
 			(show_name no)
@@ -4724,17 +4603,6 @@
 			)
 		)
 		(property "LCSC Part" ""
-			(at 295.91 46.99 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "core-XIAO-04-J1"
 			(at 295.91 46.99 0)
 			(hide yes)
 			(show_name no)
@@ -4994,17 +4862,6 @@
 			)
 		)
 		(property "LCSC Part" ""
-			(at 295.91 77.47 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "core-XIAO-04-J2"
 			(at 295.91 77.47 0)
 			(hide yes)
 			(show_name no)
@@ -5319,17 +5176,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "core-XIAO-04-J3"
-			(at 38.1 154.94 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(instances
 			(project "core-XIAO-04"
 				(path "/6340347a-e2e0-5227-8bde-6958b258adfa"
@@ -5591,17 +5437,6 @@
 			)
 		)
 		(property "LCSC Part" ""
-			(at 168.91 149.86 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "core-XIAO-04-U2"
 			(at 168.91 149.86 0)
 			(hide yes)
 			(show_name no)
@@ -5914,17 +5749,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "core-XIAO-04-LS1"
-			(at 299.72 160.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(instances
 			(project "core-XIAO-04"
 				(path "/6340347a-e2e0-5227-8bde-6958b258adfa"
@@ -6064,17 +5888,6 @@
 			)
 		)
 		(property "LCSC Part" "C14663"
-			(at 313.69 152.4 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "core-XIAO-04-C3"
 			(at 313.69 152.4 0)
 			(hide yes)
 			(show_name no)
@@ -6268,17 +6081,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "core-XIAO-04-D1"
-			(at 33.02 198.12 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(instances
 			(project "core-XIAO-04"
 				(path "/6340347a-e2e0-5227-8bde-6958b258adfa"
@@ -6368,7 +6170,7 @@
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
@@ -6428,17 +6230,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "core-XIAO-04-TP1"
-			(at 35.56 213.36 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(instances
 			(project "core-XIAO-04"
 				(path "/6340347a-e2e0-5227-8bde-6958b258adfa"
@@ -6476,7 +6267,7 @@
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
@@ -6526,17 +6317,6 @@
 			)
 		)
 		(property "LCSC Part" ""
-			(at 35.56 228.6 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "core-XIAO-04-TP2"
 			(at 35.56 228.6 0)
 			(hide yes)
 			(show_name no)
@@ -6664,17 +6444,6 @@
 			)
 		)
 		(property "LCSC Part" "C21190"
-			(at 64.77 208.28 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "core-XIAO-04-R8"
 			(at 64.77 208.28 0)
 			(hide yes)
 			(show_name no)

@@ -661,8 +661,8 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "boardB.kicad_sch",
-        "name": "boardB",
+        "filename": "north-pole-04.kicad_sch",
+        "name": "north-pole-04",
         "uuid": "fde9b7c9-3568-5b34-b8e6-a8d7174c8828"
       }
     ],
@@ -671,8 +671,8 @@
   },
   "sheets": [
     [
-      "f8c84f1d-c4f2-51a3-b083-6b62f49b29e9",
-      "Root"
+      "fde9b7c9-3568-5b34-b8e6-a8d7174c8828",
+      "north-pole-04"
     ]
   ],
   "text_variables": {},

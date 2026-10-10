@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """core-XIAO-04（MCU 基板）と north-pole-04（北極基板）の回路図を作る。基板A / B と同じ書き方の 1 枚の回路図。
 
-  python3 kiban/core-XIAO-04/make_sch.py
+  python3 kiban/core-XIAO-04/make_sch.py [core-XIAO-04] [north-pole-04]   # 名前を省くと両方
 
 KiCad で回路図を開いていないときに実行する。出力（基板ごと）：
 - <名前>.kicad_sch（回路図）、<名前>.kicad_pro（基板B の設計ルールを引き継ぐ。既にあれば触らない）
@@ -28,11 +28,19 @@ NORTH = 'north-pole-04'
 SRC03 = '/Users/katano/work/FPC-isolation-sphere/kiban/core-XIAO-03/core-XIAO-03.kicad_sch'
 
 
+# 部品表（BOM）に入れない部品（はんだジャンパと、テスト用の 1 ピンヘッダ）
+NO_BOM = {'JP1', 'TP1', 'TP2'}
+
+
 class Out(K.Out):
     """部品の位置を 1.27 mm の格子に合わせてから書く（ピンと線の端が格子に乗る）。"""
     def part(self, p, ref_at, val_at):
         p.x, p.y = K_snap(p.x), K_snap(p.y)
         super().part(p, ref_at, val_at)
+        # kicad_flat.py が付ける「EasyEDA」欄（旧部品名）は、この基板では意味がないので消す
+        self.lines[-1] = re.sub(r'\n\t\t\(property "EasyEDA" "[^"]*"\n(?:\t\t\t.*\n)*?\t\t\)', '', self.lines[-1])
+        if p.new in NO_BOM:
+            self.lines[-1] = self.lines[-1].replace('(in_bom yes)', '(in_bom no)', 1)
 
 
 def K_snap(v, g=1.27):
@@ -285,7 +293,13 @@ if __name__ == '__main__':
     xiao, bz = lib_symbols_03()
     lib = {f'{NAME}:XIAO-ESP32S3': xiao, f'{NAME}:BUZZER': bz, **lcsc_symbols()}
     write_libs(xiao, bz)
+    pick = sys.argv[1:] or [NAME, NORTH]
     for name, table, frames in ((NAME, PARTS, FRAMES), (NORTH, NORTH_PARTS, NORTH_FRAMES)):
+        if name not in pick:
+            continue
+        if os.path.exists(os.path.join(HERE, f'~{name}.kicad_sch.lck')):
+            print(f'{name}：KiCad で回路図が開いているので飛ばす')
+            continue
         text, paper = build(name, table, frames, lib)
         sch = os.path.join(HERE, f'{name}.kicad_sch')
         open(sch, 'w', encoding='utf-8').write(text)
