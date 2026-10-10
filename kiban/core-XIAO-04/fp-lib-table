@@ -1,0 +1,5 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "core-XIAO-04")(type "KiCad")(uri "${KIPRJMOD}/core-XIAO-04.pretty")(options "")(descr ""))
+	(lib (name "lcsc")(type "KiCad")(uri "${KIPRJMOD}/lib/lcsc.pretty")(options "")(descr ""))
+)
