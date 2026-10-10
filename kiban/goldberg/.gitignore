@@ -1,0 +1,8 @@
+.DS_Store
+*.kicad_prl
+.history/
+*.lck
+fp-info-cache
+*-backups/
+# 製造用の出力（古くなるので、基板が確定してから作り直してコミットする）
+production/
