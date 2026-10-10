@@ -96,7 +96,7 @@ board_a:
     pb_input_network: series_5k1_and_100nF_to_GND
     int_output: test_pad_optional
     wake_sensor: DRV5032FCDBZR
-    normal_off_sensor: TMAG5273_via_ESP32
+    normal_off_sensor: BNO055_shake_via_ESP32  # TMAG5273 は 2026-10-10 に廃止
     forced_off: LTC2954_hardware_long_hold
   led_buck:
     output_V: 3.3
@@ -175,15 +175,17 @@ north_pole:
     output_net: HALL_WAKE
     alternative: DRV5032AJ  # 誤検出が問題になる場合（最大 9.5 mT）
   gesture_sensor:
-    part: TMAG5273
+    part: BNO055  # 秋月 AE-BNO055-BO、MCU 基板に直接実装。シェイクで判定
     supply: 3V3_MCU
     bus: I2C
+    address_7bit: 0x28
   display_pixel:
     part: WS2812C-2020-V6
-    supply: 3V3_LED
-    data_line: line05
-    pixel_index: 161
+    supply: 3V3_MCU
+    data_line: LED_D6  # XIAO D5、6 本目のストリップ（1 個）
     is_indicator: false
+  hall_check_led: red_0603_1k_from_3V3_AON_to_HALL_WAKE  # 動作確認用。確認後は抵抗を外す
+  north_cable: [3V3_AON, HALL_WAKE, GND, LED_D6, 3V3_MCU]
   optional_indicator:
     required: false
     off_state_operation_required: false
@@ -243,7 +245,7 @@ i2c:
   addresses_7bit:
     charger_BQ25792: 0x6B
     gauge_BQ28Z620: 0x55  # TRM で要確認
-    TMAG5273: TBD  # 品種により異なる
+    BNO055: 0x28
 
 power_sequence:
   on:
@@ -254,7 +256,7 @@ power_sequence:
     - ESP32 が起動
     - 表示レールが必要になった時点で ESP32 が LED_EN をアサート
   normal_off:
-    - TMAG5273 のジェスチャを ESP32 が解釈（磁石接近から 3 s 以内）
+    - ESP32 が IMU（BNO055）で OFF 用のシェイク動作を検出し、予告してから実行
     - ESP32 が LED データ線を Low に固定し LED_EN をデアサート
     - ESP32 が必要な状態を保存
     - ESP32 が PWR_KILL を Low に駆動
@@ -267,7 +269,7 @@ firmware_requirements:  # 詳細は interfaces.md §7
   - FW-1 起動中に PWR_KILL を Low にしない。ストラッピングピンを使わない
   - FW-2 LED_EN は表示が必要になるまで Low。LED_EN が Low の間はデータ線も Low
   - FW-3 シャットダウン順は データ線 Low → LED_EN Low → 保存 → PWR_KILL Low
-  - FW-4 OFF ジェスチャは 3 s 以内に完了。4 s 以上の磁石保持を前提とした UI を作らない
+  - FW-4 通常 OFF はシェイクで判定（磁石は ON と強制 OFF だけ）。誤検出しにくい動作にし、予告と取り消しを入れる
   - FW-5 I2C は 100 kHz で立ち上げ、起動時にアドレスをスキャン
 
 legacy_not_baseline:

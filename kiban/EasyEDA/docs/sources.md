@@ -123,7 +123,7 @@ JLC の別の登録 C22395771 は購入不可。
 
 - 使用する磁石と、北極外殻からセンサまでの距離での磁束密度
 
-## TMAG5273 — Texas Instruments
+## TMAG5273 — Texas Instruments（2026-10-10 に廃止。経緯の記録として残す）
 
 製品ページ：
 <https://www.ti.com/product/TMAG5273>
