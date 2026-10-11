@@ -9,122 +9,6 @@
 		(company "isolation-sphere-solo-xiao")
 	)
 	(lib_symbols
-(symbol "power:PWR_FLAG"
-		(power global)
-		(pin_numbers
-			(hide yes)
-		)
-		(pin_names
-			(offset 0)
-			(hide yes)
-		)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(duplicate_pin_numbers_are_jumpers no)
-		(property "Reference" "#FLG"
-			(at 0 1.905 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "PWR_FLAG"
-			(at 0 3.81 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 0 0 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 0 0 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Special symbol for telling ERC where power comes from"
-			(at 0 0 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "ki_keywords" "flag power"
-			(at 0 0 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(symbol "PWR_FLAG_0_0"
-			(pin power_out line
-				(at 0 0 90)
-				(length 0)
-				(name ""
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "1"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-		)
-		(symbol "PWR_FLAG_0_1"
-			(polyline
-				(pts
-					(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
-				)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-		)
-		(embedded_fonts no)
-	)
 		(symbol "Connector_Generic:Conn_01x01"
 			(pin_names
 				(offset 1.016)
@@ -3022,6 +2906,122 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "power:PWR_FLAG"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#FLG"
+				(at 0 1.905 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "PWR_FLAG"
+				(at 0 3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Special symbol for telling ERC where power comes from"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "flag power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_0"
+				(pin power_out line
+					(at 0 0 90)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 	)
 	(rectangle
 		(start 269.43 12)
@@ -3184,7 +3184,7 @@
 		)
 		(uuid "2873f7c3-09ae-5928-9fc4-5b2bf197f516")
 	)
-	(text "I2C は D8 / D9（ファームで指定）。プルアップは U2（AE-BNO055-BO）内蔵のものを使う"
+	(text "I2C は D9（SCL）/ D10（SDA）（ファームで指定）。D8 は PWR_KILL。J1 の並びに合わせて配線が交差しない順。プルアップは U2（AE-BNO055-BO）内蔵のものを使う"
 		(exclude_from_sim no)
 		(at 17 28.9 0)
 		(effects
@@ -3216,6 +3216,17 @@
 			(justify left bottom)
 		)
 		(uuid "46ac7fef-0256-5d0b-89dc-324fe5fb1d06")
+	)
+	(text "5V ピン（J5 / TP4）へ外から 5V を入れるときも、JP1 を切るか電池側を OFF にする（3V3_MCU とぶつかるため）"
+		(exclude_from_sim no)
+		(at 17 35.3 0)
+		(effects
+			(font
+				(size 1.26 1.26)
+			)
+			(justify left bottom)
+		)
+		(uuid "4a5e9c41-5506-5f73-8608-013cbb1a6ab2")
 	)
 	(text "GND は J1-1 と J2-6 の 2 本"
 		(exclude_from_sim no)
@@ -3282,17 +3293,6 @@
 			(justify left bottom)
 		)
 		(uuid "96ab7bb3-751c-512e-ba0c-bbadcf79e2da")
-	)
-	(text "5V ピン（J5 / TP4）へ外から 5V を入れるときも、JP1 を切るか電池側を OFF にする（3V3_MCU とぶつかるため）"
-		(exclude_from_sim no)
-		(at 17 35.3 0)
-		(effects
-			(font
-				(size 1.26 1.26)
-			)
-			(justify left bottom)
-		)
-		(uuid "4a5e9c41-5506-5f73-8608-013cbb1a6ab2")
 	)
 	(text "ジェスチャは磁石ではなくシェイク（U2 の BNO055）。磁石は ON（約 2.15 s）と強制 OFF（約 7.8 s）だけ"
 		(exclude_from_sim no)
@@ -3943,6 +3943,16 @@
 	)
 	(wire
 		(pts
+			(xy 127 62.23) (xy 132.08 62.23)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d63acf41-e85d-5a0f-9cb3-4142ee778160")
+	)
+	(wire
+		(pts
 			(xy 30.48 198.12) (xy 27.94 198.12)
 		)
 		(stroke
@@ -4558,7 +4568,7 @@
 			)
 		)
 	)
-	(global_label "PWR_KILL"
+	(global_label "I2C_SDA"
 		(shape input)
 		(at 85.09 57.15 0)
 		(fields_autoplaced yes)
@@ -5298,7 +5308,7 @@
 			)
 		)
 	)
-	(global_label "I2C_SDA"
+	(global_label "PWR_KILL"
 		(shape input)
 		(at 85.09 64.77 0)
 		(fields_autoplaced yes)
@@ -5409,6 +5419,81 @@
 			(effects
 				(font
 					(size 1.27 1.27)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 132.08 62.23 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(in_pos_files no)
+		(dnp no)
+		(uuid "06c0f0f0-ebb4-5938-b18f-6f0357f9cc0d")
+		(property "Reference" "#FLG01"
+			(at 132.08 59.03 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 132.08 57.13 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 132.08 62.23 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 132.08 62.23 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 132.08 62.23 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "f975e20f-078b-5e1d-a245-5877a9c7b88f")
+		)
+		(instances
+			(project "core-XIAO-04"
+				(path "/fde9b7c9-3568-5b34-b8e6-a8d7174c8828"
+					(reference "#FLG01")
+					(unit 1)
 				)
 			)
 		)
@@ -5941,7 +6026,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-8_W7.62mm"
+		(property "Footprint" "neon:AE-BNO055-nohole"
 			(at 168.91 149.86 0)
 			(hide yes)
 			(show_name no)
@@ -7651,7 +7736,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Bridged_RoundedPad1.0x1.5mm"
+		(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm"
 			(at 38.1 83.82 0)
 			(hide yes)
 			(show_name no)
@@ -8896,61 +8981,6 @@
 			(project "core-XIAO-04"
 				(path "/fde9b7c9-3568-5b34-b8e6-a8d7174c8828"
 					(reference "U1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 127.0 62.23) (xy 132.08 62.23)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d63acf41-e85d-5a0f-9cb3-4142ee778160")
-	)
-	(symbol
-		(lib_id "power:PWR_FLAG")
-		(at 132.08 62.23 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(in_pos_files no)
-		(dnp no)
-		(uuid "06c0f0f0-ebb4-5938-b18f-6f0357f9cc0d")
-		(property "Reference" "#FLG01"
-			(at 132.08 59.03 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "PWR_FLAG"
-			(at 132.08 57.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "f975e20f-078b-5e1d-a245-5877a9c7b88f")
-		)
-		(instances
-			(project "core-XIAO-04"
-				(path "/6340347a-e2e0-5227-8bde-6958b258adfa"
-					(reference "#FLG01")
 					(unit 1)
 				)
 			)

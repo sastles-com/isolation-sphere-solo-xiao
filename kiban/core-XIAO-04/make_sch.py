@@ -69,13 +69,14 @@ XIAO_PINS = {'1': 'D0/GPIO1', '2': 'D1/GPIO2', '3': 'D2/GPIO3', '4': 'D3/GPIO4',
 # ピンの割り当て：XIAO の 1〜7 番側（D0〜D6）に LED データ 6 本とブザー、8〜11 番側（D7〜D10）に制御と I2C。
 # - D6（GPIO43）は UART0 TX。起動中に High やブートログが出るので LED データには使わない（ブザーなら害がない）
 # - D7（GPIO44）は RX。起動中は入力のままなので LED_EN（基板A のプルダウンで OFF）に使う
-# - PWR_KILL は D10（GPIO9）。ストラッピングピンではなく、起動中に Low にならない
-# - I2C は D8 / D9。ESP32-S3 はどのピンにも割り当てられるので、ファームの Wire.begin() でピンを指定する
+# - PWR_KILL は D8（GPIO7）。ストラッピングピンではなく、起動中に Low にならない
+# - I2C は D9（SCL）/ D10（SDA）。ESP32-S3 はどのピンにも割り当てられるので、ファームの Wire.begin() でピンを指定する
+# - 8〜11 番の並び（LED_EN、PWR_KILL、SCL、SDA）は、J1 のピン順に合わせた（配線が交差しない）
 # 部品：(部品番号, 記号, 値, フットプリント, LCSC, 種類, {ピン: ネット})
 PARTS = {
     'U1': ('XIAO', 'XIAO ESP32S3', f'{NAME}:XIAO-ESP32S3', '', 'ic',
            {'1': 'LED_GPIO1', '2': 'LED_GPIO2', '3': 'LED_GPIO3', '4': 'LED_GPIO4', '5': 'LED_GPIO5', '6': 'LED_GPIO6',
-            '7': 'BUZZER', '8': 'LED_EN', '9': 'I2C_SDA', '10': 'I2C_SCL', '11': 'PWR_KILL',
+            '7': 'BUZZER', '8': 'LED_EN', '9': 'PWR_KILL', '10': 'I2C_SCL', '11': 'I2C_SDA',
             '12': '3V3_XIAO', '13': 'GND', '14': None}),
     'JP1': ('Jumper:SolderJumper_2_Bridged', '3V3 切り離し', 'Jumper:SolderJumper-2_P1.3mm_Bridged_RoundedPad1.0x1.5mm',
             '', 'ic', {'1': '3V3_MCU', '2': '3V3_XIAO'}),
@@ -109,7 +110,7 @@ FRAMES = [
     ('MCU（XIAO ESP32S3）', ['U1', 'JP1', 'C1', 'C2'],
      ['基板A の 3V3_MCU を XIAO の 3V3 ピンへ入れる。5V ピンは使わない',
       'USB で書き込むときは、電池側を OFF にするか JP1 を切る（XIAO 内蔵の 3.3 V と 3V3_MCU がぶつかるため）',
-      'I2C は D8 / D9（ファームで指定）。プルアップは U2（AE-BNO055-BO）内蔵のものを使う',
+      'I2C は D9（SCL）/ D10（SDA）（ファームで指定）。D8 は PWR_KILL。プルアップは U2（AE-BNO055-BO）内蔵のものを使う',
       'D6（TX）は起動中に High / ログが出るので LED データに使わない。D7（RX）は起動中は入力']),
     ('LED データ線（33 Ω、XIAO の近くに置く）', ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7'],
      ['LED_D1〜D5 は mother-ring の LINE01〜05 の DIN へ',
