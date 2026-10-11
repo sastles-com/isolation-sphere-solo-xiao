@@ -3,7 +3,8 @@
 
   python3 kiban/goldberg/swap_led_v6.py sch [フォルダ]      # 回路図（普通の Python）。先にこちら
   /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
-      kiban/goldberg/swap_led_v6.py pcb [フォルダ] [--pads goldberg|lcsc]   # PCB（KiCad 付属の Python）
+      kiban/goldberg/swap_led_v6.py pcb [フォルダ] [--pads goldberg|lcsc] [--force]   # PCB（KiCad 付属の Python）
+  すでに入れ替え済みの PCB で --pads を変えるときは --force（lcsc.pretty の足型を作り直し、PCB の 80 個も入れ替える）
 
 KiCad で goldberg の回路図・PCB を開いていないときに実行する。フォルダを省くと、このファイルのあるフォルダ。
 
@@ -184,12 +185,14 @@ def pcb(d):
     b = pcbnew.LoadBoard(path)
     info = []
     for f in b.GetFootprints():                  # 部品を消す前に、必要な値をすべて普通の値で控える
-        if str(f.GetFPID().GetLibItemName()) != OLD_FP:
+        name = str(f.GetFPID().GetLibItemName())
+        if name not in (OLD_FP, NEW_NAME):             # すでに入れ替え済み（パッド寸法だけ変えるとき）も対象
             continue
         if f.IsFlipped():
             raise SystemExit(f'{f.GetReferenceAsString()} は裏面。この道具は表面だけ')
         r = f.Reference()
         info.append({
+            'already': name == NEW_NAME,
             'ref': f.GetReferenceAsString(), 'x': f.GetPosition().x, 'y': f.GetPosition().y,
             'rot': f.GetOrientationDegrees(), 'path': f.GetPath().AsString(),
             'sheetname': f.GetSheetname(), 'sheetfile': f.GetSheetfile(),
@@ -207,7 +210,8 @@ def pcb(d):
         nf.SetFPID(pcbnew.LIB_ID('lcsc', NEW_NAME))
         nf.SetValue(NEW_NAME)
         nf.SetPosition(pcbnew.VECTOR2I(it['x'], it['y']))
-        nf.SetOrientationDegrees(it['rot'] + 180.0)   # 位置は同じ。LCSC の足型は 180° 回った向きなので回す
+        # 位置は同じ。LCSC の足型は 180° 回った向きなので回す（入れ替え済みの足型はそのまま）
+        nf.SetOrientationDegrees(it['rot'] + (0.0 if it['already'] else 180.0))
         if it['path']:
             nf.SetPath(pcbnew.KIID_PATH(it['path']))
         nf.SetSheetname(it['sheetname'])
@@ -218,7 +222,7 @@ def pcb(d):
         fld.SetLayer(pcbnew.F_Fab)
         nf.Add(fld)
         for pad in nf.Pads():
-            inv = [o for o, nw in PAD_MAP.items() if nw == pad.GetNumber()][0]
+            inv = pad.GetNumber() if it['already'] else [o for o, nw in PAD_MAP.items() if nw == pad.GetNumber()][0]
             net = it['nets'].get(inv)
             pad.SetNet(b.FindNet(net) if net else b.FindNet(''))
         r = nf.Reference()
@@ -241,12 +245,12 @@ def pcb(d):
     print(f'PCB：{n} 個の足型を {NEW_FP} に入れ替えた（位置はそのまま、向き +180°、パッドのネットは番号を移して引き継ぎ、自動ネット名 {renamed} 個を回路図に合わせた）')
 
 
-def prepare_footprint(d, pads='goldberg'):
+def prepare_footprint(d, pads='goldberg', force=False):
     """LCSC の足型を、このフォルダの lcsc.pretty に置く（attr だけ直す）。"""
     src = os.path.join(HERE, '..', 'core-XIAO-04', 'lib', 'lcsc.pretty',
                        'LED-SMD_4P-L2.2-W2.0-P1.00_WS2815C-2020-4P.kicad_mod')
     dst = os.path.join(d, 'lcsc.pretty', f'{NEW_NAME}.kicad_mod')
-    if os.path.exists(dst):
+    if os.path.exists(dst) and not force:
         return
     s = open(src, encoding='utf-8').read()
     s = s.replace('(footprint "LED-SMD_4P-L2.2-W2.0-P1.00_WS2815C-2020-4P"', f'(footprint "{NEW_NAME}"', 1)
@@ -269,6 +273,7 @@ if __name__ == '__main__':
     if mode == 'sch':
         sch(d)
     elif mode == 'pcb':
-        prepare_footprint(d, sys.argv[sys.argv.index('--pads') + 1] if '--pads' in sys.argv else 'goldberg')
+        prepare_footprint(d, sys.argv[sys.argv.index('--pads') + 1] if '--pads' in sys.argv else 'goldberg',
+                          '--force' in sys.argv)
         tables(d)
         pcb(d)
