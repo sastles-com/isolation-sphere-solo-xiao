@@ -1,0 +1,8 @@
+.DS_Store
+*.kicad_prl
+.history/
+*.lck
+fp-info-cache
+*-backups/
+# 製造用の出力。基板が確定してから make_production.py で出し直す
+production/

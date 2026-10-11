@@ -1570,7 +1570,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C1671"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -2067,7 +2067,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C15849"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -2332,7 +2332,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C45783"
+		(property "LCSC Part" "C15850"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -2849,7 +2849,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C1591"
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -3115,7 +3115,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C1591"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -3381,7 +3381,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C1591"
 			(at 0 0 180)
 			(layer "B.Fab")
 			(hide yes)
@@ -3647,7 +3647,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C7250"
+		(property "LCSC Part" "C25967"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -4663,7 +4663,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C15849"
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -4929,7 +4929,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C1589"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -5194,7 +5194,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C45783"
+		(property "LCSC Part" "C15850"
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -6974,7 +6974,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C7250"
+		(property "LCSC Part" "C25803"
 			(at 0 0 180)
 			(layer "B.Fab")
 			(hide yes)
@@ -7196,7 +7196,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C7250"
+		(property "LCSC Part" "C25804"
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -7693,7 +7693,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C7250"
+		(property "LCSC Part" "C25804"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -7914,7 +7914,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C45783"
+		(property "LCSC Part" "C15850"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -8180,7 +8180,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C1591"
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -8712,7 +8712,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C23630"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -9283,7 +9283,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C45783"
+		(property "LCSC Part" "C15850"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -9549,7 +9549,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C7250"
+		(property "LCSC Part" "C25803"
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -9771,7 +9771,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C1591"
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -10037,7 +10037,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C7250"
+		(property "LCSC Part" "C23186"
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -10259,7 +10259,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C159798"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -10525,7 +10525,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C7250"
+		(property "LCSC Part" "C4184"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -11498,7 +11498,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C1591"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -11764,7 +11764,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C87572"
+		(property "LCSC Part" "C76855"
 			(at 0 0 180)
 			(layer "B.Fab")
 			(hide yes)
@@ -12312,7 +12312,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C64705"
+		(property "LCSC Part" "C15849"
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -12578,7 +12578,7 @@
 				(justify mirror)
 			)
 		)
-		(property "LCSC Part" "C7250"
+		(property "LCSC Part" "C23266"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
