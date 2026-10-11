@@ -6026,7 +6026,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "neon:AE-BNO055-nohole"
+		(property "Footprint" "neon:AE-BNO055"
 			(at 168.91 149.86 0)
 			(hide yes)
 			(show_name no)
