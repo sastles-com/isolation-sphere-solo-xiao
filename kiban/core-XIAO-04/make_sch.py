@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """core-XIAO-04（MCU 基板）と north-pole-04（北極基板）の回路図を作る。基板A / B と同じ書き方の 1 枚の回路図。
 
+【注意】core-XIAO-04 の回路図は、2026-10-11 に確定した（以後は KiCad で直接編集する）。
+このスクリプトを core-XIAO-04 に対して実行すると、KiCad での変更（J4 / J5 / TP3 / TP4、注記、PWR_FLAG など）が消える。
+実行してよいのは、回路図を最初から作り直すときだけ。north-pole-04 も、確定したら同じ扱いにする。
+
   python3 kiban/core-XIAO-04/make_sch.py [core-XIAO-04] [north-pole-04]   # 名前を省くと両方
 
 KiCad で回路図を開いていないときに実行する。出力（基板ごと）：
@@ -293,12 +297,16 @@ if __name__ == '__main__':
     xiao, bz = lib_symbols_03()
     lib = {f'{NAME}:XIAO-ESP32S3': xiao, f'{NAME}:BUZZER': bz, **lcsc_symbols()}
     write_libs(xiao, bz)
-    pick = sys.argv[1:] or [NAME, NORTH]
+    pick = [a for a in sys.argv[1:] if not a.startswith('--')] or [NAME, NORTH]
     for name, table, frames in ((NAME, PARTS, FRAMES), (NORTH, NORTH_PARTS, NORTH_FRAMES)):
         if name not in pick:
             continue
         if os.path.exists(os.path.join(HERE, f'~{name}.kicad_sch.lck')):
             print(f'{name}：KiCad で回路図が開いているので飛ばす')
+            continue
+        cur = os.path.join(HERE, f'{name}.kicad_sch')
+        if os.path.exists(cur) and 'generator "eeschema"' in open(cur, encoding='utf-8').read(400) and '--force' not in sys.argv:
+            print(f'{name}：KiCad で保存された回路図なので飛ばす（作り直すときは --force。KiCad での変更は消える）')
             continue
         text, paper = build(name, table, frames, lib)
         sch = os.path.join(HERE, f'{name}.kicad_sch')

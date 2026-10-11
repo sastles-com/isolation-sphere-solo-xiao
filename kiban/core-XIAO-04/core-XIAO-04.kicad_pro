@@ -661,18 +661,18 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "boardB.kicad_sch",
-        "name": "boardB",
+        "filename": "core-XIAO-04.kicad_sch",
+        "name": "core-XIAO-04",
         "uuid": "fde9b7c9-3568-5b34-b8e6-a8d7174c8828"
       }
     ],
-    "used_designators": "J10-14",
+    "used_designators": "TP3-4,#PWR14-15,J4-5,J10-14",
     "variants": []
   },
   "sheets": [
     [
-      "6340347a-e2e0-5227-8bde-6958b258adfa",
-      "Root"
+      "fde9b7c9-3568-5b34-b8e6-a8d7174c8828",
+      "core-XIAO-04"
     ]
   ],
   "text_variables": {},
