@@ -1,0 +1,109 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "e2d230fc-8cb9-5e6c-9498-e0fee0324c13")
+	(paper "A4")
+	(lib_symbols)
+	(text "panel-AB: boardA + boardB-reverse (make_sch.py で生成)"
+		(exclude_from_sim no)
+		(at 25.4 30.48 0)
+		(effects
+			(font
+				(size 2 2)
+			)
+			(justify left)
+		)
+		(uuid "4f70db33-6260-5333-a159-b36348612b42")
+	)
+	(sheet
+		(at 25.4 50.8)
+		(size 101.6 63.5)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "e5eb54b3-a0e5-557e-934f-dacbffed886d")
+		(property "Sheetname" "boardA"
+			(at 25.4 50.0884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "boardA.kicad_sch"
+			(at 25.4 114.88839999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "panel-AB"
+				(path "/e2d230fc-8cb9-5e6c-9498-e0fee0324c13"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 152.4 50.8)
+		(size 101.6 63.5)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "394ee5f5-6b8c-5649-b4d7-ee19a1cfebc2")
+		(property "Sheetname" "boardB-reverse"
+			(at 152.4 50.0884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "boardB-reverse.kicad_sch"
+			(at 152.4 114.88839999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "panel-AB"
+				(path "/e2d230fc-8cb9-5e6c-9498-e0fee0324c13"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

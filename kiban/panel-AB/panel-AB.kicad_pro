@@ -661,15 +661,28 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "boardB-reverse.kicad_sch",
-        "name": "boardB-reverse",
-        "uuid": "fde9b7c9-3568-5b34-b8e6-a8d7174c8828"
+        "filename": "panel-AB.kicad_sch",
+        "name": "panel-AB",
+        "uuid": "e2d230fc-8cb9-5e6c-9498-e0fee0324c13"
       }
     ],
     "used_designators": "J10-14",
     "variants": []
   },
-  "sheets": [],
+  "sheets": [
+    [
+      "e2d230fc-8cb9-5e6c-9498-e0fee0324c13",
+      "Root"
+    ],
+    [
+      "e5eb54b3-a0e5-557e-934f-dacbffed886d",
+      "boardA"
+    ],
+    [
+      "394ee5f5-6b8c-5649-b4d7-ee19a1cfebc2",
+      "boardB-reverse"
+    ]
+  ],
   "text_variables": {},
   "tuning_profiles": {
     "meta": {
