@@ -6,3 +6,13 @@
 
 # 生成物: tools/make_test_pattern.py で再生成できるテスト動画 (0.9MB)
 data/video.mjpg
+
+# macOS / エディタ / KiCad の一時ファイル
+.DS_Store
+.history/
+*.lck
+*.rpt
+__pycache__/
+
+# 3D プリント部品の旧版置き場
+3DPRINT/bk/
