@@ -1,0 +1,10 @@
+﻿Designator,Footprint,Quantity,Value,LCSC Part #
+J1,pogo-pad 1x06-full,1,LED01,
+J2,pogo-pad 1x06-full,1,LED02,
+J3,pogo-pad 1x06-full,1,LED03,
+J4,pogo-pad 1x06-full,1,LED04,
+J5,pogo-pad 1x06-full,1,LED05,
+J6,PinSocket_1x06_P2.54mm_Vertical,1,A-LEFT,
+J7,PinSocket_1x06_P2.54mm_Vertical,1,A-RIGHT,
+J8,PinSocket_1x07_P2.54mm_Vertical,1,CORE-J1,
+J9,PinSocket_1x07_P2.54mm_Vertical,1,CORE-J2,
