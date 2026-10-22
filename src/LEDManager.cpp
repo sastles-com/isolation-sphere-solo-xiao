@@ -100,7 +100,11 @@ void LEDManager::earlyBlank() {
         buffers[i] = s_ledBufferStatic + i * kLedsPerStrip;
         counts[i] = kLedsPerStrip;
     }
-    registerStrips(buffers, counts);
+    registerStrips(buffers, counts);  // データ線は Low のまま
+    // LED_EN を上げ、5 ms 以上待ってからデータを送る (FW-2)。
+    pinMode(kLedEnGpio, OUTPUT);
+    digitalWrite(kLedEnGpio, HIGH);
+    delay(10);
     FastLED.setBrightness(0);
     FastLED.show();
     s_earlyBlanked = true;
