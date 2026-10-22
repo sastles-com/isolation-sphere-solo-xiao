@@ -2,7 +2,7 @@
 
 M5AtomS3R 版 (`isolation-sphere-solo`) から分岐した。コア基板を XIAO ESP32S3 で作り直す
 (出発点: `FPC-isolation-sphere/kiban/core-XIAO-03`) のに合わせ、ファームも別リポジトリにした。
-XIAO には LCD・本体ボタン・M5 ライブラリが無く、代わりに北極のホール素子をボタンにする。
+XIAO には LCD・本体ボタン・M5 ライブラリが無い。電源 ON は北極の磁石（ホール素子）、ほかの操作は IMU のシェイクで行う。
 
 ## 分岐時にやったこと (2026-10-06)
 
@@ -19,25 +19,42 @@ XIAO には LCD・本体ボタン・M5 ライブラリが無く、代わりに�
 - ボード定義を `src/BoardConfig.h` 1 つにまとめた (`src/boards/` の振り分けと `-D BOARD_XIAO_ESP32S3` を廃止)。
 - **5 ストリップ化**: `kLedPins[] = {1, 2, 3, 4, 44}`、`kLedsPerStrip = 160`。以前の XIAO 定義は 4 本で、
   5 本分の `led_layouts-5strip.csv` を読むと 5 本目の 160 個が捨てられていた。
-- 5 本目は **GPIO44 (D7, 8 番パッド) で暫定**。core-XIAO-03 の回路図ではネット名が "GPIO09" だが、
-  XIAO の 8 番パッドは D7 = GPIO44。基板レイアウトを再設計する予定なので、それまでこの値で進める。
+- 5 本目は GPIO44 (D7) で暫定にしていた。→ core-XIAO-04 で LED は D0〜D5 に確定（下の「core-XIAO-04 のピン割り当て」）。
 - FastLED の登録は `kLedPins[]` を再帰テンプレートで展開する 1 か所にまとめた (以前は 3 か所に本数ぶん複製し `#if` で出し分け)。
 - ブザーを有効化 (GPIO43 = core-XIAO-03 の LS1)。`BOARD_HAS_LCD` / `BOARD_HAS_BUZZER` / `BOARD_NUM_STRIPS` は廃止。
 - `data/config.json` の LCD 項目を削除。
 - 注意: `spheres[]` の MAC は AtomS3R 機 (sphere001/002) のもの。XIAO 機で server モードを使うなら MAC を登録し直す。
 - 注意: build_flags の `-std=c++14` は効いていない (`std::index_sequence` が使えなかった)。C++14 の機能に依存しないこと。
 
+## core-XIAO-04 のピン割り当て (2026-10-10 確定)
+
+回路図は [`kiban/core-XIAO-04`](../kiban/core-XIAO-04/make_sch.py)（MCU 基板 core-XIAO-04 と北極基板 north-pole-04）。
+
+| XIAO | GPIO | 用途 | 備考 |
+| --- | --- | --- | --- |
+| D0〜D4 | 1, 2, 3, 4, 5 | LED ストリップ 1〜5（各 160 個） | 33 Ω を通して mother-ring の LINE01〜05 へ |
+| D5 | 6 | LED ストリップ 6 = 北極 LED（1 個） | 電源は `3V3_MCU`。10 kΩ でプルダウン |
+| D6 | 43 (TX) | ブザー | 起動中に High / ログが出るので LED には使わない |
+| D7 | 44 (RX) | `LED_EN` | 起動中は入力のまま。基板A のプルダウンで既定 OFF |
+| D8 | 7 | `PWR_KILL` | 基板A で 100 kΩ プルアップ。起動中に Low にしない (FW-1) |
+| D9 / D10 | 8 / 9 | I2C SCL / SDA | XIAO の標準 (D4/D5) ではない。`Wire.begin(9, 8)`（SDA = GPIO9、SCL = GPIO8）で指定 |
+
+- `kLedPins[] = {1, 2, 3, 4, 5}`（各 160 個）+ 北極 `{6}`（1 個）。RMT は 4ch なので時分割（`docs/solo_mode.md` §9）。
+- 北極 LED は `3V3_MCU` から給電されるので、`LED_EN` と関係なく使える。FW-2 の「`LED_EN` が Low の間はデータ線 Low」は
+  ストリップ 1〜5 だけに適用する。起動直後（ROM / ブートローダの数百 ms）は点かない。
+- I2C：充電 IC 0x6B、残量計 BQ28Z620 0x55（要確認）、BNO055 0x28（秋月 AE-BNO055-BO を MCU 基板に直接実装）。
+  プルアップは AE-BNO055-BO 内蔵の 10 kΩ だけ。
+- ファーム側の要件（FW-1〜5）は [`kiban/EasyEDA/docs/interfaces.md`](../kiban/EasyEDA/docs/interfaces.md) §7。
+
 ## 確定した方針 (ユーザー決定)
 
-- **GPIO**: PCA9632 (I2C) を維持して `VETO` / `PWR_OFF` を出し、GPIO はホール入力 1 本だけ追加する。
-  ホール入力は RTC 対応 GPIO (D0〜D5, D8〜D10)。`HALL_OUT` は常時オン 3.3V 側なので、XIAO 未通電時の逆流防止に
-  直列抵抗 (10〜100kΩ) を入れる。D6 (GPIO43, TX) は WS2812 に使わない (起動時ブートログで誤点灯する)。
-  D7 (GPIO44, RX) は起動中は入力のままなので WS2812 に使える (5 本目が暫定でここ)。
-  D2 (GPIO3) はストラップピンなので、ストリップに使う場合は起動時の挙動を確認する。
-- **ホールボタン**: 短押し / ダブル / 長押しをファームで判定する。動作中の電源 OFF はハードの長押し (約 1.5 秒)。
-  短い操作はファームのボタン。OFF→ON は今のまま (かざした瞬間に点灯)。
-- **北極 RGB LED**: WS2812。データ線は mother-ring の LINE05 の最終 `DOUT` に端子を新設し、線を北極まで延ばして
-  161 個目の LED として連結する。5V 振幅に整形済みの信号を受けられ、GPIO を使わない。
+- **電源 ON / OFF**: 北極の DRV5032FC → 基板A の LTC2954-1。磁石を約 2.15 秒保持で ON、約 7.8 秒（最小 5.5 秒）でハード強制 OFF
+  （状態を保存しない非常用）。通常 OFF は **IMU のシェイク**で判定し、ブザーや北極 LED で予告して取り消せるようにしてから
+  `PWR_KILL` を Low にする。トリプルシェイク（AP の ON/OFF）とははっきり違う動作にする（2026-10-10。TMAG5273 は廃止）。
+- **北極基板への配線は 5 本**: `3V3_AON`、`HALL_WAKE`、GND、`LED_D6`、`3V3_MCU`。I2C は北極へ行かない。
+  北極には DRV5032 の動作確認用の赤 LED（磁石を検出している間だけ点く）もある。
+- ~~PCA9632 で `VETO` / `PWR_OFF`、ホール入力 1 本、ホールボタン（短押し / ダブル / 長押し）、北極 LED を LINE05 の 161 個目に連結~~
+  → 電源系を `kiban/EasyEDA` の案に替えたことと core-XIAO-04 の設計で、すべて廃止（2026-10-10）。
 - **給電端子 (南極) のキャップ**: ダミープラグ型 (プラグと同じマグネット配置・接点なし・絶縁)。
   IMU は IMUPLUS (磁気不使用) なので、キャップの磁石が方位に影響する心配はない。北極ホールへの影響は
   キャップ磁石をプラグより強くしないことで抑え、実機で確認する。
@@ -45,22 +62,33 @@ XIAO には LCD・本体ボタン・M5 ライブラリが無く、代わりに�
 
 ## 次にやること
 
-1. **ボード定義の残り** (`src/BoardConfig.h`)。ホール入力 `kHallPin`、PCA9632 のアドレスを追加する。
-   RMT は 4ch なので 5 本目は時分割 (`docs/solo_mode.md` §9)。5 本目のピンは基板再設計で確定させる。
-2. **`HallButton`** (新規): 押下時間を測る純ロジック。イベントは Short / Double / Long (0.7〜1.4 秒)。
-   1.5 秒以上はハードが電源を切るので扱わない。`test/test_hall_button` に native 単体テストを追加する (タイマーは注入)。
-   操作の割り当ては未確定。叩き台: Short = 再生/一時停止、Double = AP の ON/OFF、Long = 省電力一括。
-3. **`Pca9632` ドライバ** (新規): ch0 = `VETO`、ch1 = `PWR_OFF`。電源投入時は両方非アサート (boot-safe)。
-4. **`StatusLed`** (新規): 北極 RGB LED で 起動 / AP 動作中 / 接続あり / 再生中 / 省電力 を表示する。
-   ストリップ 5 の LED 数を 160→161 にし、161 個目は球体マッピング (`SphereMap`) と 800 個の前提から外す。
-   `kMaxLeds`、FastLED の電流制限、`led_layouts` の扱いを確認する。pillar の配線は 6 本→8 本 (`DOUT05` と `V5V` を追加)。
+1. **ボード定義の残り** (`src/BoardConfig.h`)。上の表のピン（LED 6 本、`LED_EN`、`PWR_KILL`、I2C、ブザー）に合わせる。
+2. **電源制御** (新規): FW-1〜3 の手順（`PWR_KILL` は起動中に触らない、`LED_EN` を上げてから 5 ms 以上待って送る、
+   シャットダウンはデータ線 Low → `LED_EN` Low → 保存 → `PWR_KILL` Low）。
+3. **OFF ジェスチャ** (新規): BNO055 のシェイクで判定する純ロジック。トリプルシェイク（AP の ON/OFF）と区別し、
+   予告と取り消しの時間を入れる。`test/` に native 単体テストを追加する (タイマーと IMU の値は注入)。
+4. **`StatusLed`** (新規): 北極 LED（ストリップ 6、1 個）で 起動 / AP 動作中 / 接続あり / 再生中 / 省電力 / OFF 予告 を表示する。
+   球体マッピング (`SphereMap`) と 800 個の前提には入れない。
 
 ## ハード側の宿題 (`FPC-isolation-sphere`)
 
-- docs/06: 動作中のみ CLK を遅延させる長押し OFF 回路の改訂。
-- mother-ring-03 → 次版: LINE05 の最終 `DOUT05` に端子を新設 (現状は各コネクタで終端)。`V5V` の取り出しも確認する。
-- docs/08, 09: ホール信号を ESP32 へ渡す線、RGB LED の連結、給電端子キャップ、GPIO 表、pillar 配線 8 本化。
-- core-XIAO-04 (仮): ホール入力のピンと抵抗を追加。core-XIAO-03 の製造発注状況を確認する。
+### このリポジトリでの基板設計 (2026-10-06)
+
+- 制御プログラムに加えて、基板・3Dプリント部品も本リポジトリで扱う。
+- mother-ring のポゴピン→ピンヘッダ変更は保留。
+- 電池は **2S を維持**。
+- 2026-10-07、電源系は [`kiban/EasyEDA`](../kiban/EasyEDA/README.md) の案を採用。
+  40 mm 角の2枚構成（基板A：電源制御、基板B：充電・BMS）、LED は WS2812C-2020-V6 を 3.3 V で駆動。
+  [`kiban/power-2s`](../kiban/power-2s/README.md)（IP2326 + MP1584、5V LED）は参考資料扱い。
+- 北極ホールは DRV5032FC + LTC2954-1。約2.15秒の保持でON、約7.8秒（最小5.5秒）の保持でハード強制OFF。
+  通常OFFは IMU のシェイクを XIAO が判定して `PWR_KILL` を Low にする（2026-10-10、TMAG5273 は廃止）。
+  ファーム側の要件は [`kiban/EasyEDA/docs/interfaces.md`](../kiban/EasyEDA/docs/interfaces.md) §7。
+- 基板A / B は KiCad で回路図・PCB（配線途中）まで作成済み。core-XIAO-04 と北極基板は回路図まで（2026-10-10）。
+
+- mother-ring 次版: core との接続を 1×7 ×2 に改版（core-XIAO-04 の J1 / J2 と同じ並び）。LED の 33 Ω は core 側へ移したので外すか 0 Ω。
+  電源は基板A の `3V3_LED` に合わせる。LINE05 の `DOUT05` 端子は不要になった（北極 LED は 6 本目のストリップ）。
+- core-XIAO-04 / north-pole-04 の PCB。北極基板の外形（pillar の先の寸法）を決める。
+- 給電端子キャップ。core-XIAO-03 の製造発注状況を確認する。
 
 ## 開発上の注意
 
