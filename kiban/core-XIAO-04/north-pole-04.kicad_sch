@@ -2249,17 +2249,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "north-pole-04-U1"
-			(at 118.11 48.26 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1"
 			(uuid "5b3a75d3-ed5e-40e5-80ed-6c1dbc27f439")
 		)
@@ -2354,17 +2343,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "north-pole-04-D2"
-			(at 114.3 66.04 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1"
 			(uuid "67f3e04d-5555-4689-9690-720165d370fe")
 		)
@@ -2413,7 +2391,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.00mm:PinHeader_1x05_P2.00mm_Vertical"
+		(property "Footprint" "core-XIAO-04:SolderWire_5_3L2R"
 			(at 38.1 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -2446,17 +2424,6 @@
 			)
 		)
 		(property "LCSC Part" ""
-			(at 38.1 40.64 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "north-pole-04-J1"
 			(at 38.1 40.64 0)
 			(hide yes)
 			(show_name no)
@@ -2642,17 +2609,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "north-pole-04-D1"
-			(at 27.94 110.49 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1"
 			(uuid "36bf0046-7e9d-42b7-be83-647bb13ea03a")
 		)
@@ -2740,17 +2696,6 @@
 			)
 		)
 		(property "LCSC Part" "C21190"
-			(at 160.02 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "north-pole-04-R1"
 			(at 160.02 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -2927,17 +2872,6 @@
 				)
 			)
 		)
-		(property "EasyEDA" "north-pole-04-C1"
-			(at 146.05 55.88 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
 		(pin "1"
 			(uuid "78714710-98ae-46ad-b36b-0f1695a9fea7")
 		)
@@ -3094,17 +3028,6 @@
 			)
 		)
 		(property "LCSC Part" "C14663"
-			(at 66.04 119.38 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "EasyEDA" "north-pole-04-C2"
 			(at 66.04 119.38 0)
 			(hide yes)
 			(show_name no)
