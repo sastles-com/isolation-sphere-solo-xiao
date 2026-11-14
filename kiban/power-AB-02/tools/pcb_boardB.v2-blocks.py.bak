@@ -1,0 +1,366 @@
+#!/usr/bin/env python3
+"""基板B（boardB-reverse）の回路図から PCB を作る：部品配置と、電源経路の配線。KiCad 付属の Python で動かす。
+
+  /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3 \
+      kiban/power-AB-02/tools/pcb_boardB.py
+
+出力：kiban/power-AB-02/boardB-reverse/boardB-reverse.kicad_pcb（信号線は未配線。続けて route.py で配線する）。
+**実行すると PCB を作り直す。KiCad で手直ししたあとは実行しない。**
+
+初版（kiban/EasyEDA/kicad/boardB-reverse）と同じにしたもの：
+- 外形（40 mm 角、隅を 8 mm 面取り）、4 層、表面実装の部品はすべて裏面（B.Cu）
+- 基板A へのヘッダ J2 / J3、充電入力 J1、セル J4 / J5 の位置と向き（パッドの座標とネットが初版と一致）
+
+初版から変えたもの：
+- 部品配置を電流の流れに合わせた。セル（西）→ ヒューズ → 保護 FET → 充電 IC の BAT、充電入力（東）→ VBUS、
+  充電 IC の SYS → 北西の J2（VSYS）。インダクタは充電 IC の電力段（北辺）の真上
+- 電流の大きい経路（下の POWER）は、このスクリプトが太い配線で引いてロックする。信号線と GND への接続は route.py（Freerouting）
+- 層：B.Cu = 部品と電源、In2.Cu = GND 面（部品面のすぐ隣）、In1.Cu と F.Cu = 信号
+
+座標は基板の中心が原点、x 右、y 下（KiCad の画面と同じ。上から見た図）。配置の道具（Fp、Placer）は初版の
+kiban/EasyEDA/tools/kicad/pcb_boardB.py を使う。
+"""
+import math
+import os
+import sys
+import xml.etree.ElementTree as ET
+
+import pcbnew
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+KIBAN = os.path.abspath(os.path.join(HERE, '..', '..'))
+_argv, sys.argv = sys.argv, sys.argv[:1]             # 初版の道具は、読み込むときに sys.argv[1] を出力先として見る
+sys.path.insert(0, os.path.join(KIBAN, 'EasyEDA', 'tools', 'kicad'))
+import pcb_boardB as B  # noqa: E402
+sys.argv = _argv
+
+BOARD = 'boardB-reverse'
+SCH = os.path.join(KIBAN, 'power-AB-02', BOARD, BOARD + '.kicad_sch')
+OUT = os.path.join(KIBAN, 'power-AB-02', BOARD, BOARD + '.kicad_pcb')
+LIBS = {
+    'lcsc': os.path.join(KIBAN, 'EasyEDA', 'kicad', 'lib', 'lcsc.pretty'),
+    'Connector_PinHeader_2.00mm': '/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Connector_PinHeader_2.00mm.pretty',
+}
+B.CX = B.CY = 0.0
+B.SCH = SCH
+B.EXTRA_NETS = {}                    # 初版の回路図にあった UUID の食い違いは直したので、補うネットは無い
+GAP = 0.3                            # 部品どうしのすき間（パッドを含む外形の間）。初版の 1.0 mm では、IC のまわりに置けない
+_overlap = B.overlap
+B.overlap = lambda a, b, gap=GAP: _overlap(a, b, gap)
+mm, tomm = pcbnew.FromMM, pcbnew.ToMM
+VIA, VIA_PWR = (0.6, 0.3), (0.8, 0.4)
+
+# ---------------------------------------------------------------- 配置（x, y, 回転）。すべて裏面
+U3X, U3Y = 4.5, -2.5                 # 充電 IC。回転 180：電力段（PMID / SW1 / GND / SW2 / SYS）が北、BAT が西、VBUS が東
+PLACE = {
+    # 初版と同じ位置（スルーホール）
+    'J2': (0.0, -16.5, 0), 'J3': (0.0, 16.5, 0), 'J1': (17.09, 4.28, 90),
+    'J4': (-16.71, 1.84, -90), 'J5': (-16.71, 7.63, -90),
+    # 充電 IC と電力段
+    'U3': (U3X, U3Y, 180),
+    'L2': (3.2, -8.5, 180),            # SW1 が東のパッド、SW2 が西のパッド。U3 の GND ピンの真上がパッドの間になる
+    'C7': (7.9, -6.4, -90), 'C4': (9.5, -6.7, -90), 'C5': (11.2, -6.7, -90), 'C6': (12.9, -6.7, -90),   # PMID（南のパッド）
+    'C10': (6.0, -12.5, 0), 'C11': (0.4, -12.5, 0),                                                    # ブートストラップ
+    # VSYS：U3 の SYS → 西へ → J2 の 1〜3 番。コンデンサは帯の西側に縦に並べる（東のパッドが VSYS）
+    'C19': (-4.2, -5.0, 0), 'C14': (-4.2, -6.8, 0), 'C15': (-4.2, -8.6, 0), 'C16': (-4.2, -10.4, 0),
+    'C17': (-4.2, -12.2, 0), 'C18': (-4.2, -14.0, 0),
+    'J14': (-9.3, -16.5, -90),
+    # 充電入力：J1 → TVS → VBUS のコンデンサ → U3 の VBUS / VAC
+    'D1': (14.3, 4.55, -90),
+    'C1': (13.1, -3.0, 180), 'C2': (13.1, -1.1, 180), 'C3': (12.8, 0.6, 180),
+    'C8': (8.3, -2.0, 180),            # REGN
+    # 電池側：J5（BAT_TOP）→ F2 → Q2 → PACK_P → U3 の BAT
+    'F2': (-10.3, 10.6, 0),
+    'Q2': (-2.0, 1.5, 90),             # 1 番（BAT_F）と 3 番（PACK_P）が北
+    'C12': (-2.0, -3.4, 0), 'C13': (-2.0, -1.6, 0),
+    'J11': (-6.6, 3.6, 0), 'J10': (1.2, 3.4, 0),
+    # 残量計：シャントは J4 の 1 番（BAT_N）のすぐ東、U1 はその北
+    'R18': (-12.5, 0.57, 180),
+    'U1': (-12.2, -5.0, 90),           # 回転 90：VSS / SRN / SRP が南（シャント側）
+    # ---- ここから下は、回路図の機能ブロックごとに、向きをそろえて並べる（枠は FRAMES）
+    # 残量計・保護：U1 の北に、ピンの並び順（DSG、PACK、CHG、PBI、VC2、VC1）で一列。セル電圧の直列抵抗はその上
+    'R15': (-15.6, -10.5, -90), 'R10': (-14.1, -10.5, -90), 'R14': (-12.6, -10.5, -90), 'C26': (-11.1, -10.5, 90),
+    'C24': (-9.6, -10.5, 90), 'C25': (-8.1, -10.5, 90),
+    'R11': (-9.6, -13.3, -90), 'R12': (-8.1, -13.3, 90),
+    'R13': (-16.0, -3.0, 90),          # サーミスタ
+    # 電流シャントのフィルタ：U1 の東に縦一列（西のパッドが U1 側）
+    'R20': (-8.2, -7.5, 0), 'C28': (-8.2, -6.0, 0), 'C29': (-8.2, -4.5, 0), 'C27': (-8.2, -3.0, 0), 'R19': (-8.2, -1.5, 0),
+    # 主電流路：保護 FET のゲート抵抗は Q2 のすぐ南、FET と PACK をまたぐコンデンサ（2 個直列 ×2）はその下に一列
+    'R16': (-3.4, 5.2, 90), 'R17': (-1.6, 5.2, 90),
+    'C20': (-4.4, 8.0, 180), 'C21': (-1.8, 8.0, 180), 'C22': (0.8, 8.0, 180), 'C23': (3.4, 8.0, 180),
+    # 充電 IC の設定：U3 の南に縦向きで 2 行（CE・PROG・ILIM ／ BATP・TS の分圧とサーミスタ）、その下に STAT の LED
+    'R7': (3.7, 3.0, -90), 'R3': (5.2, 3.0, -90), 'R1': (6.7, 3.0, -90), 'R2': (8.2, 3.0, -90),
+    'R9': (3.7, 5.7, 90), 'R4': (5.2, 5.7, 90), 'R5': (6.7, 5.7, -90), 'R6': (8.2, 5.7, -90),
+    'R8': (6.7, 8.4, 90), 'D2': (8.2, 8.4, 90),
+    'J12': (11.2, 5.8, 0), 'J13': (11.2, 9.2, 0),
+    'C9': (1.3, 0.6, 0),               # SDRV（U3 の 24 番）
+}
+
+# 自動で置く（つながる相手の近く）：C9（SDRV。U3 の 24 番のそば）
+
+# 機能ブロックの枠（部品面のシルクに点線）：(名前, 名前の位置, [枠の頂点...])
+FRAMES = [
+    ('GAUGE', (-13.5, -8.4), [(-17.0, -12.2), (-10.5, -12.2), (-10.5, -14.9), (-7.2, -14.9), (-7.2, -8.9), (-9.6, -8.9), (-9.6, -1.2), (-17.0, -1.2)]),
+    ('SHUNT', (-8.2, -0.15), [(-9.4, -8.6), (-7.0, -8.6), (-7.0, 1.8), (-15.0, 1.8), (-15.0, -0.6), (-9.4, -0.6)]),
+    ('CHARGER', (3.2, -14.3), [(-6.75, -15.3), (7.8, -15.3), (7.8, -9.0), (14.0, -9.0), (14.0, -4.7), (10.0, -4.7), (10.0, 1.4), (0.0, 1.4),
+                               (0.0, -0.75), (-6.75, -0.75)]),
+    ('CHG IN', (14.2, 1.75), [(10.3, -4.4), (16.3, -4.4), (16.3, 1.6), (18.9, 1.6), (18.9, 7.2), (12.9, 7.2), (12.9, 4.1), (10.3, 4.1)]),
+    ('CHG CFG', (8.6, 10.25), [(2.9, 1.6), (9.6, 1.6), (9.6, 4.2), (12.8, 4.2), (12.8, 10.8), (5.8, 10.8), (5.8, 7.0), (2.9, 7.0)]),
+    ('BATT PATH', (-1.0, 6.95), [(-6.6, -0.5), (-0.2, -0.5), (-0.2, 1.7), (2.8, 1.7), (2.8, 7.2), (4.8, 7.2), (4.8, 9.0), (-5.5, 9.0), (-5.5, 13.8),
+                                 (-17.3, 13.8), (-18.6, 12.5), (-18.6, 2.1), (-6.6, 2.1)]),
+]
+LAYERS = 2 if '--2layer' in sys.argv else 4      # 既定は 4 層。2 層は試作（表と裏の空きを GND で塗る）
+
+# 自動で置く部品を入れない範囲（x0, y0, x1, y1）。0.4 mm ピッチのピンのすぐ外に部品があると、配線を引き出せない
+KEEP_OUT = [(0.9, -4.7, 8.1, 1.2),          # U3（4 mm 角）の外側 1.6 mm
+            (-14.9, -9.0, -9.5, -1.0)]      # U1 のピン列（北・南）の外側 1.6 mm
+
+# 太い配線（すべて B.Cu）：(ネット, 幅, [点...])。細いピンからは、ピンと同じ幅で引き出してから太くする
+POWER = [
+    # --- U3 の電力段（ピンは 0.22 mm 幅、0.45 mm ピッチ）
+    ('VSYS', 0.22, [(3.6, -4.3), (3.6, -5.45)]),
+    ('VSYS', 0.45, [(3.4, -5.45), (-0.6, -5.45)]),
+    ('VSYS', 1.3, [(-0.6, -5.0), (-2.05, -5.0)]),
+    ('VSYS', 2.3, [(-2.05, -5.5), (-2.05, -15.2)]),
+    ('VSYS', 2.4, [(-6.35, -16.3), (-1.27, -16.3)]),
+    ('VSYS', 1.2, [(-9.3, -16.5), (-6.35, -16.5)]),
+    ('SW2', 0.22, [(4.05, -4.3), (4.05, -5.95), (3.75, -6.2)]),
+    ('SW2', 0.6, [(3.75, -6.2), (0.4, -6.2), (0.4, -7.2)]),
+    ('SW1', 0.22, [(4.95, -4.3), (4.95, -6.0)]),
+    ('SW1', 0.26, [(5.0, -6.0), (5.6, -7.0)]),
+    ('GND', 0.22, [(4.5, -4.3), (4.5, -7.0)]),
+    ('GND', 2.2, [(3.2, -7.9), (3.2, -9.3)]),
+    ('GND', 0.5, [(4.5, -7.0), (3.9, -7.6)]),
+    ('GND', 0.2, [(5.5, -0.8), (5.5, -1.25), (5.3, -1.45), (5.3, -1.8)]),      # 南辺の GND ピン 10・11 は、IC の下へ引き込んでビア
+    ('GND', 0.2, [(5.1, -0.8), (5.1, -1.25), (5.3, -1.45)]),
+    ('PMID', 0.22, [(5.4, -4.3), (5.4, -5.2), (5.9, -5.2)]),
+    ('PMID', 0.6, [(5.9, -5.45), (7.6, -5.45)]),
+    ('PMID', 1.2, [(7.9, -5.7), (12.9, -5.7)]),
+    # --- 充電入力
+    ('VBUS', 0.6, [(6.45, -3.52), (11.1, -3.52)]),
+    ('VBUS', 0.7, [(6.5, -0.95), (11.1, -0.95)]),
+    ('VBUS', 1.6, [(11.1, -3.3), (11.1, 3.0), (17.09, 3.01)]),
+    ('VBUS', 1.2, [(11.1, -3.0), (12.1, -3.0)]),
+    ('VBUS', 1.2, [(11.1, -1.1), (12.1, -1.1)]),
+    # --- 電池 → ヒューズ → 保護 FET → 充電 IC
+    ('BAT_TOP', 1.8, [(-16.71, 8.9), (-13.4, 9.6)]),
+    ('BAT_MID', 1.6, [(-16.71, 3.11), (-16.71, 6.36)]),
+    ('BAT_F', 2.0, [(-7.2, 8.6), (-6.4, 3.6), (-4.6, 0.6)]),
+    ('BAT_F', 0.6, [(-4.6, 0.3), (-2.95, 0.3)]),
+    ('PACK_P', 0.6, [(2.55, -3.52), (0.4, -3.52)]),
+    ('PACK_P', 1.1, [(0.5, -3.4), (-1.0, -3.4)]),
+    ('PACK_P', 1.4, [(-0.3, -3.2), (-0.3, -1.4)]),
+    ('PACK_P', 0.6, [(-0.5, -1.2), (-1.05, -0.3), (-1.05, 0.2)]),
+    # --- シャント
+    ('BAT_N', 1.6, [(-16.71, 0.57), (-13.9, 0.57)]),
+    ('GND', 1.6, [(-11.1, 0.57), (-9.4, 0.57)]),
+    # --- U1 の電流検出（南辺の 2・3 番）。並べて東へ引き出す。自動配線に任せると、3 番が隣のピンの配線に囲まれて出られない
+    ('SRP_F', 0.15, [(-12.0, -2.7), (-12.0, -2.1), (-11.85, -1.95), (-10.4, -1.95)]),
+    ('SRN_F', 0.15, [(-11.6, -2.7), (-11.6, -2.45), (-11.45, -2.3), (-10.4, -2.3)]),
+]
+
+# GND 面（In2）へ落とすビア。大電流の戻り道（シャント、U3 の GND、コンデンサ）は数を打つ
+GND_VIAS = [(x, y) for x in (2.5, 3.2, 3.9) for y in (-8.0, -9.2)] + \
+           [(-9.6, y) for y in (0.0, 1.15)] + [(-8.7, y) for y in (0.0, 1.15)]
+# コンデンサの GND パッドから、短い配線で落とすビア：(部品, ピン, dx, dy)
+CAP_VIAS = [('C4', '1', 0, -1.4), ('C5', '1', 0, -1.4), ('C6', '1', 0, -1.4), ('C7', '1', 0, -1.2),
+            ('C14', '1', -1.4, 0), ('C15', '1', -1.4, 0), ('C16', '1', -1.4, 0), ('C17', '1', -1.4, 0), ('C18', '1', -1.4, 0),
+            ('C19', '1', -1.2, 0), ('C1', '1', 1.4, 0), ('C2', '1', 1.4, 0), ('C3', '1', 1.2, 0),
+            ('C12', '1', -1.4, 0), ('C13', '1', -1.4, 0), ('C8', '1', 0.7, 0), ('D1', '2', -1.5, 0)]
+
+
+def read_netlist():
+    xml = '/tmp/power_AB_02_boardB.xml'
+    import subprocess
+    subprocess.run([B.KICAD_CLI, 'sch', 'export', 'netlist', '--format', 'kicadxml', '-o', xml, SCH],
+                   capture_output=True, text=True, check=True)
+    root = ET.parse(xml).getroot()
+    comps = {}
+    for c in root.iter('comp'):
+        lib, _, name = (c.findtext('footprint') or '').partition(':')
+        fields = {f.get('name'): f.text or '' for f in c.iter('field')}
+        sp = c.find('sheetpath')
+        comps[c.get('ref')] = {'value': c.findtext('value') or '', 'lib': lib, 'fp': name, 'lcsc': fields.get('LCSC Part', ''),
+                               'path': sp.get('tstamps') + c.findtext('tstamps'), 'sheet': sp.get('names')}
+    nets = {n.get('name').lstrip('/'): [(x.get('ref'), x.get('pin')) for x in n.iter('node')] for n in root.iter('net')}
+    return comps, nets
+
+
+def seg_rect(a, b, w):
+    h = w / 2
+    return (min(a[0], b[0]) - h, min(a[1], b[1]) - h, max(a[0], b[0]) + h, max(a[1], b[1]) + h)
+
+
+def near_back(pl, f, tx, ty, max_r=14.0, step=0.25):
+    """裏面で、目標にいちばん近い空いた位置に置く（Placer.near は表面を先に探すので、裏面専用のものを使う）。"""
+    best = None
+    n = int(max_r / step)
+    for ix in range(-n, n + 1):
+        for iy in range(-n, n + 1):
+            x, y = tx + ix * step, ty + iy * step
+            d = math.hypot(x - tx, y - ty)
+            if best and d >= best[0]:
+                continue
+            for rot in (0, 90):
+                if pl.free(f.rect(x, y, rot, True), True, f.tht):
+                    best = (d, x, y, rot)
+                    break
+    assert best, f'{f.ref}: 置ける場所がない'
+    f.put(best[1], best[2], best[3], True)
+    pl.commit(f)
+
+
+DASH, GAP_DASH = 0.8, 0.5
+
+
+def draw_frames(board, frames, layer=pcbnew.B_SilkS):
+    """機能ブロックの枠を点線で、名前を文字で、部品面のシルクに描く。"""
+    for name, (tx, ty), pts in frames:
+        for p, q in zip(pts, pts[1:] + pts[:1]):
+            # この版の pcbnew は線種（破線）を Python から選べないので、短い線を並べて点線にする
+            n = max(1, round(math.hypot(q[0] - p[0], q[1] - p[1]) / (DASH + GAP_DASH)))
+            for i in range(n):
+                a0, a1 = i / n, (i + DASH / (DASH + GAP_DASH)) / n
+                s = pcbnew.PCB_SHAPE(board, pcbnew.SHAPE_T_SEGMENT)
+                s.SetLayer(layer)
+                s.SetStart(B.vec(p[0] + (q[0] - p[0]) * a0, p[1] + (q[1] - p[1]) * a0))
+                s.SetEnd(B.vec(p[0] + (q[0] - p[0]) * a1, p[1] + (q[1] - p[1]) * a1))
+                s.SetWidth(mm(0.12))
+                board.Add(s)
+        t = pcbnew.PCB_TEXT(board)
+        t.SetText(name)
+        t.SetLayer(layer)
+        t.SetPosition(B.vec(tx, ty))
+        t.SetTextSize(pcbnew.VECTOR2I(mm(0.8), mm(0.8)))
+        t.SetTextThickness(mm(0.12))
+        t.SetMirrored(layer == pcbnew.B_SilkS)
+        board.Add(t)
+
+
+def build():
+    comps, nets = read_netlist()
+    board = pcbnew.CreateEmptyBoard()
+    board.SetCopperLayerCount(LAYERS)
+    board.GetDesignSettings().SetBoardThickness(mm(1.6))
+    netmap = {}
+    for name, pins in nets.items():
+        board.Add(pcbnew.NETINFO_ITEM(board, name))
+        for ref, pin in pins:
+            netmap[(ref, pin)] = name
+    pts = B.outline_points()
+    for i, p in enumerate(pts):
+        s = pcbnew.PCB_SHAPE(board, pcbnew.SHAPE_T_SEGMENT)
+        s.SetLayer(pcbnew.Edge_Cuts)
+        s.SetStart(B.vec(*p))
+        s.SetEnd(B.vec(*pts[(i + 1) % len(pts)]))
+        s.SetWidth(mm(0.1))
+        board.Add(s)
+
+    parts = {}
+    for ref, info in comps.items():
+        B.PRETTY = LIBS[info['lib']]
+        f = parts[ref] = B.Fp(ref, info, board, netmap)
+        f.fp.SetFPID(pcbnew.LIB_ID(info['lib'], info['fp']))
+        f.fp.SetPath(pcbnew.KIID_PATH(info['path']))             # 回路図のシンボルと結び付ける（「回路図から基板を更新」用）
+        f.fp.SetSheetname(info['sheet'])
+        f.fp.SetSheetfile(BOARD + '.kicad_sch')
+        if info['lcsc']:
+            fld = pcbnew.PCB_FIELD(f.fp, f.fp.GetNextFieldOrdinal(), 'LCSC Part')
+            fld.SetText(info['lcsc'])
+            fld.SetVisible(False)
+            fld.SetLayer(pcbnew.F_Fab)
+            f.fp.Add(fld)
+
+    pl = B.Placer()
+    for ref, (x, y, rot) in PLACE.items():
+        pl.fixed(parts[ref], x, y, rot, True)
+
+    def track(net, w, a, b):
+        t = pcbnew.PCB_TRACK(board)
+        t.SetStart(B.vec(*a))
+        t.SetEnd(B.vec(*b))
+        t.SetWidth(mm(w))
+        t.SetLayer(pcbnew.B_Cu)
+        t.SetNet(board.FindNet(net))
+        t.SetLocked(True)
+        board.Add(t)
+        pl.occ[True].append(seg_rect(a, b, w))               # あとから置く部品が、配線の上に乗らないようにする
+
+    def via(net, x, y, size=VIA_PWR):
+        v = pcbnew.PCB_VIA(board)
+        v.SetPosition(B.vec(x, y))
+        v.SetWidth(pcbnew.F_Cu, mm(size[0]))
+        v.SetDrill(mm(size[1]))
+        v.SetLayerPair(pcbnew.F_Cu, pcbnew.B_Cu)
+        v.SetNet(board.FindNet(net))
+        v.SetLocked(True)
+        board.Add(v)
+        r = size[0] / 2
+        pl.occ[True].append((x - r, y - r, x + r, y + r))
+
+    for net, w, line in POWER:
+        for a, b in zip(line, line[1:]):
+            track(net, w, a, b)
+    for x, y in GND_VIAS:
+        via('GND', x, y)
+    via('GND', 5.3, -1.8, VIA)                                # U3 の GND ピン 10・11（上の POWER）
+    for ref, pin, dx, dy in CAP_VIAS:
+        px, py = parts[ref].pad_pos(pin)
+        assert netmap[(ref, pin)] == 'GND', (ref, pin)
+        track('GND', 0.6, (px, py), (px + dx, py + dy))
+        via('GND', px + dx, py + dy, VIA)
+
+    # 狭ピッチの IC（U3、U1）のまわりは、ピンからの引き出しとビアのために空けておく。自動で置く部品だけが対象
+    pl.occ[True].extend(KEEP_OUT)
+
+    # 残りの部品：つながる相手（置き終わった部品のピン）のうち、いちばん小さいネットのピンの近くへ
+    placed = set(PLACE)
+    by_ref = {}
+    for (ref, pin), nm in netmap.items():
+        by_ref.setdefault(ref, {})[pin] = nm
+    rest = [r for r in parts if r not in placed]
+    while rest:
+        best = None
+        for ref in rest:
+            for pin, nm in by_ref.get(ref, {}).items():
+                if nm == 'GND':
+                    continue
+                for r2, p2 in nets[nm]:
+                    if r2 in placed:
+                        key = (len(nets[nm]), ref)
+                        if best is None or key < best[0]:
+                            best = (key, ref, parts[r2].pad_pos(p2))
+        assert best, f'つながる相手が置かれていない部品：{rest}'
+        _, ref, (tx, ty) = best
+        near_back(pl, parts[ref], tx, ty)
+        placed.add(ref)
+        rest.remove(ref)
+
+    # GND 面（In2）。部品面（B.Cu）のすぐ隣の層
+    for layer in ((pcbnew.In2_Cu,) if LAYERS == 4 else (pcbnew.F_Cu, pcbnew.B_Cu)):
+        z = pcbnew.ZONE(board)
+        z.SetLayer(layer)
+        z.SetNet(board.FindNet('GND'))
+        ol = z.Outline()
+        ol.NewOutline()
+        for x, y in pts:
+            ol.Append(mm(x), mm(y))
+        z.SetMinThickness(mm(0.2))
+        z.SetLocalClearance(mm(0.2 if LAYERS == 4 else 0.25))
+        z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
+        board.Add(z)
+
+    B.silk_text(board)
+    draw_frames(board, FRAMES)
+    pro = OUT.replace('.kicad_pcb', '.kicad_pro')
+    keep = open(pro, encoding='utf-8').read()          # SaveBoard が既定値で書き直すので戻す
+    pcbnew.SaveBoard(OUT, board)
+    open(pro, 'w', encoding='utf-8').write(keep)
+    print(OUT)
+    for ref in sorted(parts, key=lambda r: (r[0], int(''.join(c for c in r if c.isdigit()) or 0))):
+        f = parts[ref]
+        print(f'  {ref:4} ({f.x:7.2f}, {f.y:7.2f}) rot {f.rot:4}  {f.info["value"]}')
+
+
+if __name__ == '__main__':
+    build()

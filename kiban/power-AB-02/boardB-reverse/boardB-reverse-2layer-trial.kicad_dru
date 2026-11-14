@@ -1,0 +1,6 @@
+(version 1)
+# U3（BQ25792、QFN-29）は、フットプリントの中でパッドどうしが 0.15 mm しか離れていない（隅のパッドと隣のピン）。
+# ピンと同じ幅で引き出す配線も同じ間隔になるので、U3 の外形の中だけ、クリアランスを 0.14 mm まで認める。
+(rule "U3 fine pitch"
+  (condition "A.intersectsCourtyard('U3') && B.intersectsCourtyard('U3')")
+  (constraint clearance (min 0.14mm)))
