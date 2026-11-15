@@ -346,6 +346,7 @@ void setup() {
         deps.image = &imageManager;
         battery.begin(imuSensor.isInitialized() ? &imuSensor.i2cLock() : nullptr);
         deps.battery = &battery;
+        deps.sound = soundReady ? &sound : nullptr;
         controller.begin(deps);
         // トリプルシェイク = デモ向けの AP の ON/OFF 切替 (UI モードの代わり)
         gesture.setOnTripleShake([]() { controller.togglePowerSave(); });

@@ -113,6 +113,9 @@ void SoundManager::playEffect(SoundEffect effect) {
         case SoundEffect::STARTUP:
             generateStartup();
             break;
+        case SoundEffect::SHUTDOWN:
+            generateShutdown();
+            break;
         case SoundEffect::SHAKE_DETECTED:
             generateShakeDetected();
             break;
@@ -253,6 +256,17 @@ void SoundManager::generateStartup() {
     playNote(BuzzerNote::G4, 100);
     delay(30);
     playNote(BuzzerNote::C5, 200);
+}
+
+void SoundManager::generateShutdown() {
+    // 電源 OFF: 起動メロディの逆 C5 -> G4 -> E4 -> C4
+    playNote(BuzzerNote::C5, 100);
+    delay(30);
+    playNote(BuzzerNote::G4, 100);
+    delay(30);
+    playNote(BuzzerNote::E4, 100);
+    delay(30);
+    playNote(BuzzerNote::C4, 300);
 }
 
 void SoundManager::generateShakeDetected() {

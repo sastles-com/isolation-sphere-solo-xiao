@@ -198,6 +198,18 @@ public:
     /// 実際の LED_EN の状態 (切り替え要求が描画タスクに反映された後の値)
     bool powerEnabled() const { return _powerOn; }
 
+    /// 北極 LED (kNorthLedPin、1 個)。Sphere = レイアウト CSV の 801 行目として映像を表示
+    /// (CSV が 800 行なら消灯)、Rainbow = 虹色、Off = 消灯。ストリップ 1〜5 と一緒に送るので、
+    /// LED_EN が OFF の間は更新されず最後の色のまま
+    enum class NorthMode : uint8_t { Off, Rainbow, Sphere };
+    void setNorthMode(NorthMode m) { _northMode = m; }
+    NorthMode northMode() const { return _northMode; }
+    static const char* northModeName(NorthMode m) {
+        return m == NorthMode::Rainbow ? "rainbow" : m == NorthMode::Sphere ? "sphere" : "off";
+    }
+    /// レイアウト CSV に北極 LED (801 行目) が含まれているか
+    bool layoutHasNorth() const { return _layoutHasNorth; }
+
     /**
      * @brief テストパターンとブロック幅を設定する
      *
@@ -371,6 +383,9 @@ private:
     bool _initialized;               ///< 初期化フラグ
     bool _taskRunning;               ///< タスク実行フラグ
     volatile bool _stopRequested = false;  ///< 協調停止の要求 (show() の途中で殺さないため)
+    volatile NorthMode _northMode = NorthMode::Sphere;
+    bool _layoutHasNorth = false;
+    void updateNorth();                    ///< 北極 LED のバッファを上書き (Sphere 以外)。描画後・show() 前に呼ぶ
     volatile bool _powerWanted = true;     ///< LED_EN の要求 (earlyBlank() が High にしている)
     volatile bool _powerOn = true;         ///< LED_EN の実際の状態
     void applyPowerRequest();              ///< _powerWanted を LED_EN に反映 (show() の外で呼ぶ)

@@ -37,6 +37,10 @@ void DeviceController::tick() {
             Log.printf("[Control] SoftAP %s\n", _d.net->isSoftAP() ? "running" : "stopped");
         }
     }
+    if (_powerOffAtMs != 0 && (int32_t)(millis() - _powerOffAtMs) >= 0) {
+        _powerOffAtMs = 0;
+        doPowerOff();
+    }
     if (_rebootAtMs != 0 && (int32_t)(millis() - _rebootAtMs) >= 0) {
         Log.println("[Control] Restarting as requested");
         Serial.flush();
@@ -304,6 +308,54 @@ void DeviceController::setModemSleep(bool on) {
 
 bool DeviceController::serverConfigured() {
     return _d.config ? _d.config->isServerConfigured() : false;
+}
+
+bool DeviceController::setNorthMode(const char* name) {
+    if (!_d.led || !name) return false;
+    if (strcmp(name, "rainbow") == 0) {
+        _d.led->setNorthMode(LEDManager::NorthMode::Rainbow);
+    } else if (strcmp(name, "sphere") == 0) {
+        _d.led->setNorthMode(LEDManager::NorthMode::Sphere);
+    } else if (strcmp(name, "off") == 0) {
+        _d.led->setNorthMode(LEDManager::NorthMode::Off);
+    } else {
+        return false;
+    }
+    return true;
+}
+
+const char* DeviceController::northModeName() const {
+    return _d.led ? LEDManager::northModeName(_d.led->northMode()) : "off";
+}
+
+void DeviceController::requestPowerOff(uint32_t delayMs) {
+    uint32_t at = millis() + delayMs;
+    if (at == 0) at = 1;
+    _powerOffFailed = false;
+    _powerOffAtMs = at;
+}
+
+void DeviceController::doPowerOff() {
+    Log.println("[Control] Power off requested (FW-3)");
+    // 1-2) LED: 黒を送って描画を止め (データ線 Low)、LED_EN を Low。北極 LED も消す
+    if (_d.led) {
+        _d.led->setNorthMode(LEDManager::NorthMode::Off);
+        _d.led->setPowerEnabled(false);
+        for (int i = 0; i < 50 && _d.led->powerEnabled(); i++) delay(10);   // 描画タスクの反映を待つ
+    }
+    // 3) 設定を保存 (フラッシュ書き込みの完了まで)
+    Settings::flush();
+    // 4) 終了音 (鳴り終わるまでブロックする)
+    if (_d.sound) _d.sound->playEffect(SoundEffect::SHUTDOWN);
+    Serial.flush();
+    // 5) PWR_KILL を Low にして保持 → LTC2954 が MCU_EN を Low にし 3V3_MCU が切れる
+    pinMode(kPwrKillGpio, OUTPUT);
+    digitalWrite(kPwrKillGpio, LOW);
+    delay(2000);
+    // ここまで来たら電源が切れていない (USB 給電中、または PWR_KILL が LTC2954 に届いていない)。
+    // PWR_KILL は Low のまま、LED も消したままにする。
+    _powerOffFailed = true;
+    Log.println("[Control] WARN: still powered 2 s after PWR_KILL Low (USB power? PWR_KILL wiring?)");
 }
 
 void DeviceController::scheduleReboot(uint32_t delayMs) {

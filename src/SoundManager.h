@@ -41,7 +41,8 @@ enum class SoundEffect {
     STARTUP,        ///< 起動音
     SHAKE_DETECTED, ///< シェイク検出音
     UI_MODE_ENTER,  ///< UIモード開始音
-    UI_MODE_EXIT    ///< UIモード終了音
+    UI_MODE_EXIT,   ///< UIモード終了音
+    SHUTDOWN        ///< 電源 OFF (起動音の逆)
 };
 
 /**
@@ -242,6 +243,7 @@ private:
      * @brief 起動音を生成 (上昇メロディ)
      */
     void generateStartup();
+    void generateShutdown();
     
     /**
      * @brief シェイク検出音を生成 (3連音)

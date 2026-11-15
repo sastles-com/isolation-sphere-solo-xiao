@@ -27,6 +27,10 @@ public:
         uint16_t fullMah = 0;
         float temperatureC = 0;
         uint16_t status = 0;      ///< BatteryStatus()
+        uint8_t lastError = 0;    ///< 直近の失敗: Wire.endTransmission の値 (2=アドレス NACK, 3=データ NACK,
+                                  ///< 4=その他, 5=タイムアウト)、10=アドレスは応答したが読み出しが失敗。0=失敗なし
+        uint32_t okCount = 0;     ///< 読み出し (5 秒ごと) の成功回数
+        uint32_t failCount = 0;   ///< 失敗回数
     };
 
     /// lock = IMU と共有する I2C ロック (IMU 未検出なら nullptr。Wire は scanI2cBus で開始済み)
@@ -37,14 +41,21 @@ public:
     int toJson(char* buf, size_t cap) const;
     void print() const;
 
+    /// I2C の全アドレス (0x08〜0x77) を調べ、応答したアドレスを "0x28 0x55" の形で buf に書く。
+    /// 診断用。IMU と同じロックを取る。戻り値 = 見つかった数
+    int scanBus(char* buf, size_t cap);
+
 private:
-    bool readWord(uint8_t reg, uint16_t& out);
+    bool readWord(uint8_t reg, uint16_t& out, uint8_t& err);
     void readAll();
 
     I2cLock* _lock = nullptr;
     Reading _r;
     uint32_t _lastReadMs = 0;
     uint32_t _nextMs = 0;
+    uint8_t _lastError = 0;
+    uint32_t _okCount = 0;
+    uint32_t _failCount = 0;
     mutable portMUX_TYPE _mux = portMUX_INITIALIZER_UNLOCKED;   ///< httpd タスクからの読み出しと排他
 };
 

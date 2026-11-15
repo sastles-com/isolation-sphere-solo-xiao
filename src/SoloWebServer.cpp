@@ -85,7 +85,10 @@ small{color:#888}#msg{min-height:1.2em;color:#f5b041;font-size:14px;word-break:b
  <div class="row"><span class="k">電圧 / 電流</span><span id="b_vi" class="v">-</span></div>
  <div class="row"><span class="k">容量</span><span id="b_cap" class="v">-</span></div>
  <div class="row"><span class="k">温度 / 状態</span><span id="b_t" class="v">-</span></div>
- <small>5 秒ごとに読みます。電流は + が充電、- が放電。残量は残量計の学習前は正しくないことがあります。</small>
+ <div class="row"><span class="k">読み出し</span><span id="b_rd" class="v">-</span></div>
+ <div class="row"><button id="i2c" class="gray">I2C を再スキャン</button></div>
+ <div class="row"><span class="k">I2C</span><span id="i2c_r" class="v">-</span></div>
+ <small>5 秒ごとに読みます。電流は + が充電、- が放電。残量は残量計の学習前は正しくないことがあります。失敗の種類: 2 = アドレスに応答なし (線が切れている / 寝ている)、3 = データに応答なし、5 = タイムアウト (線が Low に張り付き)、10 = アドレスは応答したが読み出しが失敗 (接触が不安定)。I2C の再スキャンで 0x28 = IMU、0x55 = 残量計、0x6B = 充電 IC が見えるか確かめます。</small>
 </div>
 <div class="card" data-tab="play">
  <div class="k">動画の入れ替え</div>
@@ -111,6 +114,12 @@ small{color:#888}#msg{min-height:1.2em;color:#f5b041;font-size:14px;word-break:b
  <div class="row"><span class="k">チェイス幅</span><span id="wval" class="v">-</span></div>
  <input id="w" type="range" min="1" max="20" step="1">
  <div class="row"><button id="axis" class="gray">XYZ軸を重ねる</button></div>
+ <div class="row"><span class="k">レイアウト CSV</span><a class="btnlink" style="flex:0 0 auto;padding:8px 14px;font-size:14px;background:#444" href="/api/layout">ダウンロード</a></div>
+ <input id="lay_f" type="file">
+ <div class="row"><button id="lay_up" class="gray">レイアウトを差し替えて再起動</button></div>
+ <small>LED の座標 (FaceID,strip,strip_num,x,y,z、800 行。北極 LED を映像に使うなら 801 行目に strip 5) を差し替えます。形式と行数を確かめてから保存し、前のファイルは .bak に残します。動画は消えません。</small>
+ <div class="row"><span class="k">ブザー</span><button id="beep" class="gray">鳴らす (起動音)</button></div>
+ <div class="row"><span class="k">北極 LED</span><button id="n_sp" class="gray">映像</button><button id="n_rb" class="gray">虹色</button><button id="n_off" class="gray">消灯</button></div>
  <p><small>ストリップ識別色は 5 本の配線の同定と全点灯確認、チェイスは LED の並び順と向きの確認に使います。XYZ軸は映像に重ねて表示し、IMU が有効なら球体を回しても軸は空間に固定されて見えます (±X=赤 / ±Y=緑 / ±Z=青、マイナス側は暗色)。</small></p>
 </div>
 <div class="card" data-tab="net">
@@ -139,6 +148,11 @@ small{color:#888}#msg{min-height:1.2em;color:#f5b041;font-size:14px;word-break:b
  <div class="row"><span class="k">AP (Wi-Fi)</span><span id="ap_st" class="v">-</span><button id="ap_off" class="gray">今すぐ停止</button></div>
  <div class="row"><span class="k">モデム省電力</span><button id="ms_on" class="gray">ON</button><button id="ms_off">OFF</button></div>
  <p><small>AP は接続端末が 0 台のまま設定時間が経つと止まり、LAN 接続が無ければ無線ごと停止して電力を大きく減らします。再開はトリプルシェイク、電源の入れ直し、シリアル/MQTT です。映像の再生は AP が止まっても続きます。モデム省電力は LAN (STA) 接続中のみ効き、ON だと応答が鈍り UDP 映像を取りこぼすことがあります。</small></p>
+</div>
+<div class="card" data-tab="pwr">
+ <div class="k">電源</div>
+ <div class="row"><button id="poff" class="warn">電源を切る</button></div>
+ <small>LED を消して設定を保存し、終了音を鳴らしてから電源を切ります (PWR_KILL → MCU_EN OFF)。再び入れるには北極に磁石を約 2 秒当てます。USB 給電中は切れません。</small>
 </div>
 <div class="card" data-tab="net">
  <div class="row"><span class="k">デバイス</span><span id="dev" class="v">-</span></div>
@@ -169,9 +183,11 @@ async function refresh(){if(busy)return;try{const r=await fetch('/api/status',{c
   const sel=(id,on)=>$(id).className=on?'':'gray';
   sel('m_sphere',L.mode==='sphere');sel('m_test',L.mode==='test');
   sel('p_strip',L.pattern==='strip');sel('p_chase',L.pattern==='chase');
-  sel('axis',L.axis);$('axis').textContent=L.axis?'XYZ軸を重ねる (ON)':'XYZ軸を重ねる';
+  sel('axis',L.axis);sel('n_sp',L.north==='sphere');sel('n_rb',L.north==='rainbow');sel('n_off',L.north==='off');$('axis').textContent=L.axis?'XYZ軸を重ねる (ON)':'XYZ軸を重ねる';
   if(document.activeElement!==$('w')){$('w').value=L.width;$('wval').textContent=L.width}}
  if(s.battery){const B=s.battery;
+  const en={0:'',2:'2 アドレス応答なし',3:'3 データ応答なし',4:'4 その他',5:'5 タイムアウト',10:'10 読み出し失敗'}[B.err]??String(B.err);
+  $('b_rd').textContent=`成功 ${B.ok_n} / 失敗 ${B.fail_n}`+(B.fail_n?` (直近 ${en})`:'');
   $('hbat').textContent=B.present?`電池 ${B.soc}% ${(B.mv/1000).toFixed(2)}V ${B.ma}mA`:'電池 -';
   if(!B.present){$('b_soc').textContent='応答なし';$('b_bar').value=0;$('b_vi').textContent=$('b_cap').textContent=$('b_t').textContent='-'}
   else{$('b_soc').textContent=B.soc+' %';$('b_bar').value=B.soc;
@@ -179,6 +195,7 @@ async function refresh(){if(busy)return;try{const r=await fetch('/api/status',{c
    $('b_cap').textContent=`${B.rem_mah} / ${B.full_mah} mAh`;
    $('b_t').textContent=`${B.temp_c.toFixed(1)} °C / 0x${B.status.toString(16).padStart(4,'0')}`}}
  if(s.power){const P=s.power;
+  if(P.off_failed){say('電源が切れませんでした (USB 給電中、または PWR_KILL の配線を確認)');$('poff').disabled=false}
   const sel=(id,on)=>$(id).className=on?'':'gray';
   sel('ms_on',P.modem_sleep);sel('ms_off',!P.modem_sleep);
   $('ap_st').textContent=P.ap_running?'動作中':'停止中';
@@ -204,6 +221,13 @@ $('m_test').onclick=()=>led({mode:'test'});
 $('p_strip').onclick=()=>led({pattern:'strip'});
 $('p_chase').onclick=()=>led({pattern:'chase'});
 $('axis').onclick=()=>led({axis:!ledAxis});
+$('lay_up').onclick=()=>{const f=$('lay_f').files[0];if(!f)return say('CSV ファイルを選んでください');
+ if(!confirm(`レイアウトを ${f.name} に差し替えて再起動しますか？`))return;
+ fetch('/api/layout',{method:'POST',headers:{'Content-Type':'text/csv'},body:f}).then(r=>r.json().then(j=>{if(!r.ok)throw new Error(j.error||('HTTP '+r.status));say(`差し替えました (${j.bytes} B)。再起動中…`)})).catch(e=>say('差し替え失敗: '+e.message))};
+$('beep').onclick=()=>api('/api/diag',{beep:true}).then(j=>say(j.ok?'ブザーを鳴らしました':'ブザーが初期化されていません')).catch(e=>say(e.message));
+$('i2c').onclick=()=>{$('i2c_r').textContent='スキャン中…';api('/api/diag',{i2c_scan:true}).then(j=>{$('i2c_r').textContent=j.count?`${j.found} (${j.ms} ms)`:`応答なし (${j.ms} ms)`}).catch(e=>{$('i2c_r').textContent='-';say(e.message)})};
+$('n_sp').onclick=()=>led({north:'sphere'});$('n_rb').onclick=()=>led({north:'rainbow'});$('n_off').onclick=()=>led({north:'off'});
+$('poff').onclick=()=>{if(confirm('電源を切りますか？\n再び入れるには北極に磁石を約 2 秒当てます。'))api('/api/power',{off:true}).then(()=>{say('電源を切ります… 再び入れるには北極に磁石を約 2 秒当ててください');$('poff').disabled=true}).catch(e=>say(e.message))};
 $('lpw').onchange=e=>{const on=e.target.checked;if(!on&&!confirm('LED 電源 (LED_EN) を OFF にしますか？'))return void(e.target.checked=true);led({power:on})};
 $('w').oninput=e=>{$('wval').textContent=e.target.value;clearTimeout(wTimer);wTimer=setTimeout(()=>led({width:+e.target.value}),250)};
 $('del').onclick=()=>{if(confirm('保存済み動画を削除しますか？'))api('/api/video/delete').then(refresh).catch(e=>say(e.message))};
@@ -283,7 +307,7 @@ bool SoloWebServer::begin(DeviceController& ctl, ConfigManager& config, SoloPlay
     cfg.task_priority = 1;         // 既定(5)は高すぎる。デコード (frame_pump, prio 2) より下に置き、
                                    // 状態表示やアップロード受信が再生の締切を奪わないようにする
     cfg.stack_size = 8192;
-    cfg.max_uri_handlers = 20;
+    cfg.max_uri_handlers = 24;
     cfg.max_open_sockets = 4;
     cfg.lru_purge_enable = true;
     cfg.recv_wait_timeout = 30;
@@ -308,6 +332,9 @@ bool SoloWebServer::begin(DeviceController& ctl, ConfigManager& config, SoloPlay
         {"/api/imu",          HTTP_POST, onImuPost,    this, false, false, nullptr},
         {"/api/server",       HTTP_POST, onServer,     this, false, false, nullptr},
         {"/api/power",        HTTP_POST, onPower,      this, false, false, nullptr},
+        {"/api/diag",         HTTP_POST, onDiag,       this, false, false, nullptr},
+        {"/api/layout",       HTTP_GET,  onLayoutGet,  this, false, false, nullptr},
+        {"/api/layout",       HTTP_POST, onLayoutPost, this, false, false, nullptr},
         {"/api/source",       HTTP_POST, onSource,     this, false, false, nullptr},
         {"/api/brightness",   HTTP_POST, onBrightness, this, false, false, nullptr},
         {"/api/video",        HTTP_POST, onUpload,     this, false, false, nullptr},
@@ -475,9 +502,9 @@ esp_err_t SoloWebServer::onStatus(httpd_req_t* req) {
         "\"server\":{\"configured\":%s,\"enabled\":%s,\"ssid\":\"%s\",\"broker\":\"%s\",\"mqtt\":%s},"
         "\"source\":{\"mode\":\"%s\",\"active\":\"%s\",\"net_frames\":%u,\"net_fps\":%.1f,\"net_errors\":%u,"
         "\"udp_rx\":%u,\"udp_drop\":%u,\"reasm_drop\":%u,\"last_net_ms\":%u,\"udp_listening\":%s},"
-        "\"led\":{\"mode\":\"%s\",\"pattern\":\"%s\",\"width\":%u,\"axis\":%s,\"power\":%s},"
+        "\"led\":{\"mode\":\"%s\",\"pattern\":\"%s\",\"width\":%u,\"axis\":%s,\"power\":%s,\"north\":\"%s\"},"
         "\"battery\":%s,"
-        "\"power\":{\"ap_running\":%s,\"ap_idle_min\":%u,\"modem_sleep\":%s},"
+        "\"power\":{\"ap_running\":%s,\"ap_idle_min\":%u,\"modem_sleep\":%s,\"off_pending\":%s,\"off_failed\":%s},"
         "\"imu\":{\"ok\":%s,\"mode\":%u,\"cal\":\"%u%u%u%u\","
         "\"quat\":[%.3f,%.3f,%.3f,%.3f],\"reads\":%u,\"fails\":%u,\"discards\":%u,\"partial\":%u,\"straddle\":%u,\"seq\":%u,\"smooth\":%u},"
         "\"render\":{\"fps\":%.1f,\"frames\":%u,\"map_us\":%u,\"out_us\":%u,\"stale\":%u},"
@@ -513,9 +540,10 @@ esp_err_t SoloWebServer::onStatus(httpd_req_t* req) {
         (unsigned)(ps.lastNetMs ? (millis() - ps.lastNetMs) : 0), udpListening ? "true" : "false",
         self->_ctl->ledModeName(), self->_ctl->testPatternName(), (unsigned)self->_ctl->testWidth(),
         self->_ctl->axisIndicator() ? "true" : "false",
-        self->_ctl->ledPower() ? "true" : "false", batJson,
+        self->_ctl->ledPower() ? "true" : "false", self->_ctl->northModeName(), batJson,
         self->_ctl->apRunning() ? "true" : "false", (unsigned)self->_ctl->apIdleMinutes(),
         self->_ctl->modemSleep() ? "true" : "false",
+        self->_ctl->powerOffPending() ? "true" : "false", self->_ctl->powerOffFailed() ? "true" : "false",
         imuOk ? "true" : "false", (unsigned)imuMode,
         (unsigned)calSys, (unsigned)calGyro, (unsigned)calAccel, (unsigned)calMag,
         iqw, iqx, iqy, iqz,
@@ -641,7 +669,158 @@ esp_err_t SoloWebServer::onPower(httpd_req_t* req) {
     if (doc.containsKey("ap")) {
         self->_ctl->requestAp(doc["ap"] | true);
     }
+    if (doc["off"] | false) {
+        self->_ctl->requestPowerOff();   // 応答を返してから loop で FW-3 の手順を実行
+    }
     snprintf(self->_jsonBuf, sizeof(self->_jsonBuf), "{\"ok\":true}");
+    return self->sendJson(req, "200 OK", self->_jsonBuf);
+}
+
+// 診断: {"beep":true} = ブザーで起動音、{"i2c_scan":true} = I2C の全アドレスを調べる
+esp_err_t SoloWebServer::onDiag(httpd_req_t* req) {
+    auto* self = static_cast<SoloWebServer*>(req->user_ctx);
+    char body[96];
+    size_t len = 0;
+    if (!self->readBody(req, body, sizeof(body), len)) {
+        return self->sendError(req, "400 Bad Request", "invalid body");
+    }
+    StaticJsonDocument<128> doc;
+    if (deserializeJson(doc, body, len) != DeserializationError::Ok) {
+        return self->sendError(req, "400 Bad Request", "invalid json");
+    }
+    if (doc["beep"] | false) {
+        const bool ok = self->_ctl->testBuzzer();
+        snprintf(self->_jsonBuf, sizeof(self->_jsonBuf), "{\"ok\":%s}", ok ? "true" : "false");
+        return self->sendJson(req, "200 OK", self->_jsonBuf);
+    }
+    if (doc["i2c_scan"] | false) {
+        if (!self->_ctl->battery()) return self->sendError(req, "503 Service Unavailable", "no gauge");
+        char found[96];
+        const uint32_t t0 = millis();
+        const int n = self->_ctl->battery()->scanBus(found, sizeof(found));
+        snprintf(self->_jsonBuf, sizeof(self->_jsonBuf), "{\"ok\":true,\"count\":%d,\"found\":\"%s\",\"ms\":%lu}",
+                 n, found, (unsigned long)(millis() - t0));
+        return self->sendJson(req, "200 OK", self->_jsonBuf);
+    }
+    return self->sendError(req, "400 Bad Request", "expected beep or i2c_scan");
+}
+
+// ---------------------------------------------------------------------------
+// LED レイアウト CSV (config.json の paths.layout)。GET = ダウンロード、POST = 差し替え。
+// POST は本文 (CSV そのもの) を検証してから一時ファイルに書き、元のファイルを .bak に退避して
+// 置き換え、再起動して反映する。検証: ヘッダ FaceID,strip,strip_num,x,y,z、行数 = kMaxLeds
+// (北極 LED を含めるなら kMaxLayoutLeds。801 行目は strip kNorthStrip / strip_num 0)、
+// 各ストリップ kLedsPerStrip 個 (行順)、座標が単位球上 (|r| = 0.9〜1.1)。
+// ---------------------------------------------------------------------------
+esp_err_t SoloWebServer::onLayoutGet(httpd_req_t* req) {
+    auto* self = static_cast<SoloWebServer*>(req->user_ctx);
+    const String path = self->_config->getLayoutPath();
+    fs::File f = LittleFS.open(path.c_str(), "r");
+    if (!f) return self->sendError(req, "404 Not Found", "layout file not found");
+    httpd_resp_set_type(req, "text/csv");
+    httpd_resp_set_hdr(req, "Content-Disposition", "attachment; filename=\"layout.csv\"");
+    httpd_resp_set_hdr(req, "Cache-Control", "no-store");
+    char buf[1024];
+    size_t n;
+    while ((n = f.read((uint8_t*)buf, sizeof(buf))) > 0) {
+        if (httpd_resp_send_chunk(req, buf, n) != ESP_OK) { f.close(); return ESP_FAIL; }
+    }
+    f.close();
+    return httpd_resp_send_chunk(req, nullptr, 0);
+}
+
+static bool validateLayoutCsv(char* text, size_t len, char* why, size_t whyCap) {
+    (void)len;
+    char* save = nullptr;
+    char* line = strtok_r(text, "\n", &save);
+    if (!line || strncmp(line, "FaceID,strip,strip_num,x,y,z", 28) != 0) {
+        snprintf(why, whyCap, "header must be FaceID,strip,strip_num,x,y,z");
+        return false;
+    }
+    int rows = 0;
+    while ((line = strtok_r(nullptr, "\n", &save)) != nullptr) {
+        size_t l = strlen(line);
+        if (l && line[l - 1] == '\r') line[--l] = '\0';
+        if (l == 0) continue;
+        int face, strip, num;
+        float x, y, z;
+        if (sscanf(line, "%d,%d,%d,%f,%f,%f", &face, &strip, &num, &x, &y, &z) != 6) {
+            snprintf(why, whyCap, "row %d: expected 6 values", rows + 1);
+            return false;
+        }
+        const bool northRow = (rows == (int)kNorthLedIndex);
+        const int wantStrip = northRow ? kNorthStrip : rows / kLedsPerStrip;
+        const int wantNum = northRow ? 0 : rows % kLedsPerStrip;
+        if (strip != wantStrip || num != wantNum) {
+            snprintf(why, whyCap, "row %d: strip/strip_num must be %d/%d (got %d/%d)", rows + 1, wantStrip,
+                     wantNum, strip, num);
+            return false;
+        }
+        const float r2 = x * x + y * y + z * z;
+        if (r2 < 0.81f || r2 > 1.21f) {
+            snprintf(why, whyCap, "row %d: |xyz| must be about 1", rows + 1);
+            return false;
+        }
+        rows++;
+        if (rows > (int)kMaxLayoutLeds) break;
+    }
+    if (rows != (int)kMaxLeds && rows != (int)kMaxLayoutLeds) {
+        snprintf(why, whyCap, "need %u or %u rows (got %d)", (unsigned)kMaxLeds, (unsigned)kMaxLayoutLeds, rows);
+        return false;
+    }
+    return true;
+}
+
+esp_err_t SoloWebServer::onLayoutPost(httpd_req_t* req) {
+    auto* self = static_cast<SoloWebServer*>(req->user_ctx);
+    constexpr size_t kMaxCsv = 96 * 1024;
+    const size_t len = req->content_len;
+    if (len == 0 || len > kMaxCsv) return self->sendError(req, "400 Bad Request", "csv size must be 1..96KB");
+    char* buf = (char*)ps_malloc(len + 1);
+    char* work = (char*)ps_malloc(len + 1);
+    if (!buf || !work) {
+        free(buf); free(work);
+        return self->sendError(req, "500 Internal Server Error", "out of memory");
+    }
+    size_t got = 0;
+    while (got < len) {
+        const int r = httpd_req_recv(req, buf + got, len - got);
+        if (r == HTTPD_SOCK_ERR_TIMEOUT) continue;
+        if (r <= 0) { free(buf); free(work); return self->sendError(req, "400 Bad Request", "receive failed"); }
+        got += (size_t)r;
+    }
+    buf[len] = '\0';
+    memcpy(work, buf, len + 1);   // strtok_r が壊すので検証は複製で行う
+    char why[96];
+    if (!validateLayoutCsv(work, len, why, sizeof(why))) {
+        free(buf); free(work);
+        return self->sendError(req, "400 Bad Request", why);
+    }
+    free(work);
+
+    const String path = self->_config->getLayoutPath();
+    const String tmp = path + ".tmp";
+    const String bak = path + ".bak";
+    fs::File f = LittleFS.open(tmp.c_str(), "w");
+    const size_t wrote = f ? f.write((const uint8_t*)buf, len) : 0;
+    if (f) f.close();
+    free(buf);
+    if (wrote != len) {
+        LittleFS.remove(tmp.c_str());
+        return self->sendError(req, "507 Insufficient Storage", "write failed");
+    }
+    if (LittleFS.exists(bak.c_str())) LittleFS.remove(bak.c_str());
+    if (LittleFS.exists(path.c_str())) LittleFS.rename(path.c_str(), bak.c_str());
+    if (!LittleFS.rename(tmp.c_str(), path.c_str())) {
+        LittleFS.rename(bak.c_str(), path.c_str());   // 元に戻す
+        return self->sendError(req, "500 Internal Server Error", "rename failed");
+    }
+    self->refreshFsUsage();
+    Serial.printf("[SoloWeb] layout replaced: %s (%u bytes, backup %s). rebooting\n", path.c_str(), (unsigned)len,
+                  bak.c_str());
+    self->_ctl->scheduleReboot(1000);
+    snprintf(self->_jsonBuf, sizeof(self->_jsonBuf), "{\"ok\":true,\"bytes\":%u,\"path\":\"%s\",\"reboot\":true}",
+             (unsigned)len, path.c_str());
     return self->sendJson(req, "200 OK", self->_jsonBuf);
 }
 
@@ -707,6 +886,11 @@ esp_err_t SoloWebServer::onLed(httpd_req_t* req) {
     }
     if (doc.containsKey("power")) {
         ctl.setLedPower(doc["power"] | true);
+    }
+    if (doc.containsKey("north")) {
+        if (!ctl.setNorthMode(doc["north"] | "")) {
+            return self->sendError(req, "400 Bad Request", "north must be sphere, rainbow or off");
+        }
     }
 
     snprintf(self->_jsonBuf, sizeof(self->_jsonBuf),

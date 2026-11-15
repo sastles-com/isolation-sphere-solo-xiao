@@ -27,6 +27,7 @@
 #include "MQTTManager.h"
 #include "NetworkManager.h"
 #include "SoloPlayer.h"
+#include "SoundManager.h"
 
 namespace sastle {
 
@@ -42,6 +43,7 @@ public:
         MQTTManager* mqtt = nullptr;     ///< server 未設定なら nullptr
         ImageManager* image = nullptr;   ///< 統計の読み出し用
         BatteryGauge* battery = nullptr; ///< 基板B の残量計 (読むだけ)
+        SoundManager* sound = nullptr;   ///< 電源 OFF の終了音
     };
 
     enum class PlayResult : uint8_t { Ok, NoVideo, Uploading, Unavailable };
@@ -85,6 +87,9 @@ public:
     /// ストリップ 1〜5 の電源 (LED_EN)。保存しない (再起動で ON に戻る)
     void setLedPower(bool on) { if (_d.led) _d.led->setPowerEnabled(on); }
     bool ledPower() const { return _d.led ? _d.led->powerEnabled() : false; }
+    /// 北極 LED: sphere | rainbow | off。false = 名前が不正
+    bool setNorthMode(const char* name);
+    const char* northModeName() const;
     void setAxisIndicator(bool on);            ///< NVS 保存
     bool axisIndicator() const;
     void setImuCompensation(bool on);
@@ -133,6 +138,18 @@ public:
 
     /// delayMs 後に再起動する (Settings は即時 flush)。応答を返す猶予を持たせるため予約制
     void scheduleReboot(uint32_t delayMs);
+
+    /**
+     * @brief 電源を切る (FW-3)。応答を返す猶予のため delayMs 後に loop の tick() で実行する。
+     * 手順: LED データ線 Low (描画停止) → LED_EN Low → 設定保存 → 終了音 → PWR_KILL Low を保持。
+     * PWR_KILL Low で LTC2954 が MCU_EN を Low にし、3V3_MCU (TPS62933) が止まる。
+     * USB 給電中は XIAO が止まらないので、powerOffFailed() が true になる。
+     */
+    void requestPowerOff(uint32_t delayMs = 500);
+    /// 診断: ブザーで起動音を鳴らす (鳴り終わるまでブロック)。false = ブザー未初期化
+    bool testBuzzer() { if (!_d.sound) return false; _d.sound->playEffect(SoundEffect::STARTUP); return true; }
+    bool powerOffPending() const { return _powerOffAtMs != 0; }
+    bool powerOffFailed() const { return _powerOffFailed; }
     bool rebootPending() const { return _rebootAtMs != 0; }
 
     /**
@@ -163,6 +180,9 @@ private:
     uint8_t _saturation = 100;
     LedMode _ledMode = LedMode::Sphere;
     volatile uint32_t _rebootAtMs = 0;   ///< 0 = 予約なし
+    volatile uint32_t _powerOffAtMs = 0; ///< 0 = 予約なし
+    volatile bool _powerOffFailed = false;
+    void doPowerOff();
     volatile int8_t _apPending = -1;     ///< -1 = なし / 0 = 停止予約 / 1 = 再開予約
     volatile uint32_t _apPendingAtMs = 0;
 

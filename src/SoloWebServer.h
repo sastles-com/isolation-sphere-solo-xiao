@@ -72,6 +72,9 @@ private:
     static esp_err_t onImuPost(httpd_req_t* req);
     static esp_err_t onServer(httpd_req_t* req);
     static esp_err_t onPower(httpd_req_t* req);
+    static esp_err_t onDiag(httpd_req_t* req);
+    static esp_err_t onLayoutGet(httpd_req_t* req);
+    static esp_err_t onLayoutPost(httpd_req_t* req);
     static esp_err_t onSource(httpd_req_t* req);
 
     static esp_err_t onBrightness(httpd_req_t* req);

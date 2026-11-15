@@ -26,15 +26,24 @@ namespace sastle {
 // FastLED の addLeds<> はピンがテンプレート引数のため、コンパイル時定数で持つ
 // (config.json には出せない)。LEDManager は kLedPins[] を添字 0..kNumStrips-1 で展開して登録する。
 // core-XIAO-04: D0〜D4 = ストリップ 1〜5 (33 Ω 経由で mother-ring の LINE01〜05 へ)。
-// D5 (GPIO6) の北極 LED (ストリップ 6, 1 個) は未対応 (RMT 4ch の時分割が必要)。
+// D5 (GPIO6) の北極 LED (1 個) はレイアウト CSV の 801 行目 (strip 5, strip_num 0, 北極 (0,0,1)) として
+// 映像に含められる (kMaxLayoutLeds)。CSV が 800 行なら映像には使わない。
 constexpr uint8_t  kNumStrips = 5;
 constexpr uint8_t  kLedPins[kNumStrips] = {1, 2, 3, 4, 5};
 constexpr uint16_t kLedsPerStrip = 160;                       // 北 80 + 南 80
 constexpr uint16_t kMaxLeds = kNumStrips * kLedsPerStrip;     // 800
+// 北極 LED を含めたレイアウトの最大 LED 数。北極 LED はバッファの末尾 (kNorthLedIndex) に置く。
+constexpr uint8_t  kNorthStrip = kNumStrips;                 // CSV の strip 列での番号 (5)
+constexpr uint16_t kNorthLedIndex = kMaxLeds;                // 800
+constexpr uint16_t kMaxLayoutLeds = kMaxLeds + 1;             // 801
 constexpr uint8_t  kLedDefaultBrightness = 128;               // デフォルト輝度 50%
 // 電源保護: FastLED のパワーリミット (5V 系の合計電流上限)。全LED白点灯のような高負荷フレームでも
 // FastLED が輝度を自動スケールしてこの上限内に収める。実測で電源容量が確定したら見直すこと。
 constexpr uint32_t kLedMaxPowerMa = 2000;
+
+// 北極 LED (D5 = GPIO6、WS2812 1 個)。3V3_MCU から給電されるので LED_EN と関係なく点けられる (FW-2)。
+// FastLED の RMT ドライバは TX チャンネル (4 本) より多いストリップを順番に送るので、6 本目でもよい。
+constexpr uint8_t kNorthLedPin = 6;
 
 // --- LED 電源 / 電源制御 (core-XIAO-04) ---
 // LED_EN (D7 = GPIO44): ストリップ 1〜5 の電源。基板A のプルダウンで既定 OFF。

@@ -66,7 +66,8 @@ namespace {
 // 登録し、begin() も同じバッファを使う。setLeds() による差し替えは FastLED の
 // ESP32 RMTドライバで効かないことがある (実機で全消灯のままになった) ため、
 // 「最初から実バッファで登録する」方式にする。
-CRGB s_ledBufferStatic[sastle::kMaxLeds];
+// 末尾 (kNorthLedIndex) が北極 LED。レイアウト CSV の 801 行目として球体マッピングの対象になる。
+CRGB s_ledBufferStatic[sastle::kMaxLayoutLeds];
 bool s_earlyBlanked = false;
 
 // FastLED の addLeds<> はピンがテンプレート引数なので、kLedPins[] を再帰テンプレートで展開して
@@ -92,7 +93,7 @@ void registerStrips(CRGB* const* buffers, const uint16_t* counts) {
 void LEDManager::earlyBlank() {
     if (s_earlyBlanked) return;
     // FastLED 3.10 以降は CRGB 配列向け memset オーバーロードを持ち、libc 版と曖昧になる
-    fill_solid(s_ledBufferStatic, sastle::kMaxLeds, CRGB::Black);
+    fill_solid(s_ledBufferStatic, sastle::kMaxLayoutLeds, CRGB::Black);
     // レイアウト読み込み前なので、各ストリップ kLedsPerStrip 個の均等割りで登録する
     CRGB* buffers[kNumStrips];
     uint16_t counts[kNumStrips];
@@ -101,6 +102,8 @@ void LEDManager::earlyBlank() {
         counts[i] = kLedsPerStrip;
     }
     registerStrips(buffers, counts);  // データ線は Low のまま
+    // 北極 LED (1 個) はバッファの末尾。単独で show しないこと (FastLED の RMT は全コントローラまとめて送る)
+    FastLED.addLeds<LED_TYPE, kNorthLedPin, COLOR_ORDER>(s_ledBufferStatic + kNorthLedIndex, 1);
     // LED_EN を上げ、5 ms 以上待ってからデータを送る (FW-2)。
     pinMode(kLedEnGpio, OUTPUT);
     digitalWrite(kLedEnGpio, HIGH);
@@ -136,11 +139,15 @@ bool LEDManager::begin(ConfigManager& config, ImageManager& imageManager, IMUMan
     
     Serial.printf("[LEDManager] Loaded %d LEDs from layout\n", _numLEDs);
     
-    // LEDバッファは静的確保 (earlyBlank と共有。kMaxLeds を超えないこと)
-    if (_numLEDs > kMaxLeds) {
-        Serial.printf("[LEDManager] LED count %d exceeds kMaxLeds %d\n", _numLEDs, kMaxLeds);
+    // LEDバッファは静的確保 (earlyBlank と共有)。801 行目は北極 LED (strip 5) に限る
+    if (_numLEDs > kMaxLayoutLeds ||
+        (_numLEDs == kMaxLayoutLeds && _ledLayout[kNorthLedIndex].strip != kNorthStrip)) {
+        Serial.printf("[LEDManager] LED count %d exceeds %d (row %d must be strip %d = north LED)\n", _numLEDs,
+                      kMaxLeds, kMaxLayoutLeds, kNorthStrip);
         return false;
     }
+    _layoutHasNorth = (_numLEDs == kMaxLayoutLeds);
+    Serial.printf("[LEDManager] North LED in layout: %s\n", _layoutHasNorth ? "yes (row 801)" : "no");
     _ledBuffer = s_ledBufferStatic;
     Serial.printf("[LEDManager] Using static LED buffer: %d bytes\n", _numLEDs * sizeof(CRGB));
 
@@ -233,7 +240,7 @@ bool LEDManager::loadLayout(const char* path) {
         }
     }
     
-    if (ledCount == 0 || ledCount > kMaxLeds) {
+    if (ledCount == 0 || ledCount > kMaxLayoutLeds) {
         Serial.printf("[LEDManager] Invalid LED count: %d\n", ledCount);
         file.close();
         return false;
@@ -377,6 +384,10 @@ void LEDManager::renderTaskFunction(void* parameter) {
         }
         manager->applyPowerRequest();
         if (!manager->_powerOn) {
+            // 北極 LED だけを送ることはしない。FastLED の ESP32 RMT ドライバは登録した全コントローラが
+            // showPixels() を呼んだ時点でまとめて送るため (idf4_rmt_impl.cpp)、1 本だけ呼ぶと
+            // 6 回に 1 回ストリップ 1〜5 にも古いデータが流れ、途中でフラッシュのロックも握ったままになる。
+            // LED_EN OFF の間、北極 LED は最後の色のまま。
             // LED_EN OFF の間は show() しない (データ線を Low のまま保つ)
             manager->_stats.fps = 0;
             manager->_frameCount = 0;
@@ -394,6 +405,16 @@ void LEDManager::renderTaskFunction(void* parameter) {
         manager->_stats.render_time_us = micros() - frameStart;
         vTaskDelay(1);  // 他タスクに譲る (show()が~14msなので実効~50-60Hz)
     }
+}
+
+void LEDManager::updateNorth() {
+    CRGB& north = s_ledBufferStatic[kNorthLedIndex];
+    if (_northMode == NorthMode::Rainbow) {
+        north = CHSV((uint8_t)(millis() / 16), 255, 255);   // 約 4 秒で 1 周
+    } else if (_northMode == NorthMode::Off || !_layoutHasNorth) {
+        north = CRGB::Black;
+    }
+    // Sphere かつ CSV に北極 LED があれば、マッピング結果 (updateLEDBuffer) のまま
 }
 
 void LEDManager::setPowerEnabled(bool on) {
@@ -431,6 +452,8 @@ void LEDManager::renderFrame() {
     } else if (_outputMode == OutputMode::Test) {
         updateTestBuffer();
     }
+
+    updateNorth();   // マッピングの後に北極 LED を上書き (虹色 / 消灯のとき)
 
     unsigned long mappingTime = micros() - start;
     _stats.mapping_time_us = mappingTime;
