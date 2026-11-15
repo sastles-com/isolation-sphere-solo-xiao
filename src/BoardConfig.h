@@ -47,6 +47,10 @@ constexpr uint8_t kPwrKillGpio = 7;
 constexpr uint8_t kImuI2cSda = 9;  // D10
 constexpr uint8_t kImuI2cScl = 8;  // D9
 
+// --- XIAO 内蔵の黄色 LED (User LED) --- 電源が入ったか・再起動を繰り返していないかの確認用
+// GPIO21、Low で点灯。起動時に 3 回点滅し、動作中は 1 秒ごとに短く光る。
+constexpr uint8_t kStatusLedGpio = 21;
+
 // --- ブザー (core-XIAO-04) ---
 // GPIO43 は TX なので、起動直後にブートログで小さなノイズが出ることがある。
 constexpr uint8_t kBuzzerGpio = 43;  // D6

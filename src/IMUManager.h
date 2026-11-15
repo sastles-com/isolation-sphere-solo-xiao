@@ -155,6 +155,10 @@ public:
     /// 専用タスクのハンドル (スタック残量の監視用。未起動なら nullptr)
     TaskHandle_t taskHandle() const { return _taskHandle; }
 
+    /// 同じ I2C バスの他デバイス (電池残量計など) を読むときに取るロック。
+    /// IMU タスクの読み出しシーケンスに割り込まないため、必ず I2cGuard で囲む。
+    I2cLock& i2cLock() { return _i2c; }
+
     // 計装用カウンタ (main の周期ログでレート計算に使う)
     uint32_t debugReadTotal() const { return _cnt.readTotal; }
     uint32_t debugReadFails() const { return _cnt.readFails; }

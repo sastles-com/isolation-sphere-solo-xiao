@@ -187,6 +187,18 @@ public:
     OutputMode getOutputMode() const { return _outputMode; }
 
     /**
+     * @brief ストリップ 1〜5 の電源 (LED_EN) を切り替える
+     *
+     * 切り替えは描画タスクが show() の外で行う (FW-2):
+     *   OFF: 黒を送る → 以降 show() を止めてデータ線を Low のまま → LED_EN Low
+     *   ON : LED_EN High → 10 ms 待つ → 描画を再開
+     * 描画タスクが無いときはこの関数の中で同じ手順を行う。
+     */
+    void setPowerEnabled(bool on);
+    /// 実際の LED_EN の状態 (切り替え要求が描画タスクに反映された後の値)
+    bool powerEnabled() const { return _powerOn; }
+
+    /**
      * @brief テストパターンとブロック幅を設定する
      *
      * @param pattern StripId / Chase
@@ -359,6 +371,9 @@ private:
     bool _initialized;               ///< 初期化フラグ
     bool _taskRunning;               ///< タスク実行フラグ
     volatile bool _stopRequested = false;  ///< 協調停止の要求 (show() の途中で殺さないため)
+    volatile bool _powerWanted = true;     ///< LED_EN の要求 (earlyBlank() が High にしている)
+    volatile bool _powerOn = true;         ///< LED_EN の実際の状態
+    void applyPowerRequest();              ///< _powerWanted を LED_EN に反映 (show() の外で呼ぶ)
     
     ConfigManager* _config;          ///< 設定マネージャーへのポインタ
     ImageManager* _imageManager;     ///< 画像マネージャーへのポインタ

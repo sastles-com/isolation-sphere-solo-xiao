@@ -21,6 +21,7 @@
 
 #include "ConfigManager.h"
 #include "FramePump.h"
+#include "BatteryGauge.h"
 #include "IMUManager.h"
 #include "LEDManager.h"
 #include "MQTTManager.h"
@@ -40,6 +41,7 @@ public:
         FramePump* pump = nullptr;
         MQTTManager* mqtt = nullptr;     ///< server 未設定なら nullptr
         ImageManager* image = nullptr;   ///< 統計の読み出し用
+        BatteryGauge* battery = nullptr; ///< 基板B の残量計 (読むだけ)
     };
 
     enum class PlayResult : uint8_t { Ok, NoVideo, Uploading, Unavailable };
@@ -80,6 +82,9 @@ public:
     bool setTestPattern(const char* pattern, int width);
     const char* testPatternName() const;
     uint8_t testWidth() const;
+    /// ストリップ 1〜5 の電源 (LED_EN)。保存しない (再起動で ON に戻る)
+    void setLedPower(bool on) { if (_d.led) _d.led->setPowerEnabled(on); }
+    bool ledPower() const { return _d.led ? _d.led->powerEnabled() : false; }
     void setAxisIndicator(bool on);            ///< NVS 保存
     bool axisIndicator() const;
     void setImuCompensation(bool on);
@@ -145,6 +150,7 @@ public:
     FramePump* pump() const { return _d.pump; }
     MQTTManager* mqtt() const { return _d.mqtt; }
     ImageManager* image() const { return _d.image; }
+    BatteryGauge* battery() const { return _d.battery; }
     bool mqttConnected() const { return _d.mqtt && _d.mqtt->isConnected(); }
 
 private:

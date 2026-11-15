@@ -108,7 +108,7 @@ private:
     size_t _fsTotal = 0;
     size_t _fsUsed = 0;
     uint8_t* _rxBuf;              ///< 受信作業バッファ (ヒープ)
-    char _jsonBuf[2048];          ///< 応答組み立て (ハンドラは httpd タスクで直列実行)
+    char _jsonBuf[3072];          ///< 応答組み立て (ハンドラは httpd タスクで直列実行)
     uint32_t _uploads;
     uint32_t _uploadFailures;
 };

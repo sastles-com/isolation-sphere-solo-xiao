@@ -34,7 +34,7 @@ void SerialConsole::execute(char* cmd) {
     NetworkManager* net = _ctl->net();
 
     if (strcmp(cmd, "help") == 0) {
-        Serial.println("[CONSOLE] commands: status | play | pause | stop | led sphere|test|off | bri N | ap on|off | ap idle N(分,0=常時) | msleep on|off | power(AP 切替) | server on|off | reboot");
+        Serial.println("[CONSOLE] commands: status | play | pause | stop | led sphere|test|off | ledpwr on|off | bat | bri N | ap on|off | ap idle N(分,0=常時) | msleep on|off | power(AP 切替) | server on|off | reboot");
     } else if (strcmp(cmd, "status") == 0) {
         Serial.printf("[CONSOLE] ap=%s ip=%s clients=%u heap=%u psram=%u\n",
                       _apSsid.c_str(), net ? net->apIP().toString().c_str() : "-",
@@ -72,6 +72,11 @@ void SerialConsole::execute(char* cmd) {
         } else {
             Serial.println("[CONSOLE] led: sphere | test | off | pixels");
         }
+    } else if (strcmp(cmd, "ledpwr on") == 0 || strcmp(cmd, "ledpwr off") == 0) {
+        _ctl->setLedPower(cmd[8] == 'n');
+        Serial.printf("[CONSOLE] LED_EN request = %s\n", cmd[8] == 'n' ? "on" : "off");
+    } else if (strcmp(cmd, "bat") == 0) {
+        if (_ctl->battery()) _ctl->battery()->print();
     } else if (strncmp(cmd, "bri ", 4) == 0) {
         int v = atoi(cmd + 4);
         if (v < 0) v = 0;

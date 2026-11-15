@@ -22,6 +22,7 @@
 #include "ConfigManager.h"
 #include "NetworkManager.h"
 #include "IMUManager.h"
+#include "BatteryGauge.h"
 #include "GestureManager.h"
 #include "SoundManager.h"
 #include "ImageManager.h"
@@ -49,6 +50,7 @@ bool g_debugEnabled = false;
 ConfigManager config;
 NetworkManager network;
 IMUManager imuSensor;
+BatteryGauge battery;          // 基板B の残量計 BQ28Z620 (0x55)
 GestureManager gesture;
 SoundManager sound;
 ImageManager imageManager;
@@ -135,6 +137,16 @@ void setup() {
     // (白=フル電流もあり得る) し、電源が引き倒されて起動に失敗する事象があるため、
     // 何よりも先に全ストリップへ黒を送信する。
     LEDManager::earlyBlank();
+
+    // XIAO 内蔵 LED を 3 回点滅 (Low で点灯)。電源投入・再起動のたびに見えるので、
+    // 再起動ループもこれで分かる。
+    pinMode(kStatusLedGpio, OUTPUT);
+    for (int i = 0; i < 3; i++) {
+        digitalWrite(kStatusLedGpio, LOW);
+        delay(80);
+        digitalWrite(kStatusLedGpio, HIGH);
+        delay(120);
+    }
 
     // シリアル初期化。Log の退避バッファ (PSRAM) も同時に用意する。server モードで MQTT に
     // 繋がると、ここ以降の起動ログがまとめて sphere/<id>/log に流れる。
@@ -332,6 +344,8 @@ void setup() {
         deps.pump = &pump;
         deps.mqtt = &mqtt;
         deps.image = &imageManager;
+        battery.begin(imuSensor.isInitialized() ? &imuSensor.i2cLock() : nullptr);
+        deps.battery = &battery;
         controller.begin(deps);
         // トリプルシェイク = デモ向けの AP の ON/OFF 切替 (UI モードの代わり)
         gesture.setOnTripleShake([]() { controller.togglePowerSave(); });
@@ -426,6 +440,9 @@ static void logPerfIfDue(unsigned long now) {
 }
 
 void loop() {
+    // 生存表示: 1 秒ごとに 50ms だけ内蔵 LED を点灯
+    digitalWrite(kStatusLedGpio, (millis() % 1000) < 50 ? LOW : HIGH);
+
     // --- 実効レート計装 (5秒ごと) ---
     {
         static uint32_t s_loops = 0, s_pReads = 0, s_pFails = 0, s_pDisc = 0;
@@ -475,6 +492,8 @@ void loop() {
 
     // シリアルコンソール
     console.poll();
+
+    battery.poll();   // 残量計 (5 秒ごと。IMU と I2C ロックを共有)
 
     // IMU更新
     unsigned long now = millis();

@@ -375,6 +375,15 @@ void LEDManager::renderTaskFunction(void* parameter) {
             vTaskDelete(nullptr);
             return;
         }
+        manager->applyPowerRequest();
+        if (!manager->_powerOn) {
+            // LED_EN OFF の間は show() しない (データ線を Low のまま保つ)
+            manager->_stats.fps = 0;
+            manager->_frameCount = 0;
+            manager->_lastFPSUpdate = millis();
+            vTaskDelay(pdMS_TO_TICKS(20));
+            continue;
+        }
         unsigned long frameStart = micros();
 
         if (manager->_imageManager) {
@@ -384,6 +393,31 @@ void LEDManager::renderTaskFunction(void* parameter) {
 
         manager->_stats.render_time_us = micros() - frameStart;
         vTaskDelay(1);  // 他タスクに譲る (show()が~14msなので実効~50-60Hz)
+    }
+}
+
+void LEDManager::setPowerEnabled(bool on) {
+    _powerWanted = on;
+    if (!_taskRunning) {
+        applyPowerRequest();   // 描画タスクが無いときは呼び出し側で反映する
+    }
+}
+
+void LEDManager::applyPowerRequest() {
+    const bool want = _powerWanted;
+    if (want == _powerOn) return;
+    if (!want) {
+        // 黒を 1 回送ってから止める。RMT はアイドル時にデータ線を Low に保つ。
+        FastLED.clear(true);
+        digitalWrite(kLedEnGpio, LOW);
+        _powerOn = false;
+        Serial.println("[LEDManager] LED_EN -> LOW (strips 1-5 power off)");
+    } else {
+        pinMode(kLedEnGpio, OUTPUT);
+        digitalWrite(kLedEnGpio, HIGH);
+        vTaskDelay(pdMS_TO_TICKS(10));   // FW-2: 5 ms 以上待ってからデータを送る
+        _powerOn = true;
+        Serial.println("[LEDManager] LED_EN -> HIGH (strips 1-5 power on)");
     }
 }
 

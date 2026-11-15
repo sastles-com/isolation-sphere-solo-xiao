@@ -36,6 +36,10 @@ const char kIndexHtml[] PROGMEM = R"HTML(<!doctype html><html lang="ja"><head><m
 body{font-family:-apple-system,system-ui,sans-serif;margin:0 auto;padding:16px;max-width:520px;background:#111;color:#eee}
 h1{font-size:20px;margin:8px 0 16px}h1 small{color:#888;font-weight:normal}
 .card{background:#1d1d1f;border-radius:12px;padding:14px;margin-bottom:14px}
+.tabs{position:sticky;top:0;z-index:5;display:flex;gap:6px;margin:0 -16px 14px;padding:8px 16px;background:#111;border-bottom:1px solid #2a2a2a}
+.tabs button{flex:1;padding:10px 4px;font-size:15px;background:#2a2a2a;color:#bbb}.tabs button.on{background:#2c7be5;color:#fff}
+.card[data-tab]{display:none}body[data-tab=play] .card[data-tab=play],body[data-tab=pwr] .card[data-tab=pwr],body[data-tab=disp] .card[data-tab=disp],body[data-tab=net] .card[data-tab=net]{display:block}
+h1{display:flex;justify-content:space-between;align-items:center;gap:8px}#hbat{font-size:14px;font-weight:normal;color:#aaa;white-space:nowrap}
 .row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0}
 .k{color:#999;font-size:13px}.v{font-variant-numeric:tabular-nums;text-align:right}
 button{font-size:16px;padding:12px 16px;border:0;border-radius:10px;background:#2c7be5;color:#fff;flex:1}
@@ -56,29 +60,41 @@ progress{width:100%;height:14px}
 .st.playing{background:#1e8449}.st.paused{background:#7d6608}.st.error{background:#c0392b}.st.uploading{background:#d68910}
 small{color:#888}#msg{min-height:1.2em;color:#f5b041;font-size:14px;word-break:break-all}
 </style></head><body>
-<h1 id="deviceName">Isolation Sphere <small>solo</small></h1>
+<h1><span id="deviceName">Isolation Sphere <small>solo</small></span><span id="hbat"></span></h1>
+<nav class="tabs"><button data-t="play">再生</button><button data-t="pwr">電源</button><button data-t="disp">表示</button><button data-t="net">通信</button></nav>
+<div id="msg"></div>
 <div id="cna" class="card" hidden style="background:#3b2f00"><b>接続できました。</b><br><small>この「ログイン」画面ではファイル選択ができない場合があります。動画をアップロードするときは、この画面を閉じてから Safari で <b id="cnaUrl">http://192.168.4.1/</b> を開いてください。再生・停止・明るさはここから操作できます。</small></div>
-<div class="card">
+<div class="card" data-tab="play">
  <div class="row"><span class="k">状態</span><span id="state" class="st">-</span></div>
  <div class="row"><span class="k">動画</span><span id="video" class="v">-</span></div>
  <div class="row"><span class="k">再生</span><span id="stats" class="v">-</span></div>
  <div class="row"><span class="k">空き容量</span><span id="fs" class="v">-</span></div>
- <div id="msg"></div>
- <div class="row"><button id="play">再生</button><button id="pause" class="gray">一時停止</button><button id="stop" class="gray">停止</button></div>
+  <div class="row"><button id="play">再生</button><button id="pause" class="gray">一時停止</button><button id="stop" class="gray">停止</button></div>
  <small>一時停止は現在のフレームを表示したまま止まり、停止は消灯します。どちらも再生で続きから再開します。</small>
 </div>
-<div class="card">
+<div class="card" data-tab="play">
  <div class="row"><span class="k">明るさ</span><span id="bval" class="v">-</span></div>
  <input id="bri" type="range" min="0" max="100" step="1">
+ <div class="row"><label class="k" style="font-size:16px;color:#eee"><input id="lpw" type="checkbox" style="width:22px;height:22px;vertical-align:middle"> LED 電源 (LED_EN)</label><span id="lpw_st" class="v">-</span></div>
+ <small>OFF にすると黒を送ってからストリップ 1〜5 の電源を切ります (データ線は Low のまま)。再起動で ON に戻ります。</small>
 </div>
-<div class="card">
+<div class="card" data-tab="pwr">
+ <div class="k">電池 (BQ28Z620)</div>
+ <div class="row"><span class="k">残量</span><span id="b_soc" class="v">-</span></div>
+ <progress id="b_bar" max="100" value="0"></progress>
+ <div class="row"><span class="k">電圧 / 電流</span><span id="b_vi" class="v">-</span></div>
+ <div class="row"><span class="k">容量</span><span id="b_cap" class="v">-</span></div>
+ <div class="row"><span class="k">温度 / 状態</span><span id="b_t" class="v">-</span></div>
+ <small>5 秒ごとに読みます。電流は + が充電、- が放電。残量は残量計の学習前は正しくないことがあります。</small>
+</div>
+<div class="card" data-tab="play">
  <div class="k">動画の入れ替え</div>
  <p><small>下のボタンから専用ページを開きます。iPhone で撮った動画をその場で 320×160 / 10fps に変換して、そのまま投入できます (変換済みの .mjpg もそのページから入れられます)。ファイルを選ぶのは 1 回だけです。</small></p>
  <p><small>アップロード中は再生が止まり、成功すると新しい動画を先頭から再生します。空き容量が足りない場合は現在の動画を先に削除してから受信します (失敗すると「動画なし」になり再アップロードできます)。</small></p>
  <div class="row"><a id="conv" class="btnlink" href="/convert">動画を選ぶ (変換してアップロード)</a></div>
  <div class="row"><button id="del" class="warn">保存済み動画を削除</button></div>
 </div>
-<div class="card">
+<div class="card" data-tab="disp">
  <div class="k">IMU (姿勢センサー)</div>
  <div class="row"><span class="k">状態</span><span id="i_st" class="v">-</span></div>
  <div class="row"><span class="k">quaternion</span><span id="i_q" class="v">-</span></div>
@@ -88,7 +104,7 @@ small{color:#888}#msg{min-height:1.2em;color:#f5b041;font-size:14px;word-break:b
  <div class="row"><button id="i_reset" class="gray">IMU を再初期化</button></div>
  <p><small>cal は BNO055 のキャリブレーション (sys/gyro/accel/mag、各 0-3)。fail = I2C 失敗、disc = 化け値の破棄、partial = 上位バイト欠落を検出して読み直した回数、straddle = 融合更新をまたいだ読みを検出した回数。これらが増えるのは<b>正常に検出できている</b>証拠で、姿勢に出なければ問題ありません。平滑は移動平均のフレーム数 (1 = なし。大きいほど滑らかだが遅れる)。</small></p>
 </div>
-<div class="card">
+<div class="card" data-tab="disp">
  <div class="k">表示パターン (配線・向きの確認用)</div>
  <div class="row"><button id="m_sphere">映像</button><button id="m_test" class="gray">テストパターン</button></div>
  <div class="row"><button id="p_strip" class="gray">ストリップ識別色</button><button id="p_chase" class="gray">チェイス</button></div>
@@ -97,26 +113,26 @@ small{color:#888}#msg{min-height:1.2em;color:#f5b041;font-size:14px;word-break:b
  <div class="row"><button id="axis" class="gray">XYZ軸を重ねる</button></div>
  <p><small>ストリップ識別色は 5 本の配線の同定と全点灯確認、チェイスは LED の並び順と向きの確認に使います。XYZ軸は映像に重ねて表示し、IMU が有効なら球体を回しても軸は空間に固定されて見えます (±X=赤 / ±Y=緑 / ±Z=青、マイナス側は暗色)。</small></p>
 </div>
-<div class="card">
+<div class="card" data-tab="net">
  <div class="k">LAN 接続 (開発用 / 任意)</div>
  <p><small>普段の Wi-Fi にも同時接続します。PC の Wi-Fi を切り替えずに OTA 書き込みができるようになります。SSID を空で保存すると無効化します。反映は再起動後です。</small></p>
  <input id="ssid" type="text" placeholder="SSID" autocapitalize="off" autocorrect="off" spellcheck="false">
  <input id="pass" type="password" placeholder="パスワード" autocapitalize="off" autocorrect="off" spellcheck="false">
  <div class="row"><button id="wifi">保存</button></div>
 </div>
-<div class="card">
+<div class="card" data-tab="net">
  <div class="k">映像ソース</div>
  <div class="row"><span class="k">表示中</span><span id="src" class="v">-</span></div>
  <div class="row"><button id="s_auto">自動</button><button id="s_local" class="gray">本体のみ</button><button id="s_net" class="gray">配信のみ</button></div>
  <p><small>自動: 配信 (UDP) が届いていればそれを表示し、途切れると本体の動画に戻ります。本体のみ: 配信を無視します。配信のみ: 本体の動画を再生しません。再起動で「自動」に戻ります。</small></p>
 </div>
-<div class="card">
+<div class="card" data-tab="net">
  <div class="k">サーバ接続 (映像配信サーバがある環境向け)</div>
  <div class="row"><span class="k">状態</span><span id="srv" class="v">-</span></div>
  <p><small>ON にすると起動時に配信サーバの Wi-Fi (P2P 網) にも接続し、UDP で届く映像を優先して表示、MQTT で操作を受けます。映像が届かない間は本体の動画を再生します。OFF は本体だけで動作します。切り替えは保存して再起動します (この AP と本体の動画はどちらでも使えます)。</small></p>
  <div class="row"><button id="srv_on">ON にして再起動</button><button id="srv_off" class="gray">OFF にして再起動</button></div>
 </div>
-<div class="card">
+<div class="card" data-tab="pwr">
  <div class="k">省電力</div>
  <div class="row"><span class="k">AP 自動停止</span>
   <select id="ap_idle"><option value="0">しない</option><option value="5">5 分</option><option value="10">10 分</option><option value="30">30 分</option><option value="60">60 分</option></select></div>
@@ -124,7 +140,7 @@ small{color:#888}#msg{min-height:1.2em;color:#f5b041;font-size:14px;word-break:b
  <div class="row"><span class="k">モデム省電力</span><button id="ms_on" class="gray">ON</button><button id="ms_off">OFF</button></div>
  <p><small>AP は接続端末が 0 台のまま設定時間が経つと止まり、LAN 接続が無ければ無線ごと停止して電力を大きく減らします。再開はトリプルシェイク、電源の入れ直し、シリアル/MQTT です。映像の再生は AP が止まっても続きます。モデム省電力は LAN (STA) 接続中のみ効き、ON だと応答が鈍り UDP 映像を取りこぼすことがあります。</small></p>
 </div>
-<div class="card">
+<div class="card" data-tab="net">
  <div class="row"><span class="k">デバイス</span><span id="dev" class="v">-</span></div>
  <div class="row"><span class="k">LAN (STA)</span><span id="sta" class="v">-</span></div>
  <div class="row"><button id="reboot" class="gray">再起動</button></div>
@@ -149,11 +165,19 @@ async function refresh(){if(busy)return;try{const r=await fetch('/api/status',{c
   $('i_rd').textContent=`${I.reads} / fail ${I.fails} / disc ${I.discards} / partial ${I.partial} / straddle ${I.straddle}`;
   if(document.activeElement!==$('i_sm')){$('i_sm').value=I.smooth;$('i_smv').textContent=I.smooth}}
  if(s.led){const L=s.led;ledAxis=L.axis;
+  if(document.activeElement!==$('lpw'))$('lpw').checked=L.power;$('lpw_st').textContent=L.power?'ON':'OFF';
   const sel=(id,on)=>$(id).className=on?'':'gray';
   sel('m_sphere',L.mode==='sphere');sel('m_test',L.mode==='test');
   sel('p_strip',L.pattern==='strip');sel('p_chase',L.pattern==='chase');
   sel('axis',L.axis);$('axis').textContent=L.axis?'XYZ軸を重ねる (ON)':'XYZ軸を重ねる';
   if(document.activeElement!==$('w')){$('w').value=L.width;$('wval').textContent=L.width}}
+ if(s.battery){const B=s.battery;
+  $('hbat').textContent=B.present?`電池 ${B.soc}% ${(B.mv/1000).toFixed(2)}V ${B.ma}mA`:'電池 -';
+  if(!B.present){$('b_soc').textContent='応答なし';$('b_bar').value=0;$('b_vi').textContent=$('b_cap').textContent=$('b_t').textContent='-'}
+  else{$('b_soc').textContent=B.soc+' %';$('b_bar').value=B.soc;
+   $('b_vi').textContent=`${(B.mv/1000).toFixed(2)} V / ${B.ma} mA`;
+   $('b_cap').textContent=`${B.rem_mah} / ${B.full_mah} mAh`;
+   $('b_t').textContent=`${B.temp_c.toFixed(1)} °C / 0x${B.status.toString(16).padStart(4,'0')}`}}
  if(s.power){const P=s.power;
   const sel=(id,on)=>$(id).className=on?'':'gray';
   sel('ms_on',P.modem_sleep);sel('ms_off',!P.modem_sleep);
@@ -180,6 +204,7 @@ $('m_test').onclick=()=>led({mode:'test'});
 $('p_strip').onclick=()=>led({pattern:'strip'});
 $('p_chase').onclick=()=>led({pattern:'chase'});
 $('axis').onclick=()=>led({axis:!ledAxis});
+$('lpw').onchange=e=>{const on=e.target.checked;if(!on&&!confirm('LED 電源 (LED_EN) を OFF にしますか？'))return void(e.target.checked=true);led({power:on})};
 $('w').oninput=e=>{$('wval').textContent=e.target.value;clearTimeout(wTimer);wTimer=setTimeout(()=>led({width:+e.target.value}),250)};
 $('del').onclick=()=>{if(confirm('保存済み動画を削除しますか？'))api('/api/video/delete').then(refresh).catch(e=>say(e.message))};
 $('reboot').onclick=()=>{if(confirm('再起動しますか？'))api('/api/reboot').then(()=>say('再起動中…')).catch(e=>say(e.message))};
@@ -197,6 +222,9 @@ $('wifi').onclick=()=>{const sd=$('ssid').value.trim();
  if(!sd&&!confirm('SSID が空です。LAN 接続を無効にしますか？'))return;
  api('/api/wifi',{ssid:sd,password:$('pass').value}).then(j=>{$('pass').value='';say(sd?`保存しました (${j.ssid})。再起動後に接続します`:'LAN 接続を無効にしました')}).catch(e=>say(e.message))};
 
+const tab=t=>{document.body.dataset.tab=t;document.querySelectorAll('.tabs button').forEach(b=>b.className=b.dataset.t===t?'on':'')};
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+tab('play');   // 開いたときは常に「再生」
 if(/[?&]cna=1/.test(location.search)){$('cna').hidden=false;$('cnaUrl').textContent=location.origin+'/'}
 refresh();setInterval(refresh,2000);
 </script></body></html>)HTML";
@@ -430,6 +458,10 @@ esp_err_t SoloWebServer::onStatus(httpd_req_t* req) {
     }
 
     // error は静的ASCII文字列のみ (エスケープ不要)
+    char batJson[192] = "null";
+    if (self->_ctl->battery()) {
+        self->_ctl->battery()->toJson(batJson, sizeof(batJson));
+    }
     int n = snprintf(self->_jsonBuf, sizeof(self->_jsonBuf),
         "{\"device\":\"%s\",\"state\":\"%s\",\"error\":%s%s%s,"
         "\"video\":{\"present\":%s,\"path\":\"%s\",\"bytes\":%u,\"frames\":%u,\"duration_s\":%.1f,"
@@ -443,7 +475,8 @@ esp_err_t SoloWebServer::onStatus(httpd_req_t* req) {
         "\"server\":{\"configured\":%s,\"enabled\":%s,\"ssid\":\"%s\",\"broker\":\"%s\",\"mqtt\":%s},"
         "\"source\":{\"mode\":\"%s\",\"active\":\"%s\",\"net_frames\":%u,\"net_fps\":%.1f,\"net_errors\":%u,"
         "\"udp_rx\":%u,\"udp_drop\":%u,\"reasm_drop\":%u,\"last_net_ms\":%u,\"udp_listening\":%s},"
-        "\"led\":{\"mode\":\"%s\",\"pattern\":\"%s\",\"width\":%u,\"axis\":%s},"
+        "\"led\":{\"mode\":\"%s\",\"pattern\":\"%s\",\"width\":%u,\"axis\":%s,\"power\":%s},"
+        "\"battery\":%s,"
         "\"power\":{\"ap_running\":%s,\"ap_idle_min\":%u,\"modem_sleep\":%s},"
         "\"imu\":{\"ok\":%s,\"mode\":%u,\"cal\":\"%u%u%u%u\","
         "\"quat\":[%.3f,%.3f,%.3f,%.3f],\"reads\":%u,\"fails\":%u,\"discards\":%u,\"partial\":%u,\"straddle\":%u,\"seq\":%u,\"smooth\":%u},"
@@ -480,6 +513,7 @@ esp_err_t SoloWebServer::onStatus(httpd_req_t* req) {
         (unsigned)(ps.lastNetMs ? (millis() - ps.lastNetMs) : 0), udpListening ? "true" : "false",
         self->_ctl->ledModeName(), self->_ctl->testPatternName(), (unsigned)self->_ctl->testWidth(),
         self->_ctl->axisIndicator() ? "true" : "false",
+        self->_ctl->ledPower() ? "true" : "false", batJson,
         self->_ctl->apRunning() ? "true" : "false", (unsigned)self->_ctl->apIdleMinutes(),
         self->_ctl->modemSleep() ? "true" : "false",
         imuOk ? "true" : "false", (unsigned)imuMode,
@@ -670,6 +704,9 @@ esp_err_t SoloWebServer::onLed(httpd_req_t* req) {
     }
     if (doc.containsKey("axis")) {
         ctl.setAxisIndicator(doc["axis"] | false);
+    }
+    if (doc.containsKey("power")) {
+        ctl.setLedPower(doc["power"] | true);
     }
 
     snprintf(self->_jsonBuf, sizeof(self->_jsonBuf),
