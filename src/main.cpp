@@ -138,15 +138,23 @@ void setup() {
     // 何よりも先に全ストリップへ黒を送信する。
     LEDManager::earlyBlank();
 
-    // XIAO 内蔵 LED を 3 回点滅 (Low で点灯)。電源投入・再起動のたびに見えるので、
-    // 再起動ループもこれで分かる。
+    // XIAO 内蔵 LED (Low で点灯) と北極 LED (赤 → 緑 → 青) を 3 回点滅。電源投入・再起動のたびに見えるので、
+    // 再起動ループもこれで分かる。北極 LED は外から見えるので、起動音が鳴らないときの電源 ON の確認になる
+    // (3 色が順に出れば北極 LED の R / G / B もそれぞれ点くことが分かる)。
+    // 明るさは各色 160/255 (約 20 mA)。起動直後の電源の落ち込みを避けるため白フルにはしない。
+    static const uint8_t kBootColors[3][3] = {{160, 0, 0}, {0, 160, 0}, {0, 0, 160}};
     pinMode(kStatusLedGpio, OUTPUT);
     for (int i = 0; i < 3; i++) {
         digitalWrite(kStatusLedGpio, LOW);
+        LEDManager::earlyNorth(kBootColors[i][0], kBootColors[i][1], kBootColors[i][2]);
         delay(80);
         digitalWrite(kStatusLedGpio, HIGH);
+        LEDManager::earlyNorth(0, 0, 0);
         delay(120);
     }
+    // 点滅の間は電源を入れた磁石 (手) が北極を覆っていて見えないことがあるので、
+    // そのあとも緑のまま点けておく。最初の描画 (オープニング / 映像、数秒後) で上書きされて消える。
+    LEDManager::earlyNorth(0, 160, 0);
 
     // シリアル初期化。Log の退避バッファ (PSRAM) も同時に用意する。server モードで MQTT に
     // 繋がると、ここ以降の起動ログがまとめて sphere/<id>/log に流れる。

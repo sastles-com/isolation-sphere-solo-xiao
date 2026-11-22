@@ -42,7 +42,8 @@ constexpr uint8_t  kLedDefaultBrightness = 128;               // デフォルト
 constexpr uint32_t kLedMaxPowerMa = 2000;
 
 // 北極 LED (D5 = GPIO6、WS2812 1 個)。3V3_MCU から給電されるので LED_EN と関係なく点けられる (FW-2)。
-// FastLED の RMT ドライバは TX チャンネル (4 本) より多いストリップを順番に送るので、6 本目でもよい。
+// FastLED には登録せず、LEDManager が CPU で直接送る (FastLED は全ストリップをまとめてしか送れず、
+// LED_EN OFF の間は北極 LED も更新できなくなるため)。
 constexpr uint8_t kNorthLedPin = 6;
 
 // --- LED 電源 / 電源制御 (core-XIAO-04) ---

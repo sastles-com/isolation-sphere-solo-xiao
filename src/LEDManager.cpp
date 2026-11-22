@@ -12,6 +12,8 @@
 #include <FS.h>
 #include <LittleFS.h>
 #include <math.h>
+#include "esp_cpu.h"
+#include "soc/gpio_struct.h"
 
 namespace sastle {
 
@@ -67,8 +69,54 @@ namespace {
 // ESP32 RMTドライバで効かないことがある (実機で全消灯のままになった) ため、
 // 「最初から実バッファで登録する」方式にする。
 // 末尾 (kNorthLedIndex) が北極 LED。レイアウト CSV の 801 行目として球体マッピングの対象になる。
+// 北極 LED は FastLED に登録せず、sendNorthLed() で直接送る (下記)。
 CRGB s_ledBufferStatic[sastle::kMaxLayoutLeds];
 bool s_earlyBlanked = false;
+
+// ---- 北極 LED (GPIO6、WS2812 1 個) の直接駆動 ----
+// FastLED の ESP32 RMT ドライバは登録した全コントローラをまとめてしか送れない (idf4_rmt_impl.cpp)。
+// 北極 LED を 6 本目として登録すると、LED_EN OFF の間 (ストリップ 1〜5 のデータ線を Low に保つため
+// show() しない) は北極 LED も更新できない。北極 LED は 3V3_MCU 給電で LED_EN と関係なく点くので、
+// CPU で 24 ビット (約 30 µs) を直接送り、ストリップの送信から切り離す。
+// RMT は FastLED が全 TX チャンネルと割り込みを使っているので、別の RMT チャンネルは使わない。
+// タイミングは FastLED の WS2812 (250 / 625 / 375 ns) と同じ: 0 = 250 ns High、1 = 875 ns High、周期 1250 ns。
+static_assert(sastle::kNorthLedPin < 32, "north LED pin must be in GPIO bank 0 (GPIO.out_w1ts)");
+portMUX_TYPE s_northMux = portMUX_INITIALIZER_UNLOCKED;
+bool s_northPinReady = false;
+uint32_t s_northLastUs = 0;
+
+void IRAM_ATTR northWriteBits(uint32_t grb, uint32_t t0h, uint32_t t1h, uint32_t period) {
+    const uint32_t mask = 1u << sastle::kNorthLedPin;
+    portENTER_CRITICAL(&s_northMux);   // 割り込みを止める (約 30 µs)。中でログ等を呼ばない
+    uint32_t start = esp_cpu_get_ccount();
+    for (int i = 23; i >= 0; i--) {
+        GPIO.out_w1ts = mask;
+        const uint32_t high = ((grb >> i) & 1u) ? t1h : t0h;
+        while ((uint32_t)(esp_cpu_get_ccount() - start) < high) {}
+        GPIO.out_w1tc = mask;
+        while ((uint32_t)(esp_cpu_get_ccount() - start) < period) {}
+        start += period;
+    }
+    portEXIT_CRITICAL(&s_northMux);    // データ線は Low のまま
+}
+
+// 北極 LED に 1 色送る (明るさの補正はしない)。FastLED.show() の最中に呼ばないこと
+// (割り込みを止めるので、RMT の補充割り込みが遅れてストリップが乱れる)。
+void sendNorthLed(const CRGB& c) {
+    if (!s_northPinReady) {
+        pinMode(sastle::kNorthLedPin, OUTPUT);
+        digitalWrite(sastle::kNorthLedPin, LOW);
+        s_northPinReady = true;
+        s_northLastUs = micros();
+    }
+    // 前回から 300 µs 以上空ける (WS2812 のラッチ)
+    const uint32_t since = micros() - s_northLastUs;
+    if (since < 300) delayMicroseconds(300 - since);
+    const uint32_t mhz = getCpuFrequencyMhz();
+    northWriteBits(((uint32_t)c.g << 16) | ((uint32_t)c.r << 8) | c.b,
+                   mhz * 250 / 1000, mhz * 875 / 1000, mhz * 1250 / 1000);
+    s_northLastUs = micros();
+}
 
 // FastLED の addLeds<> はピンがテンプレート引数なので、kLedPins[] を再帰テンプレートで展開して
 // ストリップ 0..N-1 を順に登録する。std::index_sequence (C++14) はこのビルドでは使えなかった
@@ -102,8 +150,8 @@ void LEDManager::earlyBlank() {
         counts[i] = kLedsPerStrip;
     }
     registerStrips(buffers, counts);  // データ線は Low のまま
-    // 北極 LED (1 個) はバッファの末尾。単独で show しないこと (FastLED の RMT は全コントローラまとめて送る)
-    FastLED.addLeds<LED_TYPE, kNorthLedPin, COLOR_ORDER>(s_ledBufferStatic + kNorthLedIndex, 1);
+    // 北極 LED (1 個) は FastLED に登録せず直接送る (sendNorthLed)。電源投入時の不定な表示を消す
+    sendNorthLed(CRGB::Black);
     // LED_EN を上げ、5 ms 以上待ってからデータを送る (FW-2)。
     pinMode(kLedEnGpio, OUTPUT);
     digitalWrite(kLedEnGpio, HIGH);
@@ -111,6 +159,11 @@ void LEDManager::earlyBlank() {
     FastLED.setBrightness(0);
     FastLED.show();
     s_earlyBlanked = true;
+}
+
+void LEDManager::earlyNorth(uint8_t r, uint8_t g, uint8_t b) {
+    // バッファは書き換えない (最初の描画 = オープニング / 映像で上書きされて消える)。
+    sendNorthLed(CRGB(r, g, b));
 }
 
 bool LEDManager::begin(ConfigManager& config, ImageManager& imageManager, IMUManager* imuManager) {
@@ -383,27 +436,18 @@ void LEDManager::renderTaskFunction(void* parameter) {
             return;
         }
         manager->applyPowerRequest();
-        if (!manager->_powerOn) {
-            // 北極 LED だけを送ることはしない。FastLED の ESP32 RMT ドライバは登録した全コントローラが
-            // showPixels() を呼んだ時点でまとめて送るため (idf4_rmt_impl.cpp)、1 本だけ呼ぶと
-            // 6 回に 1 回ストリップ 1〜5 にも古いデータが流れ、途中でフラッシュのロックも握ったままになる。
-            // LED_EN OFF の間、北極 LED は最後の色のまま。
-            // LED_EN OFF の間は show() しない (データ線を Low のまま保つ)
-            manager->_stats.fps = 0;
-            manager->_frameCount = 0;
-            manager->_lastFPSUpdate = millis();
-            vTaskDelay(pdMS_TO_TICKS(20));
-            continue;
-        }
         unsigned long frameStart = micros();
 
         if (manager->_imageManager) {
             manager->_imageManager->adoptReadyFrame();  // 新フレームがあれば採用
         }
-        manager->renderFrame();                          // 最新IMUで再マッピング+出力
+        // 最新IMUで再マッピング+出力。LED_EN OFF の間はストリップ 1〜5 を送らず (データ線 Low のまま)、
+        // 北極 LED (3V3_MCU 給電) だけを送る (showParallel)。
+        manager->renderFrame();
 
         manager->_stats.render_time_us = micros() - frameStart;
-        vTaskDelay(1);  // 他タスクに譲る (show()が~14msなので実効~50-60Hz)
+        // 他タスクに譲る (show()が~14msなので実効~50-60Hz)。LED_EN OFF の間は show() が無いので 20 ms 待つ
+        vTaskDelay(manager->_powerOn ? 1 : pdMS_TO_TICKS(20));
     }
 }
 
@@ -429,6 +473,7 @@ void LEDManager::applyPowerRequest() {
     if (want == _powerOn) return;
     if (!want) {
         // 黒を 1 回送ってから止める。RMT はアイドル時にデータ線を Low に保つ。
+        // 北極 LED は FastLED に登録していないので、ここでは消えない (描画タスクが送り続ける)。
         FastLED.clear(true);
         digitalWrite(kLedEnGpio, LOW);
         _powerOn = false;
@@ -729,7 +774,11 @@ void LEDManager::overlayAxisIndicator(CRGB& led, float x, float y, float z, bool
 void LEDManager::showParallel() {
     // FastLED.show()は内部的にRMT DMAを使用
     // 4つのRMTチャンネルが並列動作し、CPUブロック時間は最大ストリップのみ
-    FastLED.show();
+    // LED_EN OFF の間はストリップ 1〜5 を送らない (データ線を Low のまま保つ、FW-2)
+    if (_powerOn) {
+        FastLED.show();
+    }
+    outputNorth();
     
     // Note: ESP32-S3のRMTは8チャンネルあり、4ストリップは完全に並列出力される
     // 実測: 800 LED でも ~6-8ms (最長ストリップ220 LEDのみ待機)
@@ -755,6 +804,15 @@ bool LEDManager::setPixel(uint16_t index, uint8_t r, uint8_t g, uint8_t b) {
 
 void LEDManager::show() {
     FastLED.show();
+    outputNorth();
+}
+
+void LEDManager::outputNorth() {
+    // FastLED を通らないので、全体の明るさ (FastLED.getBrightness) をここで掛ける。
+    // FastLED.show() が返った後 (RMT の送信完了後) に呼ぶ。
+    CRGB c = s_ledBufferStatic[kNorthLedIndex];
+    c.nscale8(FastLED.getBrightness());
+    sendNorthLed(c);
 }
 
 // --- オープニングパターン用パラメータ ---

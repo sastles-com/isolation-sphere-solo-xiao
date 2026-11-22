@@ -342,6 +342,7 @@ void DeviceController::doPowerOff() {
         _d.led->setNorthMode(LEDManager::NorthMode::Off);
         _d.led->setPowerEnabled(false);
         for (int i = 0; i < 50 && _d.led->powerEnabled(); i++) delay(10);   // 描画タスクの反映を待つ
+        delay(50);   // 北極 LED は LED_EN OFF の間も描画タスクが送り続ける (20 ms ごと)。黒が届くのを待つ
     }
     // 3) 設定を保存 (フラッシュ書き込みの完了まで)
     Settings::flush();

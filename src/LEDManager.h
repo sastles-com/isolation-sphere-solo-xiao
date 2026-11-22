@@ -83,6 +83,14 @@ public:
      */
     static void earlyBlank();
 
+    /**
+     * @brief 起動通知用に北極 LED (1 個) を指定の色で点灯する (黒で消灯。描画タスクの開始前に限る)
+     *
+     * ブザーが鳴らないことがあるので、電源が入ったことを光でも知らせる。北極 LED は FastLED を通さず
+     * 直接送るので、ストリップ 1〜5 や LED_EN と関係なく点く。最初の描画 (オープニング / 映像) で上書きされる。
+     */
+    static void earlyNorth(uint8_t r, uint8_t g, uint8_t b);
+
     bool begin(ConfigManager& config, ImageManager& imageManager, IMUManager* imuManager = nullptr);
     
     /**
@@ -397,6 +405,7 @@ private:
     volatile NorthMode _northMode = NorthMode::Sphere;
     bool _layoutHasNorth = false;
     void updateNorth();                    ///< 北極 LED のバッファを上書き (Sphere 以外)。描画後・show() 前に呼ぶ
+    void outputNorth();                    ///< 北極 LED を直接送る (明るさを掛ける)。FastLED.show() の後に呼ぶ
     volatile bool _powerWanted = true;     ///< LED_EN の要求 (earlyBlank() が High にしている)
     volatile bool _powerOn = true;         ///< LED_EN の実際の状態
     void applyPowerRequest();              ///< _powerWanted を LED_EN に反映 (show() の外で呼ぶ)
