@@ -16,6 +16,7 @@
 #include "IMUManager.h"
 #include <FastLED.h>
 #include "imu/AttitudeStepDiag.h"
+#include "GestureLogic.h"   // gesture_logic::UiState (操作中の表示)
 
 namespace sastle {
 
@@ -267,6 +268,16 @@ public:
     bool getAxisIndicator() const { return _axisIndicatorEnabled; }
 
     /**
+     * @brief ジェスチャー操作中の表示を切り替える (GestureManager の状態に合わせて loop から呼ぶ)
+     *
+     * Menu: 映像を暗くし、±Z の点 (+Z 明るい青 / −Z 暗い青) を常に重ねる。
+     * PowerOffPending: 映像を赤へ寄せて全体を明滅させ、明滅を速めながら暗くする (gesture_logic::powerOffScale)。
+     * PoweringOff: 消灯。Menu は出力モードが Sphere (映像) のとき、予告と消灯は Manual 以外で効く。
+     * @param sinceMs その状態に入った millis() (予告の経過時間の起点)
+     */
+    void setUiState(gesture_logic::UiState state, uint32_t sinceMs) { _uiSinceMs = sinceMs; _uiState = state; }
+
+    /**
      * @brief マルチサンプリング(中心+半径R円周上N点の画像空間平均)を設定する
      *
      * 設定変更時に円周オフセットを1回だけ前計算するため、ここで cos/sin を回す。
@@ -366,7 +377,7 @@ private:
      * @param led 対象LED色 (入出力、内容色に軸色をブレンド)
      * @param x,y,z そのLEDのワールド系方向 (IMU補正後の単位ベクトル)
      */
-    void overlayAxisIndicator(CRGB& led, float x, float y, float z);
+    void overlayAxisIndicator(CRGB& led, float x, float y, float z, bool zOnly = false);
 
     /**
      * @brief 画像空間で 7点(中心+六角形6点)を平均サンプリングする
@@ -396,6 +407,8 @@ private:
     
     bool _imuCompensationEnabled;    ///< IMU姿勢補正の有効化フラグ
     bool _axisIndicatorEnabled = false;  ///< XYZ軸インジケータ表示フラグ
+    volatile gesture_logic::UiState _uiState = gesture_logic::UiState::Normal;  ///< ジェスチャー操作中の表示 (loop が書き、描画タスクが読む)
+    volatile uint32_t _uiSinceMs = 0;    ///< _uiState に入った millis()
     OutputMode _outputMode = OutputMode::Sphere;  ///< バッファ更新元 (Manual時はマッピングを飛ばす)
     TestPattern _testPattern = TestPattern::Chase;  ///< OutputMode::Test 時のパターン
     uint8_t _testWidth = 5;                         ///< Chase の連続点灯LED数

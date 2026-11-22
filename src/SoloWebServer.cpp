@@ -147,7 +147,7 @@ small{color:#888}#msg{min-height:1.2em;color:#f5b041;font-size:14px;word-break:b
   <select id="ap_idle"><option value="0">しない</option><option value="5">5 分</option><option value="10">10 分</option><option value="30">30 分</option><option value="60">60 分</option></select></div>
  <div class="row"><span class="k">AP (Wi-Fi)</span><span id="ap_st" class="v">-</span><button id="ap_off" class="gray">今すぐ停止</button></div>
  <div class="row"><span class="k">モデム省電力</span><button id="ms_on" class="gray">ON</button><button id="ms_off">OFF</button></div>
- <p><small>AP は接続端末が 0 台のまま設定時間が経つと止まり、LAN 接続が無ければ無線ごと停止して電力を大きく減らします。再開はトリプルシェイク、電源の入れ直し、シリアル/MQTT です。映像の再生は AP が止まっても続きます。モデム省電力は LAN (STA) 接続中のみ効き、ON だと応答が鈍り UDP 映像を取りこぼすことがあります。</small></p>
+ <p><small>AP は接続端末が 0 台のまま設定時間が経つと止まり、LAN 接続が無ければ無線ごと停止して電力を大きく減らします。再開はシェイク操作 (トリプルシェイク → Z 軸で −側に回す)、電源の入れ直し、シリアル/MQTT です。映像の再生は AP が止まっても続きます。モデム省電力は LAN (STA) 接続中のみ効き、ON だと応答が鈍り UDP 映像を取りこぼすことがあります。</small></p>
 </div>
 <div class="card" data-tab="pwr">
  <div class="k">電源</div>
@@ -237,7 +237,7 @@ $('srv_on').onclick=()=>srv(true);$('srv_off').onclick=()=>srv(false);
 const pwr=b=>api('/api/power',b).then(refresh).catch(e=>say(e.message));
 $('ms_on').onclick=()=>pwr({modem_sleep:true});$('ms_off').onclick=()=>pwr({modem_sleep:false});
 $('ap_idle').onchange=e=>pwr({ap_idle_min:+e.target.value});
-$('ap_off').onclick=()=>{if(confirm('AP を停止します。この画面との接続も切れます。再開はトリプルシェイクか電源の入れ直しです。'))api('/api/power',{ap:false}).then(()=>say('AP を停止します…')).catch(e=>say(e.message))};
+$('ap_off').onclick=()=>{if(confirm('AP を停止します。この画面との接続も切れます。再開はシェイク操作 (トリプルシェイク → Z−) か電源の入れ直しです。'))api('/api/power',{ap:false}).then(()=>say('AP を停止します…')).catch(e=>say(e.message))};
 const src=m=>api('/api/source',{mode:m}).then(refresh).catch(e=>say(e.message));
 $('s_auto').onclick=()=>src('auto');$('s_local').onclick=()=>src('local');$('s_net').onclick=()=>src('network');
 $('i_sm').oninput=e=>{$('i_smv').textContent=e.target.value;clearTimeout(smTimer);smTimer=setTimeout(()=>api('/api/imu',{smooth_frames:+e.target.value}).then(refresh).catch(e=>say(e.message)),250)};

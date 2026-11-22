@@ -455,6 +455,23 @@ void LEDManager::renderFrame() {
 
     updateNorth();   // マッピングの後に北極 LED を上書き (虹色 / 消灯のとき)
 
+    // 電源 OFF の予告中: 全体 (北極 LED を含む) を赤へ寄せて明滅させ、速めながら暗くする。OFF 実行後は消灯。
+    // 赤へ寄せるのは、映像が暗い・黒いときも予告が見えるようにするため。
+    // Manual (pixels/off コマンド) は外部が書いたバッファを毎フレーム描き直さないので、ここで書き換えない。
+    if (_outputMode != OutputMode::Manual) {
+        const gesture_logic::UiState ui = _uiState;
+        if (ui == gesture_logic::UiState::PowerOffPending || ui == gesture_logic::UiState::PoweringOff) {
+            const uint8_t scale = (ui == gesture_logic::UiState::PoweringOff)
+                ? 0 : gesture_logic::powerOffScale(millis() - _uiSinceMs);
+            // 北極 LED (末尾) はレイアウトが 800 行でも虹色表示でも含める
+            for (uint16_t i = 0; i < kMaxLayoutLeds; i++) {
+                CRGB& c = s_ledBufferStatic[i];
+                c = blend(c, CRGB::Red, gesture_logic::kWarnTint);
+                c.nscale8(scale);
+            }
+        }
+    }
+
     unsigned long mappingTime = micros() - start;
     _stats.mapping_time_us = mappingTime;
     
@@ -533,6 +550,11 @@ void LEDManager::updateLEDBuffer() {
         }
     }
 
+    // ジェスチャーのメニュー中は映像を暗くして ±Z の点を重ねる (Z 軸まわりの回転で選ぶため)
+    const gesture_logic::UiState ui = _uiState;
+    const bool menu = (ui == gesture_logic::UiState::Menu);
+    const bool uiActive = (ui != gesture_logic::UiState::Normal);   // 予告中・OFF 後は描画後に倍率をかける
+
     // 全LEDを1パスで処理 (旧: strip毎に4回×全LED走査=3200反復 → 800反復)
     for (uint16_t i = 0; i < _numLEDs; i++) {
         uint16_t px, py;
@@ -562,7 +584,10 @@ void LEDManager::updateLEDBuffer() {
         _ledBuffer[i] = CRGB(r, g, b);
 
         // XYZ軸インジケータを重畳 (IMU時は wx,wy,wz=ワールド座標, OFF時はbody座標)
-        if (_axisIndicatorEnabled) {
+        if (menu) {
+            _ledBuffer[i].nscale8(gesture_logic::kMenuDimScale);
+            overlayAxisIndicator(_ledBuffer[i], wx, wy, wz, true);
+        } else if (_axisIndicatorEnabled && !uiActive) {
             overlayAxisIndicator(_ledBuffer[i], wx, wy, wz);
         }
     }
@@ -675,7 +700,7 @@ void LEDManager::sampleAveraged(uint16_t cx, uint16_t cy, uint8_t& r, uint8_t& g
     b = (uint8_t)(bs / n);
 }
 
-void LEDManager::overlayAxisIndicator(CRGB& led, float x, float y, float z) {
+void LEDManager::overlayAxisIndicator(CRGB& led, float x, float y, float z, bool zOnly) {
     // 単位ベクトル前提。各半軸の中心方向との cos(角) = 対応する座標成分。
     // +X/+Y/+Z は明色 R/G/B、-X/-Y/-Z は暗色で軸線の向きが分かるようにする。
     constexpr float kAxisCos = 0.96f;          // マーカー半径 ≒ 16°
@@ -688,7 +713,7 @@ void LEDManager::overlayAxisIndicator(CRGB& led, float x, float y, float z) {
     };
     float bestW = 0.0f;
     uint8_t mr = 0, mg = 0, mb = 0;
-    for (uint8_t k = 0; k < 6; k++) {
+    for (uint8_t k = zOnly ? 4 : 0; k < 6; k++) {   // zOnly: ±Z だけ (ジェスチャーのメニュー)
         if (markers[k].cosang > kAxisCos) {
             float w = (markers[k].cosang - kAxisCos) * inv;  // 0..1 (中心で1)
             if (w > bestW) { bestW = w; mr = markers[k].r; mg = markers[k].g; mb = markers[k].b; }

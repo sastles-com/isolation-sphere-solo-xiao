@@ -125,7 +125,7 @@ public:
     /// SoftAP を今すぐ止める/再開する (delayMs 後に実行)。止めても自動停止の設定は変わらない
     void requestAp(bool on, uint32_t delayMs = 300);
     bool apRunning() const { return _d.net && _d.net->isSoftAP(); }
-    /// デモ向けの切替: AP が動いていれば止め、止まっていれば再開する。トリプルシェイクから呼ぶ (loopTask)
+    /// デモ向けの切替: AP が動いていれば止め、止まっていれば再開する。ジェスチャー (メニューで Z−) から呼ぶ (loopTask)
     void togglePowerSave();
     /// 端末 0 台がこの分数続いたら AP を自動停止。0 = 常時 ON。NVS 保存
     void setApIdleMinutes(uint16_t minutes);

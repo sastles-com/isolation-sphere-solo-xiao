@@ -348,8 +348,11 @@ void setup() {
         deps.battery = &battery;
         deps.sound = soundReady ? &sound : nullptr;
         controller.begin(deps);
-        // トリプルシェイク = デモ向けの AP の ON/OFF 切替 (UI モードの代わり)
-        gesture.setOnTripleShake([]() { controller.togglePowerSave(); });
+        // ジェスチャー: トリプルシェイクで回転メニュー → Z− で AP の ON/OFF、Z+ で電源 OFF (4 秒の予告、
+        // シェイクで取り消し)。操作中の LED 表示は LEDManager::setUiState (GestureLogic.h)
+        gesture.setOnApToggle([]() { controller.togglePowerSave(); });
+        gesture.setOnPowerOff([]() { controller.requestPowerOff(0); });
+        gesture.setOnUiState([](GestureManager::UiState s, uint32_t sinceMs) { ledManager.setUiState(s, sinceMs); });
         console.begin(controller, g_apSsid);
     }
 
@@ -505,6 +508,10 @@ void loop() {
 
         // ジェスチャー検出更新
         gesture.update();
+        // 電源 OFF に失敗した (USB 給電中・PWR_KILL 未接続) ら操作を戻す。LED は消えたまま (Web UI と同じ)
+        if (gesture.state() == GestureManager::UiState::PoweringOff && controller.powerOffFailed()) {
+            gesture.recoverFromFailedPowerOff();
+        }
 
         // 診断ログ (3秒に1回)
         if (now - lastIMULog >= IMU_LOG_INTERVAL) {
