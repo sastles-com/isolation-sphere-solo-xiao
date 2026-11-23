@@ -209,6 +209,18 @@ bool BatteryGauge::dfWrite(uint16_t addr, const uint8_t* data, size_t len) {
     return wr();
 }
 
+bool BatteryGauge::macCommand(uint16_t subcmd) {
+    auto wr = [&]() {
+        Wire.beginTransmission(kGaugeAddr);
+        Wire.write(0x3E);
+        Wire.write(static_cast<uint8_t>(subcmd & 0xFF));
+        Wire.write(static_cast<uint8_t>(subcmd >> 8));
+        return Wire.endTransmission() == 0;
+    };
+    if (_lock) { I2cGuard g(*_lock); return wr(); }
+    return wr();
+}
+
 void BatteryGauge::print() const {
     const Reading r = reading();
     if (!r.present) {

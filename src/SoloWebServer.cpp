@@ -754,6 +754,14 @@ esp_err_t SoloWebServer::onDiag(httpd_req_t* req) {
         snprintf(self->_jsonBuf, sizeof(self->_jsonBuf), "{\"ok\":true,\"reg\":\"%02X\",\"value\":\"%02X\"}", reg, back);
         return self->sendJson(req, "200 OK", self->_jsonBuf);
     }
+    if (doc.containsKey("mac_cmd")) {
+        // {"mac_cmd":"0021"} = データのない MAC コマンドを残量計に送る (0x0021 Gauging = 残量計算の ON/OFF など)
+        if (!self->_ctl->battery()) return self->sendError(req, "503 Service Unavailable", "no gauge");
+        const uint16_t sub = (uint16_t)strtoul(doc["mac_cmd"] | "", nullptr, 16);
+        if (!self->_ctl->battery()->macCommand(sub)) return self->sendError(req, "502 Bad Gateway", "mac command failed");
+        snprintf(self->_jsonBuf, sizeof(self->_jsonBuf), "{\"ok\":true,\"sub\":\"%04X\"}", sub);
+        return self->sendJson(req, "200 OK", self->_jsonBuf);
+    }
     if (doc.containsKey("mac") || doc.containsKey("df_write")) {
         // {"mac":"4006"} = MAC サブコマンド / データフラッシュ番地を読んで 16 進で返す。
         // {"df_write":"4006","data":"<16 進>"} = データフラッシュに書き、同じ番地を読み直して返す (校正用)

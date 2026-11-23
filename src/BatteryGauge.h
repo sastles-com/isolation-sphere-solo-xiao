@@ -56,6 +56,8 @@ public:
     /// 残量計のデータフラッシュに書く (0x3E へ「番地 + データ」、続けて 0x60 へ「チェックサム + 長さ」。
     /// tools/boardB_gauge_check の dfWrite16 と同じ)。診断・校正用。len は 1〜32
     bool dfWrite(uint16_t addr, const uint8_t* data, size_t len);
+    /// データのない MAC コマンド (0x0021 Gauging など) を送る (0x3E へサブコマンド 2 バイトを書くだけ)。診断・設定用
+    bool macCommand(uint16_t subcmd);
 
 private:
     bool readWord(uint8_t reg, uint16_t& out, uint8_t& err);
