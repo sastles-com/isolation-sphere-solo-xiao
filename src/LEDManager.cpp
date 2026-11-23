@@ -525,6 +525,9 @@ void LEDManager::renderFrame() {
     showParallel();
     unsigned long outputTime = micros() - outputStart;
     _stats.output_time_us = outputTime;
+    if (outputTime >= 90000) {
+        _stats.show_timeouts++;   // 送信完了の割り込みを取りこぼし、上限 (100 ms) で戻った
+    }
 
     
     // 統計更新

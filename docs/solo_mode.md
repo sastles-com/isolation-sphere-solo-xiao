@@ -600,6 +600,19 @@ File::read → esp_flash_read` (キャッシュ無効化)。以前の core は�
 | 再生 / デコード | fps=10.0 miss=0 err=0 | fps=10.0 miss=0 err=0 |
 | パニック | なし | なし (FLASH_LOCK 無しではリブートループ) |
 
+**3.7.8 の RMT4 は数分〜数時間後に `FastLED.show()` が戻らなくなることがある** (2026-11-23、XIAO 機で確認。
+それ以前のファームでも長時間再生中に起きていた)。割り込みの取りこぼしで送信完了のセマフォ (`gTX_sem`) が返らず、
+既定の待ち時間が無限 (`portMAX_DELAY`) のため描画タスクが止まる (`idf4_rmt_impl.cpp` の注記どおり)。
+症状: LED が最後のフレームで固まり IMU にも追従しない。デコード・IMU・Web UI (`/api/status`) は動くが、
+`render.frames` が増えない。`show()` が `FASTLED_ESP32_FLASH_LOCK` のフラッシュロックを握ったままなので、
+フラッシュに触る処理 (設定の保存、`/api/reboot`、Web UI の電源 OFF、OTA) もすべて止まり、
+復旧はホールの長押し (約 8 秒) による強制 OFF だけになる。メモリリークではない (ループ 33 回で空きヒープ・PSRAM とも不変)。
+対策: `-D FASTLED_RMT_MAX_TICKS_FOR_GTX_SEM=100/portTICK_PERIOD_MS` で待ちの上限を 100 ms にし (通常の出力は約 11 ms)、
+次のフレームで送り直させる。上限で戻った回数は `/api/status` の `render.show_timeouts`。
+実機で確認 (2026-11-23、充電しながら連続再生): 起動 97 分後に `show_timeouts` が 1 になり、描画 (約 48 fps)・
+IMU 追従・Web UI はそのまま動き続けた。対策前のファームなら、ここで止まっていた。
+多発するなら `FASTLED_RMT_MEM_BLOCKS=2` (補充割り込みの余裕が倍、並列は 2 本) を検討する。
+
 `read=` の増加はロック待ちによるもので、締切内に収まっている。余裕が欲しくなったら
 `kReadChunk` を大きくして read 回数を減らすか、デコードを先に走らせる順序に変える。
 **本体に組み込んで LiPo 起動: 全白は出なくなった** (2026-09-22 夜、ユーザー確認)。

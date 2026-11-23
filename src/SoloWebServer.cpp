@@ -507,7 +507,7 @@ esp_err_t SoloWebServer::onStatus(httpd_req_t* req) {
         "\"power\":{\"ap_running\":%s,\"ap_idle_min\":%u,\"modem_sleep\":%s,\"off_pending\":%s,\"off_failed\":%s},"
         "\"imu\":{\"ok\":%s,\"mode\":%u,\"cal\":\"%u%u%u%u\","
         "\"quat\":[%.3f,%.3f,%.3f,%.3f],\"reads\":%u,\"fails\":%u,\"discards\":%u,\"partial\":%u,\"straddle\":%u,\"seq\":%u,\"smooth\":%u},"
-        "\"render\":{\"fps\":%.1f,\"frames\":%u,\"map_us\":%u,\"out_us\":%u,\"stale\":%u},"
+        "\"render\":{\"fps\":%.1f,\"frames\":%u,\"map_us\":%u,\"out_us\":%u,\"stale\":%u,\"show_timeouts\":%u},"
         "\"img\":{\"fps\":%.1f,\"decoded\":%u,\"decode_us\":%u,\"dropped\":%u,\"errors\":%u},"
         "\"uploads\":%u,\"upload_failures\":%u,"
         "\"uptime_s\":%lu,\"heap_free\":%u,\"psram_free\":%u}",
@@ -555,7 +555,7 @@ esp_err_t SoloWebServer::onStatus(httpd_req_t* req) {
         (unsigned)(self->_imu ? self->_imu->quatSeq() : 0),
         (unsigned)(self->_imu ? self->_imu->smoothFrames() : 0),
         ls.fps, (unsigned)ls.frames_rendered, (unsigned)ls.mapping_time_us, (unsigned)ls.output_time_us,
-        (unsigned)ls.imu_stale_frames,
+        (unsigned)ls.imu_stale_frames, (unsigned)ls.show_timeouts,
         is.fps, (unsigned)is.frames_decoded, (unsigned)is.decode_time_us, (unsigned)is.frames_dropped,
         (unsigned)is.decode_errors,
         (unsigned)self->_uploads, (unsigned)self->_uploadFailures,

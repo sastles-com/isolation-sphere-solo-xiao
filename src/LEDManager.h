@@ -44,6 +44,7 @@ struct LEDStats {
     uint32_t render_time_us;     ///< 最後のレンダリング時間 (μs)
     uint32_t mapping_time_us;    ///< 座標マッピング時間 (μs)
     uint32_t output_time_us;     ///< LED出力時間 (μs)
+    uint32_t show_timeouts;      ///< FastLED.show() が送信完了を待ちきれずに戻った回数 (FASTLED_RMT_MAX_TICKS_FOR_GTX_SEM)
     uint32_t imu_stale_frames;   ///< 前フレームと同じ姿勢で描いたフレーム数の累計
     float imu_ortho_err_max;     ///< 回転後3軸の直交誤差の最大 (0なら正規な回転)
     float imu_norm_err_max;      ///< 使用したquatの ||q|²-1| の最大
