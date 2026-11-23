@@ -136,6 +136,79 @@ int BatteryGauge::scanBus(char* buf, size_t cap) {
     return found;
 }
 
+bool BatteryGauge::readRegs(uint8_t addr, uint8_t reg, uint8_t* out, size_t n) {
+    if (n == 0 || n > 128) return false;
+    auto rd = [&]() {
+        Wire.beginTransmission(addr);
+        Wire.write(reg);
+        if (Wire.endTransmission(false) != 0) return false;
+        if (Wire.requestFrom(addr, (uint8_t)n) != n) return false;
+        for (size_t k = 0; k < n; k++) out[k] = Wire.read();
+        return true;
+    };
+    if (_lock) { I2cGuard g(*_lock); return rd(); }
+    return rd();
+}
+
+bool BatteryGauge::writeReg(uint8_t addr, uint8_t reg, uint8_t val) {
+    auto wr = [&]() {
+        Wire.beginTransmission(addr);
+        Wire.write(reg);
+        Wire.write(val);
+        return Wire.endTransmission() == 0;
+    };
+    if (_lock) { I2cGuard g(*_lock); return wr(); }
+    return wr();
+}
+
+int BatteryGauge::macRead(uint16_t subcmd, uint8_t* data) {
+    constexpr uint8_t kCmdMacSubcmd = 0x3E;   // 0x3E/3F = サブコマンド、0x40〜0x5F = データ、0x60 = チェックサム、0x61 = 長さ
+    const uint8_t cmd[2] = {static_cast<uint8_t>(subcmd & 0xFF), static_cast<uint8_t>(subcmd >> 8)};
+    auto wr = [&]() {
+        Wire.beginTransmission(kGaugeAddr);
+        Wire.write(kCmdMacSubcmd);
+        Wire.write(cmd, 2);
+        return Wire.endTransmission() == 0;
+    };
+    bool ok;
+    if (_lock) { I2cGuard g(*_lock); ok = wr(); } else { ok = wr(); }
+    if (!ok) return -1;
+    delay(5);   // ロックを離して待つ (IMU を止めない)
+    uint8_t blk[36];   // サブコマンド 2 + データ 32 + チェックサム 1 + 長さ 1
+    if (!readRegs(kGaugeAddr, kCmdMacSubcmd, blk, sizeof(blk))) return -1;
+    if (blk[0] != cmd[0] || blk[1] != cmd[1]) return -1;
+    const int len = blk[35] - 4;   // 長さにはサブコマンド・チェックサム・長さの 4 バイトが含まれる
+    if (len < 1 || len > 32) return -1;
+    uint8_t sum = 0;
+    for (int i = 0; i < len + 2; ++i) sum += blk[i];
+    if (static_cast<uint8_t>(~sum) != blk[34]) return -1;
+    memcpy(data, blk + 2, len);
+    return len;
+}
+
+bool BatteryGauge::dfWrite(uint16_t addr, const uint8_t* data, size_t len) {
+    if (len < 1 || len > 32) return false;
+    uint8_t blk[34];
+    blk[0] = static_cast<uint8_t>(addr & 0xFF);
+    blk[1] = static_cast<uint8_t>(addr >> 8);
+    memcpy(blk + 2, data, len);
+    uint8_t sum = 0;
+    for (size_t i = 0; i < len + 2; i++) sum += blk[i];
+    const uint8_t tail[2] = {static_cast<uint8_t>(~sum), static_cast<uint8_t>(len + 4)};
+    auto wr = [&]() {
+        Wire.beginTransmission(kGaugeAddr);
+        Wire.write(0x3E);
+        Wire.write(blk, len + 2);
+        if (Wire.endTransmission() != 0) return false;
+        Wire.beginTransmission(kGaugeAddr);
+        Wire.write(0x60);
+        Wire.write(tail, 2);
+        return Wire.endTransmission() == 0;
+    };
+    if (_lock) { I2cGuard g(*_lock); return wr(); }
+    return wr();
+}
+
 void BatteryGauge::print() const {
     const Reading r = reading();
     if (!r.present) {

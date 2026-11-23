@@ -25,6 +25,7 @@ void DeviceController::begin(const Deps& deps) {
 
 void DeviceController::tick() {
     Settings::tick();  // 保留中の設定変更を書き出す
+    checkBattery();
     if (_apPending >= 0 && (int32_t)(millis() - _apPendingAtMs) >= 0) {
         const bool on = (_apPending == 1);
         _apPending = -1;
@@ -333,6 +334,26 @@ void DeviceController::requestPowerOff(uint32_t delayMs) {
     if (at == 0) at = 1;
     _powerOffFailed = false;
     _powerOffAtMs = at;
+}
+
+void DeviceController::checkBattery() {
+    if (!_d.battery) return;
+    const BatteryGauge::Reading r = _d.battery->reading();
+    const bool valid = r.present && r.ageMs < battery_guard::kMaxAgeMs;
+    switch (_battGuard.update(valid, r.voltageMv, r.currentMa, millis())) {
+        case battery_guard::Event::Warn:
+            Log.printf("[Battery] LOW: %u mV (< %u mV for %u s). Power off at %u mV\n", r.voltageMv,
+                       battery_guard::kWarnMv, (unsigned)(battery_guard::kHoldMs / 1000), battery_guard::kOffMv);
+            if (_d.sound) _d.sound->playEffect(SoundEffect::ERROR);
+            break;
+        case battery_guard::Event::PowerOff:
+            Log.printf("[Battery] EMPTY: %u mV (< %u mV for %u s) -> power off\n", r.voltageMv,
+                       battery_guard::kOffMv, (unsigned)(battery_guard::kHoldMs / 1000));
+            if (_powerOffAtMs == 0) requestPowerOff(0);
+            break;
+        default:
+            break;
+    }
 }
 
 void DeviceController::doPowerOff() {

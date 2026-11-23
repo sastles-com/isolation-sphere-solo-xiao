@@ -22,6 +22,7 @@
 #include "ConfigManager.h"
 #include "FramePump.h"
 #include "BatteryGauge.h"
+#include "BatteryGuard.h"
 #include "IMUManager.h"
 #include "LEDManager.h"
 #include "MQTTManager.h"
@@ -151,6 +152,8 @@ public:
     bool powerOffPending() const { return _powerOffAtMs != 0; }
     bool powerOffFailed() const { return _powerOffFailed; }
     bool rebootPending() const { return _rebootAtMs != 0; }
+    /// 電池の低電圧監視 (BatteryGuard.h): "ok" / "low" (予告済み) / "empty" (放電終止で電源 OFF を要求した)
+    const char* batteryGuardLevel() const { return battery_guard::levelName(_battGuard.level()); }
 
     /**
      * @brief MQTT の retained state (sphere/<id>/state) を組み立てる。派生元と同じ鍵。
@@ -183,6 +186,8 @@ private:
     volatile uint32_t _powerOffAtMs = 0; ///< 0 = 予約なし
     volatile bool _powerOffFailed = false;
     void doPowerOff();
+    void checkBattery();                 ///< 低電圧の予告と放電終止での電源 OFF (tick から)
+    battery_guard::Guard _battGuard;
     volatile int8_t _apPending = -1;     ///< -1 = なし / 0 = 停止予約 / 1 = 再開予約
     volatile uint32_t _apPendingAtMs = 0;
 

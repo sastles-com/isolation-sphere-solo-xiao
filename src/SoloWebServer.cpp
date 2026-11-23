@@ -504,7 +504,7 @@ esp_err_t SoloWebServer::onStatus(httpd_req_t* req) {
         "\"udp_rx\":%u,\"udp_drop\":%u,\"reasm_drop\":%u,\"last_net_ms\":%u,\"udp_listening\":%s},"
         "\"led\":{\"mode\":\"%s\",\"pattern\":\"%s\",\"width\":%u,\"axis\":%s,\"power\":%s,\"north\":\"%s\"},"
         "\"battery\":%s,"
-        "\"power\":{\"ap_running\":%s,\"ap_idle_min\":%u,\"modem_sleep\":%s,\"off_pending\":%s,\"off_failed\":%s},"
+        "\"power\":{\"ap_running\":%s,\"ap_idle_min\":%u,\"modem_sleep\":%s,\"off_pending\":%s,\"off_failed\":%s,\"battery_guard\":\"%s\"},"
         "\"imu\":{\"ok\":%s,\"mode\":%u,\"cal\":\"%u%u%u%u\","
         "\"quat\":[%.3f,%.3f,%.3f,%.3f],\"reads\":%u,\"fails\":%u,\"discards\":%u,\"partial\":%u,\"straddle\":%u,\"seq\":%u,\"smooth\":%u},"
         "\"render\":{\"fps\":%.1f,\"frames\":%u,\"map_us\":%u,\"out_us\":%u,\"stale\":%u,\"show_timeouts\":%u},"
@@ -544,6 +544,7 @@ esp_err_t SoloWebServer::onStatus(httpd_req_t* req) {
         self->_ctl->apRunning() ? "true" : "false", (unsigned)self->_ctl->apIdleMinutes(),
         self->_ctl->modemSleep() ? "true" : "false",
         self->_ctl->powerOffPending() ? "true" : "false", self->_ctl->powerOffFailed() ? "true" : "false",
+        self->_ctl->batteryGuardLevel(),
         imuOk ? "true" : "false", (unsigned)imuMode,
         (unsigned)calSys, (unsigned)calGyro, (unsigned)calAccel, (unsigned)calMag,
         iqw, iqx, iqy, iqz,
@@ -702,7 +703,85 @@ esp_err_t SoloWebServer::onDiag(httpd_req_t* req) {
                  n, found, (unsigned long)(millis() - t0));
         return self->sendJson(req, "200 OK", self->_jsonBuf);
     }
-    return self->sendError(req, "400 Bad Request", "expected beep or i2c_scan");
+    if (doc["charger"] | false) {
+        // 充電 IC BQ25792 (0x6B) のレジスタ 0x00〜0x48 を 16 進でそのまま返す (解読は PC 側)。
+        // 0x22〜0x27 (フラグ) は読むと消える。"adc":true なら先に ADC を連続変換で有効にする (REG2E = 0x80)
+        if (!self->_ctl->battery()) return self->sendError(req, "503 Service Unavailable", "no i2c");
+        constexpr uint8_t kChgAddr = 0x6B;
+        constexpr size_t kChgRegs = 0x49;
+        if (doc["adc"] | false) {
+            if (!self->_ctl->battery()->writeReg(kChgAddr, 0x2E, 0x80)) {
+                return self->sendError(req, "502 Bad Gateway", "charger adc write failed");
+            }
+            delay(300);   // 1 巡の変換を待つ
+        }
+        uint8_t regs[kChgRegs];
+        if (!self->_ctl->battery()->readRegs(kChgAddr, 0x00, regs, kChgRegs)) {
+            return self->sendError(req, "502 Bad Gateway", "charger read failed");
+        }
+        int n = snprintf(self->_jsonBuf, sizeof(self->_jsonBuf), "{\"ok\":true,\"regs\":\"");
+        for (size_t k = 0; k < kChgRegs; k++) n += snprintf(self->_jsonBuf + n, sizeof(self->_jsonBuf) - n, "%02X", regs[k]);
+        snprintf(self->_jsonBuf + n, sizeof(self->_jsonBuf) - n, "\"}");
+        return self->sendJson(req, "200 OK", self->_jsonBuf);
+    }
+    if (doc["gauge"] | false) {
+        // 残量計 BQ28Z620 の MAC (保護・FET・充電の状態、セル電圧) を 16 進でそのまま返す (解読は PC 側)。
+        // 0x50 SafetyAlert / 0x51 SafetyStatus / 0x53 PFStatus / 0x54 OperationStatus / 0x55 ChargingStatus /
+        // 0x56 GaugingStatus / 0x57 ManufacturingStatus / 0x71 DAStatus1。読めなかったものは ""
+        if (!self->_ctl->battery()) return self->sendError(req, "503 Service Unavailable", "no gauge");
+        static const uint16_t kSubs[] = {0x0050, 0x0051, 0x0053, 0x0054, 0x0055, 0x0056, 0x0057, 0x0071};
+        int n = snprintf(self->_jsonBuf, sizeof(self->_jsonBuf), "{\"ok\":true");
+        for (uint16_t sub : kSubs) {
+            uint8_t d[32];
+            const int len = self->_ctl->battery()->macRead(sub, d);
+            n += snprintf(self->_jsonBuf + n, sizeof(self->_jsonBuf) - n, ",\"%04X\":\"", sub);
+            for (int k = 0; k < len; k++) n += snprintf(self->_jsonBuf + n, sizeof(self->_jsonBuf) - n, "%02X", d[k]);
+            n += snprintf(self->_jsonBuf + n, sizeof(self->_jsonBuf) - n, "\"");
+        }
+        snprintf(self->_jsonBuf + n, sizeof(self->_jsonBuf) - n, "}");
+        return self->sendJson(req, "200 OK", self->_jsonBuf);
+    }
+    if (doc.containsKey("chg_write")) {
+        // {"chg_write":"14","data":"36"} = 充電 IC (0x6B) のレジスタに 1 バイト書く (診断用。電源を入れ直すと初期値に戻る)
+        if (!self->_ctl->battery()) return self->sendError(req, "503 Service Unavailable", "no i2c");
+        const uint8_t reg = (uint8_t)strtoul(doc["chg_write"] | "", nullptr, 16);
+        const uint8_t val = (uint8_t)strtoul(doc["data"] | "", nullptr, 16);
+        if (reg > 0x48) return self->sendError(req, "400 Bad Request", "bad reg");
+        uint8_t back = 0;
+        if (!self->_ctl->battery()->writeReg(0x6B, reg, val) || !self->_ctl->battery()->readRegs(0x6B, reg, &back, 1)) {
+            return self->sendError(req, "502 Bad Gateway", "charger write failed");
+        }
+        snprintf(self->_jsonBuf, sizeof(self->_jsonBuf), "{\"ok\":true,\"reg\":\"%02X\",\"value\":\"%02X\"}", reg, back);
+        return self->sendJson(req, "200 OK", self->_jsonBuf);
+    }
+    if (doc.containsKey("mac") || doc.containsKey("df_write")) {
+        // {"mac":"4006"} = MAC サブコマンド / データフラッシュ番地を読んで 16 進で返す。
+        // {"df_write":"4006","data":"<16 進>"} = データフラッシュに書き、同じ番地を読み直して返す (校正用)
+        if (!self->_ctl->battery()) return self->sendError(req, "503 Service Unavailable", "no gauge");
+        BatteryGauge* g = self->_ctl->battery();
+        const bool write = doc.containsKey("df_write");
+        const uint16_t sub = (uint16_t)strtoul(doc[write ? "df_write" : "mac"] | "", nullptr, 16);
+        if (write) {
+            const char* hex = doc["data"] | "";
+            const size_t hl = strlen(hex);
+            uint8_t data[32];
+            if (hl == 0 || hl % 2 || hl / 2 > sizeof(data)) return self->sendError(req, "400 Bad Request", "bad data");
+            for (size_t k = 0; k < hl / 2; k++) {
+                char b[3] = {hex[2 * k], hex[2 * k + 1], 0};
+                data[k] = (uint8_t)strtoul(b, nullptr, 16);
+            }
+            if (!g->dfWrite(sub, data, hl / 2)) return self->sendError(req, "502 Bad Gateway", "df write failed");
+            delay(100);   // 書き込みの完了を待つ
+        }
+        uint8_t d[32];
+        const int len = g->macRead(sub, d);
+        if (len < 0) return self->sendError(req, "502 Bad Gateway", "mac read failed");
+        int n = snprintf(self->_jsonBuf, sizeof(self->_jsonBuf), "{\"ok\":true,\"sub\":\"%04X\",\"data\":\"", sub);
+        for (int k = 0; k < len; k++) n += snprintf(self->_jsonBuf + n, sizeof(self->_jsonBuf) - n, "%02X", d[k]);
+        snprintf(self->_jsonBuf + n, sizeof(self->_jsonBuf) - n, "\"}");
+        return self->sendJson(req, "200 OK", self->_jsonBuf);
+    }
+    return self->sendError(req, "400 Bad Request", "expected beep, i2c_scan, charger, gauge, mac or df_write");
 }
 
 // ---------------------------------------------------------------------------
